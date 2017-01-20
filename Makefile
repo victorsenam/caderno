@@ -5,20 +5,22 @@ USER_DIR = code
 TEST_DIR = test
 
 CPPFLAGS += -isystem $(GTEST_DIR)/include
-CXXFLAGS += -g -Wall -Wextra -pthread
+CXXFLAGS += -g -Wall -Wextra -pthread -std=c++11
 
-TESTS = $(TEST_DIR)/geometry/interval $(TEST_DIR)/sample 
+TESTS = $(TEST_DIR)/geometry/interval $(TEST_DIR)/sample
 TESTS_OBJECTS = $(addsuffix .o,$(TESTS))
 
 GTEST_HEADERS = $(GTEST_DIR)/include/gtest/*.h \
                 $(GTEST_DIR)/include/gtest/internal/*.h
 GTEST_SRCS_ = $(GTEST_DIR)/src/*.cc $(GTEST_DIR)/src/*.h $(GTEST_HEADERS)
 
+.PHONY: all clean
+
 # house-keeping build targets.
 all : $(TESTS)
 
 clean :
-	rm -f $(TESTS) $(TESTS_OBJECTS) gtest.a gtest_main.a *.o
+	rm -f $(TESTS) $(TESTS_OBJECTS) $(TEST_DIR)/main $(TEST_DIR)/main.o gtest.a gtest_main.a *.o
 
 gtest-all.o : $(GTEST_SRCS_)
 	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR) $(CXXFLAGS) -c \
@@ -33,6 +35,13 @@ gtest.a : gtest-all.o
 
 gtest_main.a : gtest-all.o gtest_main.o
 	$(AR) $(ARFLAGS) $@ $^
+
+# main target rule
+$(TEST_DIR)/main.o : $(TEST_DIR)/main.cpp $(TESTS) $(TESTS_OBJECTS) $(GTEST_HEADERS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+
+$(TEST_DIR)/main : $(TEST_DIR)/main.o gtest_main.a
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ $(TESTS_OBJECTS) -o $@
 
 # generic rules
 $(TESTS_OBJECTS) : $(TEST_DIR)/%.o : $(TEST_DIR)/%.cpp $(USER_DIR)/%.cpp $(USER_DIR)/header.cpp $(GTEST_HEADERS)
