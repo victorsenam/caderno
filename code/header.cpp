@@ -3,3 +3,8 @@
 
 using namespace std;
 typedef long long ll;
+
+// ## complexity ##
+// last line in comments means complexity
+// time | space
+// standart: O(1) | O(1)
