@@ -16,3 +16,13 @@ const double pi = acos(-1.);
 // 1 : respects fully (eg: p is fully strictly inside pl)
 // 0 : respects only for a point (eg: p is on the border of pl)
 // -1 : does not respect (eg: p is outside of pl)
+
+template<typename cood> inline bool lt (cood a, cood b, cood eps = 0)
+{ return (a - b < eps); }
+template<> inline bool lt (ll a, ll b, ll eps)
+{ return (a < b + eps); }
+
+template<typename cood> inline bool lte (cood a, cood b, cood eps = 0)
+{ return (a - b <= eps); }
+template<> inline bool lte (ll a, ll b, ll eps)
+{ return (a <= b + eps); }
