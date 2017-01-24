@@ -5,59 +5,67 @@
 using namespace std;
 typedef long long ll;
 
-TEST(interval, contructors) {
+TEST(interval, contructor_one_argument) {
+    interval<ll> in(-1);
+    EXPECT_EQ(-1, in.a);
+    EXPECT_EQ(-1, in.b);
+}
+
+TEST(interval, constructor_standart) {
+    interval<ll> in(-1, 1);
+    EXPECT_EQ(-1, in.a);
+    EXPECT_EQ(1, in.b);
+}
+
+TEST(interval, constructor_swap) {
+    interval<ll> in(42, -34);
+    EXPECT_EQ(-34, in.a);
+    EXPECT_EQ(42, in.b);
+}
+
+TEST(interval, contains_ll) {
     mt19937_64 gen(42);
 
-    const int tss = 4;
-    ll ts_arg[tss][2] = {
-        {0, 1000000},
-        {0, LLONG_MAX},
-        {LLONG_MIN, LLONG_MAX},
-        {10, 10}
+    const ll ts[3][2] = {
+        {3, 8},
+        {0, 7000000000},
+        {LLONG_MIN + 100, LLONG_MAX - 100}
     };
-    const int ts_qt[tss] = {10, 10, 30};
 
-    for (int ts = 0; ts < tss; ts++) {
-        for (int tc = 0; tc < ts_qt[ts]; tc++) {
-            assert(ts_arg[ts][0] <= ts_arg[ts][1]);
-            uniform_int_distribution<ll> down(ts_arg[ts][0], ts_arg[ts][1]);
-            ll lo = down(gen);
+    for (int k = 0; k < 3; k++) {
+        interval<ll> in(ts[k][0], ts[k][1]);
+        
+        EXPECT_EQ(1, in.contains(in.a));
+        EXPECT_EQ(1, in.contains(in.b));
+        EXPECT_EQ(1, in.contains(in));
 
-            // does it duplicate if it should?
-            interval<ll> t1(lo);
-            ASSERT_EQ(t1.a, lo);
-            ASSERT_EQ(t1.b, lo);
+        uniform_int_distribution<ll> mid(in.a+1, in.b-1);
+        uniform_int_distribution<ll> gt(in.b+1, LLONG_MAX);
+        uniform_int_distribution<ll> lt(LLONG_MIN, in.a-1);
 
-            uniform_int_distribution<ll> up(lo, ts_arg[ts][1]);
-            ll hi = up(gen);
+        for (int i = 0; i < 5; i++) {
+            EXPECT_EQ(1, in.contains(mid(gen)));
 
-            assert(lo <= hi);
+            interval<ll> ot(mid(gen), mid(gen));
+            EXPECT_EQ(1, in.contains(ot));
 
-            // do they keep order if they should?
-            interval<ll> t2(lo, hi);
-            ASSERT_EQ(t2.a, lo);
-            ASSERT_EQ(t2.b, hi);
+            ot = interval<ll>(lt(gen), mid(gen));
+            EXPECT_EQ(0, in.contains(ot));
 
-            // do they swap if necessary?
-            interval<ll> t3(hi, lo);
-            ASSERT_EQ(t3.a, lo);
-            ASSERT_EQ(t3.b, hi);
+            ot = interval<ll>(lt(gen), gt(gen));
+            EXPECT_EQ(0, in.contains(ot));
 
+            ot = interval<ll>(mid(gen), gt(gen));
+            EXPECT_EQ(0, in.contains(ot));
         }
     }
 }
 
-/*
-TEST(interval_ll_contains, True) {
-    linear_congruential_engine generator;
+TEST(interval, contains_double) {
+    interval<double> in(-1e4, 1e4);
 
-    EXPECT_EQ(1, interval<ll>(-1, 1).contains(0));
-    EXPECT_EQ(1, interval<ll>(-1, 1).contains(-1));
-
-    interval_ll_contains(1, INT_MAX, generator, 10);
-    interval_ll_contains(INT_MIN, INT_MAX, generator, 30);   
+    EXPECT_EQ(1, in.contains(interval<double>(0), 1e-6));
+    EXPECT_EQ(1, in.contains(interval<double>(1e4 - 1e-6), 1e-6));
+    EXPECT_EQ(1, in.contains(interval<double>(1e4), 1e-6));
+    EXPECT_EQ(0, in.contains(interval<double>(1e4 + 1e-6), 1e-6));
 }
-
-TEST(interval_ll_contains, False) {
-}
-*/

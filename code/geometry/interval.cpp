@@ -9,8 +9,12 @@ template<typename cood> struct interval {
     interval<cood> (cood x) : a(x), b(x) {}
 
     // XXX assumes a <= b
+    inline cood size () const
+    { return b - a; }
+
+    // XXX assumes a <= b
     inline bool contains (const interval & ot, cood eps = 0) const
-    { return a - ot.a <= eps && ot.b - b <= eps; }
+    { return lte(a,ot.a,eps) && lte(ot.b,b,eps);}
     // XXX assumes a <= b
     inline bool intersects (const interval & ot, cood eps = 0) const
     { return contains(ot.a, eps) || contains(ot.b, eps) || ot.contains(*this, eps); }
