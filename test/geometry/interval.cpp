@@ -69,3 +69,15 @@ TEST(interval, contains_double) {
     EXPECT_EQ(1, in.contains(interval<double>(1e4), 1e-6));
     EXPECT_EQ(0, in.contains(interval<double>(1e4 + 1e-6), 1e-6));
 }
+
+TEST(interval, intersects) {
+    interval<ll> in(-3, 3);
+    
+    EXPECT_EQ(1, in.intersects(interval<ll>(-4, 0)));
+    EXPECT_EQ(1, in.intersects(interval<ll>(0, 4)));
+    EXPECT_EQ(1, in.intersects(interval<ll>(-2, 2)));
+    EXPECT_EQ(1, in.intersects(interval<ll>(-4, 4)));
+
+    EXPECT_EQ(0, in.intersects(interval<ll>(-10, -4)));
+    EXPECT_EQ(0, in.intersects(interval<ll>(4, 10)));
+}

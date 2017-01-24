@@ -17,5 +17,5 @@ template<typename cood> struct interval {
     { return lte(a,ot.a,eps) && lte(ot.b,b,eps);}
     // XXX assumes a <= b
     inline bool intersects (const interval & ot, cood eps = 0) const
-    { return contains(ot.a, eps) || contains(ot.b, eps) || ot.contains(*this, eps); }
+    { return contains(interval<cood>(ot.a), eps) || contains(interval<cood>(ot.b), eps) || ot.contains(*this, eps); }
 };
