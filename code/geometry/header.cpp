@@ -1,6 +1,11 @@
 #include "../header.cpp"
 
+#define tmpl template<typename cood>
 const double pi = acos(-1.);
+
+// ## formulas ##
+// area da calota : 2 * pi * r * h
+// volume da calota : pi * h * (3*r^2 + h^2) / 6
 
 // ## about eps ##
 // many functions recieve an optional parameter eps
