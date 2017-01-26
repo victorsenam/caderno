@@ -22,7 +22,7 @@ template<typename cood> struct vect {
     inline vec operator / (cood a) const
     { return vec(x / a, y / a); }
     inline vect<double> rotate (double ang) const // counter-clockwise
-    { return vect<double>(cos(ang) * x + sin(ang) * y, - sin(ang) * x + cos(ang) * y); }
+    { return vect<double>(cos(ang) * x - sin(ang) * y, sin(ang) * x + cos(ang) * y); }
 
     // math
     inline cood operator ^ (vec ot) const // cross
@@ -42,7 +42,7 @@ template<typename cood> struct vect {
     // returns 0 if a == b [colinear]
     // returns 1 if a > b [a->b is clockwise]
     int left (vec a, vec b, cood eps = 0) const
-    { cood o = area(a, b); return (o > -eps) - (o < eps); }
+    { cood o = ar(a, b); return (o < -eps) - (o > eps); }
 
     // divide the plane by anc
     // returns 0 if the counter-clockwise angle between anc and this is x s.t. 0 <= x < pi
@@ -57,7 +57,7 @@ template<typename cood> struct vect {
     // full comparsion
     // orders by clockwise order starting from the (0,-1) direction (upwards)
     // settles draws by proximity to this point
-    bool compare (vec ot, vec anc = (1,0), cood eps = 0) const {
+    bool compare (vec ot, vec anc = vect<cood>(1,0), cood eps = 0) const {
         bool s[2] = {halfplane(anc, eps), ot.halfplane(anc, eps)};
         if (s[0] != s[1])
             return s[0] < s[1];
@@ -65,6 +65,6 @@ template<typename cood> struct vect {
         int pr = vec(0,0).left((*this), ot, eps);
         if (pr)
             return (pr < 0);
-        return sq(a) < sq(b);
+        return sq() < ot.sq();
     }
 };

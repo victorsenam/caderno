@@ -1,5 +1,5 @@
 #include "header.cpp"
-#define ite ite
+#define ite inte<cood>
 
 template<typename cood> struct inte {
     cood a,b;

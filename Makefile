@@ -7,7 +7,7 @@ TEST_DIR = test
 CPPFLAGS += -isystem $(GTEST_DIR)/include
 CXXFLAGS += -g -Wall -Wextra -pthread -std=c++11
 
-NAMES = /geometry/interval /sample
+NAMES = /geometry/inte /geometry/vect /sample
 TESTS = $(addprefix $(TEST_DIR),$(NAMES))
 CODES = $(addsuffix .cpp,$(addprefix $(USER_DIR),$(NAMES)))
 TESTS_OBJECTS = $(addsuffix .o,$(TESTS))
