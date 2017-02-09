@@ -10,7 +10,8 @@ TEST(fft, simple_real) {
     vector<cpx> a({5,3,2,7});
     vector<cpx> b({3,5,1,6});
     vector<cpx> c({15,34,26,64,55,19,42,0});
-    vector<cpx> d = product(a,b);
+    vector<cpx> d;
+    product(d,a,b);
     
     ASSERT_EQ(c.size(), d.size());
 
@@ -42,7 +43,8 @@ TEST(fft, STRESS_complex) {
             b[i] = cpx(rnd_value(gen), rnd_value(gen));
 
         vector<cpx> c = naive(a,b);
-        vector<cpx> d = product(a,b);
+        vector<cpx> d;
+        product(d,a,b);
 
         ASSERT_GE(d.size(), c.size());
         c.resize(d.size(), 0);
