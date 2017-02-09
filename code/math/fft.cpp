@@ -48,9 +48,9 @@ vector<cpx> product (vector<cpx> a, vector<cpx> b) {
     a.resize(n,0);
     b.resize(n,0);
 
-    a = dft(a,0);
-    b = dft(b,0);
+    a = fft(a,0);
+    b = fft(b,0);
     for (int i = 0; i < n; i++)
         a[i] *= b[i];
-    return dft(a,1);
+    return fft(a,1);
 }
