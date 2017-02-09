@@ -6,7 +6,7 @@ typedef complex<double> cpx;
 
 // XXX assumes v.size() is power of 2
 // if inv is true, runs inverse DFT
-vector<cpx> dft (vector<cpx> & a, bool inv) {
+vector<cpx> fft (vector<cpx> & a, bool inv) {
     int n = a.size();
     assert(!(n&(n-1)));
 
@@ -39,7 +39,7 @@ vector<cpx> dft (vector<cpx> & a, bool inv) {
 }
 
 // XXX tested precision: 9 decimal digits (1e-9 when values vary on [-10,10])
-vector<cpx> fft (vector<cpx> a, vector<cpx> b) {
+vector<cpx> product (vector<cpx> a, vector<cpx> b) {
     int n = max(a.size(), b.size());
     
     while (n&(n-1)) n += (n&-n); // geq power of 2
