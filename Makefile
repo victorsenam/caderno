@@ -7,7 +7,7 @@ TEST_DIR = test
 CPPFLAGS += -isystem $(GTEST_DIR)/include
 CXXFLAGS += -g -Wall -Wextra -pthread -std=c++11
 
-NAMES = /geometry/inte /geometry/vect /sample
+NAMES = /geometry/inte /geometry/vect
 TESTS = $(addprefix $(TEST_DIR),$(NAMES))
 CODES = $(addsuffix .cpp,$(addprefix $(USER_DIR),$(NAMES)))
 TESTS_OBJECTS = $(addsuffix .o,$(TESTS))
@@ -19,7 +19,7 @@ GTEST_SRCS_ = $(GTEST_DIR)/src/*.cc $(GTEST_DIR)/src/*.h $(GTEST_HEADERS)
 .PHONY: all clean
 
 # house-keeping build targets.
-all : $(TESTS)
+all : $(TESTS) $(TEST_DIR)/main
 
 clean :
 	rm -f $(TESTS) $(TESTS_OBJECTS) $(TEST_DIR)/main $(TEST_DIR)/main.o gtest.a gtest_main.a *.o
