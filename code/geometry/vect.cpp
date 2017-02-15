@@ -1,6 +1,8 @@
 #include "header.cpp"
 #define vec vect<cood>
 
+// implementation in counter-clockwise oriented
+
 template<typename cood> struct vect {
     cood x,y;
     
@@ -41,30 +43,30 @@ template<typename cood> struct vect {
     // returns -1 if a < b [a->b is counter-clockwise]
     // returns 0 if a == b [colinear]
     // returns 1 if a > b [a->b is clockwise]
-    int left (vec a, vec b, cood eps = 0) const
-    { cood o = ar(a, b); return (o < -eps) - (o > eps); }
+    int left (vec a, vec b) const
+    { cood o = ar(a, b); return -1 + lte(o) + lt(o); }
 
     // divide the plane by anc
     // returns 0 if the counter-clockwise angle between anc and this is x s.t. 0 <= x < pi
     // returns 1 otherwise (pi <= x < 2pi)
-    inline bool halfplane (vec anc = vec(1,0), cood eps = 0) const {
-        int o = vec(0,0).left(anc, *this, eps);
+    inline bool halfplane (vec anc = vec(1,0)) const {
+        int o = vec(0,0).left(anc, *this);
         if (o == 0)
-            return (*this)*(anc) < 0;
+            return lt((*this)*(anc));
         return (o == 1);
     }
 
     // full comparsion
     // orders by clockwise order starting from the (0,-1) direction (upwards)
     // settles draws by proximity to this point
-    bool compare (vec ot, vec anc = vect<cood>(1,0), cood eps = 0) const {
-        bool s[2] = {halfplane(anc, eps), ot.halfplane(anc, eps)};
+    bool compare (vec ot, vec anc = vect<cood>(1,0)) const {
+        bool s[2] = {halfplane(anc), ot.halfplane(anc)};
         if (s[0] != s[1])
             return s[0] < s[1];
 
-        int pr = vec(0,0).left((*this), ot, eps);
+        int pr = vec(0,0).left((*this), ot);
         if (pr)
             return (pr < 0);
-        return sq() < ot.sq();
+        return lt(sq(), ot.sq());
     }
 };

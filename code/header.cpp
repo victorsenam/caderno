@@ -3,6 +3,10 @@
 
 using namespace std;
 typedef long long ll;
+typedef pair<int, int> pii;
+#define fst first
+#define snd second
+#define pb push_back
 
 // ## complexity ##
 // last line in comments means complexity

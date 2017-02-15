@@ -1,10 +1,6 @@
 #include "gtest/gtest.h"
 #include "../../code/geometry/vect.cpp"
 
-#include <bits/stdc++.h>
-using namespace std;
-typedef long long ll;
-
 TEST(vect, contructor) {
     vect<ll> in(-1, 1);
     EXPECT_EQ(-1, in.x);

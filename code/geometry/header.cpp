@@ -2,6 +2,7 @@
 
 #define tmpl template<typename cood>
 const double pi = acos(-1.);
+const double eps = 1e-9;
 
 // ## formulas ##
 // area da calota : 2 * pi * r * h
@@ -22,12 +23,8 @@ const double pi = acos(-1.);
 // 0 : respects only for a point (eg: p is on the border of pl)
 // -1 : does not respect (eg: p is outside of pl)
 
-template<typename cood> inline bool lt (cood a, cood b, cood eps = 0)
-{ return (a - b < eps); }
-template<> inline bool lt (ll a, ll b, ll eps)
-{ return (a < b + eps); }
+tmpl inline bool lt (cood a, cood b = 0) { return a < b; }
+tmpl inline bool lte (cood a, cood b = 0) { return a <= b; }
 
-template<typename cood> inline bool lte (cood a, cood b, cood eps = 0)
-{ return (a - b <= eps); }
-template<> inline bool lte (ll a, ll b, ll eps)
-{ return (a <= b + eps); }
+template<> inline bool lt (double a, double b) { return a - b < -eps; }
+template<> inline bool lte (double a, double b) { return a - b <= eps; }
