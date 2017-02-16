@@ -21,19 +21,20 @@ tmpl struct poly {
                 swap(v[i], v[0]);
         vec anc = v[0];
         sort(v.begin() + 1, v.end(), [anc] (vec a, vec b) {
-            return anc.left(a,b) == -1;
+            int o = anc.left(a,b);
+            if (o)
+                return (o == -1);
+            return lt(anc.nr(a), anc.nr(b));
         });
     }
 
     // XXX destructive
     void graham () {
         resort();
-        if (v.size() < 2u) 
-            return;
 
         auto st = 0u;
-        for (auto i = 1u; i < v.size(); i++) {
-            while (st > 2u && v[st-2].left(v[i], v[st-1]) != -1)
+        for (auto i = 0u; i < v.size(); i++) {
+            while (st >= 2u && v[st-2].left(v[st-1], v[i]) != -1)
                 st--;
             v[st++] = v[i];
         }
