@@ -5,7 +5,8 @@ USER_DIR = code
 TEST_DIR = test
 
 CPPFLAGS += -isystem $(GTEST_DIR)/include
-CXXFLAGS += -g -Wall -Wextra -pthread -std=c++11
+CXXFLAGS += -g -Wall -Wextra -pthread -std=c++11 -fdiagnostics-color
+# maybe Wno-sign-compare is reasonable
 
 NAMES = /math/fft /geometry/misc /geometry/vect /geometry/header
 TESTS = $(addprefix $(TEST_DIR),$(NAMES))
