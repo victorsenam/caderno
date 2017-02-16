@@ -6,7 +6,7 @@ using namespace std;
 typedef long long ll;
 typedef complex<double> cpx;
 
-TEST(fft, simple_real) {
+TEST(math_fft, WorksProperlyWithSimpleRealCoeficients) {
     vector<cpx> a({5,3,2,7});
     vector<cpx> b({3,5,1,6});
     vector<cpx> c({15,34,26,64,55,19,42,0});
@@ -28,7 +28,7 @@ vector<cpx> naive (const vector<cpx> & a, const vector<cpx> & b) {
     return c;
 }
 
-TEST(fft, STRESS_complex) {
+TEST(math_fft_STRESS, WorksProperlyWithComplexCoeficients) {
     mt19937_64 gen(42);
     uniform_int_distribution<int> rnd_size(3, 1000);
     uniform_real_distribution<double> rnd_value(-10, 10);
