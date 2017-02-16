@@ -14,8 +14,11 @@ tmpl struct vect {
     vec (cood a, cood b) : x(a), y(b) {}
 
     // basics
+    // XXX close elements are considered equal
     inline bool operator < (vec ot) const // lex compare
     { return (lt(x, ot.x) || (!lt(ot.x, x) && lt(y, ot.y))); }
+    inline bool operator == (vec ot) const 
+    { return !(((*this) < ot) || (ot < (*this))); }
 
     // transforming
     inline vec operator - (vec ot) const
