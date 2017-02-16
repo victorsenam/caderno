@@ -8,7 +8,7 @@ CPPFLAGS += -isystem $(GTEST_DIR)/include
 CXXFLAGS += -g -Wall -Wextra -pthread -std=c++11 -fdiagnostics-color
 # maybe Wno-sign-compare is reasonable
 
-NAMES = /math/fft /geometry/misc /geometry/vect /geometry/header
+NAMES = /math/fft /geometry/misc /geometry/vect /geometry/header /geometry/poly
 TESTS = $(addprefix $(TEST_DIR),$(NAMES))
 CODES = $(addsuffix .cpp,$(addprefix $(USER_DIR),$(NAMES)))
 TESTS_OBJECTS = $(addsuffix .o,$(TESTS))
