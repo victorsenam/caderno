@@ -1,9 +1,12 @@
+#ifndef C_geometry_vect
+#define C_geometry_vect
+
 #include "header.cpp"
 #define vec vect<cood>
 
 // implementation in counter-clockwise oriented
 
-template<typename cood> struct vect {
+tmpl struct vect {
     cood x,y;
     
     // constructors
@@ -12,7 +15,7 @@ template<typename cood> struct vect {
 
     // basics
     inline bool operator < (vec ot) const // lex compare
-    { return (x < ot.x || (x == ot.x && y < ot.y)); }
+    { return (lt(x, ot.x) || (!lt(ot.x, x) && lt(y, ot.y))); }
 
     // transforming
     inline vec operator - (vec ot) const
@@ -70,3 +73,5 @@ template<typename cood> struct vect {
         return lt(sq(), ot.sq());
     }
 };
+
+#endif

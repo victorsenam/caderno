@@ -55,6 +55,8 @@ TEST(vect, ordering) {
     EXPECT_EQ(0, b < a);
     EXPECT_EQ(1, b < c);
     EXPECT_EQ(0, a < a);
+    EXPECT_EQ(1, g < a);
+    EXPECT_EQ(0, vect<ll>(4,3) < vect<ll>(4, -34));
 
     EXPECT_EQ(-1, a.left(b,c));
     EXPECT_EQ(1, b.left(a,c));
