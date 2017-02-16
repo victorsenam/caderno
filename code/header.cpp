@@ -1,3 +1,6 @@
+#ifndef C_header
+#define C_header
+
 #include <bits/stdc++.h>
 #define debug(...) {fprintf(stdout, __VA_ARGS__);}
 
@@ -12,3 +15,5 @@ typedef pair<int, int> pii;
 // last line in comments means complexity
 // time | space
 // standart: O(1) | O(1)
+
+#endif

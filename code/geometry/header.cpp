@@ -1,3 +1,6 @@
+#ifndef C_geometry_header
+#define C_geometry_header
+
 #include "../header.cpp"
 
 #define tmpl template<typename cood>
@@ -28,3 +31,5 @@ tmpl inline bool lte (cood a, cood b = 0) { return a <= b; }
 
 template<> inline bool lt (double a, double b) { return a - b < -eps; }
 template<> inline bool lte (double a, double b) { return a - b <= eps; }
+
+#endif

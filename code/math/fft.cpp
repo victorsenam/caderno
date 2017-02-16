@@ -1,3 +1,6 @@
+#ifndef C_math_fft
+#define C_math_fft
+
 #include "../header.cpp"
 
 const double pi = acos(-1.0);
@@ -57,3 +60,5 @@ void product (vector<cpx> & ans, vector<cpx> & a, vector<cpx> & b, bool padded =
         a[i] *= ans[i];
     fft(ans, a, p, 1);
 }
+
+#endif
