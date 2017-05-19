@@ -1,3 +1,5 @@
+NAMES = /math/fft /geometry/misc /geometry/vect /geometry/header /geometry/poly
+
 # based on https://github.com/google/googletest/blob/master/googletest/make/Makefile
 GTEST_DIR = $(GTEST_ROOT)
 
@@ -8,7 +10,6 @@ CPPFLAGS += -isystem $(GTEST_DIR)/include
 CXXFLAGS += -g -Wall -Wextra -pthread -std=c++11 -fdiagnostics-color
 # maybe Wno-sign-compare is reasonable
 
-NAMES = /math/fft /geometry/misc /geometry/vect /geometry/header /geometry/poly
 TESTS = $(addprefix $(TEST_DIR),$(NAMES))
 CODES = $(addsuffix .cpp,$(addprefix $(USER_DIR),$(NAMES)))
 TESTS_OBJECTS = $(addsuffix .o,$(TESTS))
@@ -47,7 +48,7 @@ $(TEST_DIR)/main : $(TEST_DIR)/main.o $(TESTS) $(TESTS_OBJECTS) $(CODES) gtest_m
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $(TEST_DIR)/main.o $(TESTS_OBJECTS) gtest_main.a -o $@
 
 # generic rules
-$(TESTS_OBJECTS) : $(TEST_DIR)/%.o : $(TEST_DIR)/%.cpp $(USER_DIR)/%.cpp $(USER_DIR)/header.cpp $(GTEST_HEADERS)
+$(TESTS_OBJECTS) : $(TEST_DIR)/%.o : $(TEST_DIR)/%.cpp $(USER_DIR)/%.cpp $(GTEST_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
 $(TESTS) : $(TEST_DIR)/% : $(TEST_DIR)/%.o gtest_main.a
