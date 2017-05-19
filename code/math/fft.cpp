@@ -1,7 +1,10 @@
-#ifndef C_math_fft
-#define C_math_fft
+#include <bits/stdc++.h>
+#define debug(...) {fprintf(stdout, __VA_ARGS__);}
 
-#include "../header.cpp"
+using namespace std;
+typedef long long ll;
+typedef pair<ll, ll> pii;
+#define pb push_back
 
 const double pi = acos(-1.0);
 typedef complex<double> cpx;
@@ -60,5 +63,3 @@ void product (vector<cpx> & ans, vector<cpx> & a, vector<cpx> & b, bool padded =
         a[i] *= ans[i];
     fft(ans, a, p, 1);
 }
-
-#endif
