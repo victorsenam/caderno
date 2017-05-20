@@ -8,7 +8,7 @@ CODE_DIR = code
 TEST_DIR = test
 
 CPPFLAGS += -isystem $(GTEST_DIR)/include
-CXXFLAGS += -g -Wall -Wextra -pthread -std=c++11 -fdiagnostics-color -Wno-sign-compare
+CXXFLAGS += -g -Wall -Wextra -pthread -std=c++11 -Wno-sign-compare
 
 TESTS = $(addprefix $(TEST_DIR),$(TEST_NAMES))
 CODES = $(addsuffix .cpp,$(addprefix $(USER_DIR),$(CODE_NAMES)))
