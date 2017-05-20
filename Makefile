@@ -1,5 +1,5 @@
 CODE_NAMES = /math/fft /geometry
-TEST_NAMES = /math/fft
+TEST_NAMES = /math/fft /geometry_vec_ll
 
 # based on https://github.com/google/googletest/blob/master/googletest/make/Makefile
 GTEST_DIR = $(GTEST_ROOT)
@@ -50,6 +50,9 @@ $(TEST_DIR)/main : $(TEST_DIR)/main.o $(TESTS) $(TEST_OBJECTS) $(CODES) gtest_ma
 
 # test rules
 $(TEST_DIR)/math/fft.o : $(TEST_DIR)/math/fft.cpp $(CODE_DIR)/math/fft.cpp $(GTEST_HEADERS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+
+$(TEST_DIR)/geometry_vec_ll.o : $(TEST_DIR)/geometry_vec_ll.cpp $(CODE_DIR)/geometry.cpp $(GTEST_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
 # generic rules
