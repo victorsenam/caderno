@@ -11,7 +11,7 @@ CPPFLAGS += -isystem $(GTEST_DIR)/include
 CXXFLAGS += -g -Wall -Wextra -pthread -std=c++11 -Wno-sign-compare
 
 TESTS = $(addprefix $(TEST_DIR),$(TEST_NAMES))
-CODES = $(addsuffix .cpp,$(addprefix $(USER_DIR),$(CODE_NAMES)))
+CODES = $(addsuffix .cpp,$(addprefix $(CODE_DIR),$(CODE_NAMES)))
 TEST_OBJECTS = $(addsuffix .o,$(TESTS))
 
 GTEST_HEADERS = $(GTEST_DIR)/include/gtest/*.h \
