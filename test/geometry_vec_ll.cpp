@@ -1,7 +1,11 @@
-#define COOD_TYPE ll
+typedef long long cood;
+const cood eps = 0;
 
 #include "gtest/gtest.h"
 #include "../code/geometry.cpp"
+
+bool operator== (vec a, vec b)
+{ return a.x == b.x && a.y == b.y; }
 
 TEST(geometry_vec_ll, BasicOperations) {
     vec a(45,16), b(50,13);

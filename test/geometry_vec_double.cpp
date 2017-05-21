@@ -1,13 +1,11 @@
-#define COOD_TYPE dbl
+typedef double cood;
+const double eps = 1e-9;
 
 #include "gtest/gtest.h"
 #include "../code/geometry.cpp"
 
-TEST(geometry_vec_dbl, Comparsions) { 
-    EXPECT_EQ(vec(0, 7), vec(9e-10, 7+9e-10));
-    EXPECT_LT(vec(1e-9, 0), vec(2.1e-9, 0));
-    EXPECT_LT(vec(0, 1e-9), vec(0, 2.1e-9));
-}
+bool operator== (vec a, vec b)
+{ return (abs(a.x - b.x) < eps && abs(a.y - b.y) < eps); }
 
 TEST(geometry_vec_dbl, Rotate) {
     EXPECT_EQ(vec(1,0).rotate(0), vec(1,0));

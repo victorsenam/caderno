@@ -14,25 +14,6 @@ typedef pair<ll,ll> pii;
 // NOT STANDART FROM HERE
 
 const double pi = acos(-1.);
-const double eps = 1e-9;
-
-struct dbl {
-    double x;
-
-    dbl(double a = 0) : x(a) {}
-    operator double () { return x; }
-    friend ostream& operator<<(ostream& os, dbl o);
-
-    // XXX close elements are considered equal
-    bool operator < (dbl o) const
-    { return x - o.x < -eps; }
-    bool operator == (dbl o) const
-    { return !((*this) < o || o < (*this)); }
-};
-ostream& operator<<(ostream& os, dbl o)
-{ return os << setprecision(20) << o.x; }
-
-typedef COOD_TYPE cood;
 
 struct vec {
     // === BASIC ===
@@ -40,11 +21,6 @@ struct vec {
     vec () : x(0), y(0) {}
     vec (cood a, cood b) : x(a), y(b) {}
     friend ostream& operator<<(ostream& os, vec o);
-
-    bool operator < (vec o) const // lex compare
-    { return (x < o.x || (x == o.x && y < o.y)); }
-    bool operator == (vec o) const
-    { return (x == o.x && y == o.y); }
 
     vec operator - (vec o)
     { return vec(x - o.x, y - o.y); }
@@ -61,13 +37,13 @@ struct vec {
 
     cood sq (vec o = vec())
     { return ((*this)-o)*((*this)-o); }
-    dbl nr (vec o = vec())
+    double nr (vec o = vec())
     { return sqrt(sq(o)); }
 
     cood ar (vec a, vec b) // positive if this is to the left of ab
     { return (b-a)^((*this)-a); }
     bool lf (vec a, vec b) // is this to the left of ab?
-    { return (cood(0) < ar(a,b)); }
+    { return (ar(a,b)) > eps; }
        
     // === ADVANCED ===
     // divide the plane relative to anc
@@ -75,7 +51,7 @@ struct vec {
     bool halfplane (vec anc = vec(1,0)) {
         if (lf(vec(),anc)) return 0;
         if (lf(anc,vec())) return 1;
-        return (x < cood(0));
+        return (x < -eps);
     }
 
     // ordering (ccw angle from anc, distance to origin)
@@ -88,13 +64,12 @@ struct vec {
 
         if (lf(o, vec())) return 1;
         if (lf(vec(), o)) return 0;
-        return sq() < o.sq();
+        return sq() < o.sq() - eps;
     }
 
     // rotate ccw by a (fails with ll)
-    vec rotate (dbl a)
+    vec rotate (double a)
     { return vec(cos(a) * x - sin(a) * y, sin(a) * x + cos(a) * y); }
 };
-
 ostream& operator<<(ostream& os, vec o)
 { return os << '(' << o.x << ", " << o.y << ')'; }
