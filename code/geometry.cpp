@@ -80,3 +80,33 @@ struct vec { // vector
 };
 ostream& operator<<(ostream& os, vec o)
 { return os << '(' << o.x << ", " << o.y << ')'; }
+
+// tests TODO
+struct lin { // line
+    cood a, b, c;
+
+    lin () {}
+    lin (cood x, cood y, cood z) : a(x), b(y), c(z) {}
+    lin (vec s, vec t) : a(t.y - s.y), b(s.x - t.x), c(a*s.x + b*s.y) {}
+
+    // parallel to this through p
+    lin move (vec p) { return lin(a, b, a*p.x + b*p.y); }
+
+    // line intersection
+    vec inter (lin o) {
+        cood d = a*o.b - o.a*b;
+        if (abs(d) < eps) throw 0; // parallel
+        return vec((o.b*c - b*o.c)/d, (a*o.c - o.a*c)/d);
+    }
+};
+
+// tests TODO
+// returns any point on the intersection of ab and cd
+vec seg_inter (vec a, vec b, vec c, vec d) {
+    if (a.in_seg(c,d)) return a;
+    if (b.in_seg(c,d)) return b;
+    if (c.in_seg(a,b)) return c;
+    if (d.in_seg(a,b)) return d;
+
+    return (lin(a,b).inter(lin(c,d))); // throws 0 if there is none
+}
