@@ -101,12 +101,9 @@ struct lin { // line
 };
 
 // tests TODO
-// returns any point on the intersection of ab and cd
+// returns any point on the intersection of ab and cd (including all tips)
 vec seg_inter (vec a, vec b, vec c, vec d) {
-    if (a.in_seg(c,d)) return a;
-    if (b.in_seg(c,d)) return b;
-    if (c.in_seg(a,b)) return c;
-    if (d.in_seg(a,b)) return d;
-
-    return (lin(a,b).inter(lin(c,d))); // throws 0 if there is none
+	if (a.in_seg(c, d) || b.in_seg(c, d) || c.in_seg(a, b) || d.in_seg(a, b))
+		return true;
+	return (c.sd(a, b) * d.sd(a, b) == -1 && a.sd(c, d) * b.sd(c, d) == -1);
 }
