@@ -27,7 +27,7 @@ TEST(geometry_vec_ll, BasicOperations) {
 }
 
 TEST(geometry_vec_ll, OrientedArea) {
-    EXPECT_EQ(vec(0,2).sd(vec(1,0),vec(3,2)), -1);  // left
+    EXPECT_EQ(vec(0,2).sd(vec(1,0),vec(3,2)), -1) << "should return -1 when left";  // left
     EXPECT_EQ(vec(2,0).sd(vec(1,0),vec(3,2)), 1); // right
     EXPECT_EQ(vec(2,1).sd(vec(1,0),vec(3,2)), 0); // colin
     EXPECT_EQ(vec(2,1).sd(vec(3,2),vec(1,0)), 0); // colin

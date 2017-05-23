@@ -1,9 +1,14 @@
+# Initialiing
+The tests are made using [googletest](https://github.com/google/googletest/). It may be necessary to run
+`git submodule update --init --recursive` once after you clone the repository for the first time, if the
+folder `test/gtest/` is empty.
+
 # Adding code
-Add the code on the `code` folder and its path inside this directory to `CODE_NAMES` in `Makefile`.
+Add the code on the `code` folder.
 
 # Adding tests
-Add the test on the `test` folder, its path inside this directory to `TEST_NAMES` in `Makefile` and describe a target to build its object under the `test rules` section in the `Makefile`.
+Add the test on the `test` folder, the file name should be `dir/file.testname.cpp` if you want to test `dir/file.cpp`.
+Follow this format closely.
 
 # Testing
-Compile and run `test/main` to run every test.
-Run it with the flag `--gtest_filter='-*_STRESS.*'` to ignore stress testing.
+Run `make` on the main folder to test all files. Individual executables are created with the same name as the test files.
