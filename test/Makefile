@@ -83,7 +83,7 @@ clean:
 PERCENT=%
 
 $(TESTS) : % : %.cpp gtest_main.a ../code/$$(basename %).cpp
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $< gtest_main.a -o $@ && ./$@
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $< gtest_main.a -o $@
 
 test_all: $(addsuffix .test, $(TESTS))
 
