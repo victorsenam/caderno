@@ -15,7 +15,7 @@ typedef pair<ll,ll> pii;
 
 const double pi = acos(-1.);
 
-struct vec {
+struct vec { // vector
     // === BASIC ===
     cood x, y;
     vec () : x(0), y(0) {}
@@ -40,18 +40,23 @@ struct vec {
     double nr (vec o = vec())
     { return sqrt(sq(o)); }
 
-    cood ar (vec a, vec b) // positive if this is to the left of ab
+    cood ar (vec a, vec b) // ccw signed area (positive if this is to the left of ab)
     { return (b-a)^((*this)-a); }
-    bool lf (vec a, vec b) // is this to the left of ab?
-    { return (ar(a,b)) > eps; }
-       
+    int sd (vec a, vec b) // which side is this from ab? (-1 left, 0 over, 1 right)
+    { cood o = ar(a,b); return (o < -eps) - (o > eps); }
+
     // === ADVANCED ===
+    // rotate ccw by a (fails with ll)
+    vec rotate (double a)
+    { return vec(cos(a) * x - sin(a) * y, sin(a) * x + cos(a) * y); }
+
     // divide the plane relative to anc
     // 0 if the ccw angle from anc to this is in [0,pi) and 1 otherwise, origin goes to 0
     bool halfplane (vec anc = vec(1,0)) {
-        if (lf(vec(),anc)) return 0;
-        if (lf(anc,vec())) return 1;
-        return (x < -eps);
+        cood l = sd(vec(),anc);
+        if (l == 0)
+            return (x < -eps);
+        return (l == 1);
     }
 
     // ordering (ccw angle from anc, distance to origin)
@@ -62,14 +67,16 @@ struct vec {
         if (s[0] != s[1])
             return s[0] < s[1];
 
-        if (lf(o, vec())) return 1;
-        if (lf(vec(), o)) return 0;
-        return sq() < o.sq() - eps;
+        cood l = sd(o,vec());
+        if (l == 0)
+            return sq() < o.sq() - eps;
+        return (l == -1);
     }
 
-    // rotate ccw by a (fails with ll)
-    vec rotate (double a)
-    { return vec(cos(a) * x - sin(a) * y, sin(a) * x + cos(a) * y); }
+    // tests TODO
+    // is this inside segment st? (tip of segment included, change for -eps otherwise)
+    bool in_seg (vec s, vec t)
+    { return (sd(s,t) == 0) && ((*this)-s)*((*this)-t) < eps; }
 };
 ostream& operator<<(ostream& os, vec o)
 { return os << '(' << o.x << ", " << o.y << ')'; }

@@ -27,15 +27,16 @@ TEST(geometry_vec_ll, BasicOperations) {
 }
 
 TEST(geometry_vec_ll, OrientedArea) {
-    EXPECT_TRUE(vec(0,2).lf(vec(1,0),vec(3,2)));  // left
-    EXPECT_FALSE(vec(2,0).lf(vec(1,0),vec(3,2))); // right
-    EXPECT_FALSE(vec(2,1).lf(vec(1,0),vec(3,2)) || vec(2,1).lf(vec(3,2),vec(1,0))); // colin
-    EXPECT_FALSE(vec(1,0).lf(vec(2,1),vec(3,2))); // before line
-    EXPECT_FALSE(vec(1,0).lf(vec(3,2),vec(2,1))); // after line
-    EXPECT_TRUE(vec(-50,-48).lf(vec(-49,-50),vec(-47,-48))); // all neg
-    EXPECT_TRUE(vec(-3, 1).lf(vec(1,-5),vec(-4,10))); // mixed
+    EXPECT_EQ(vec(0,2).sd(vec(1,0),vec(3,2)), -1);  // left
+    EXPECT_EQ(vec(2,0).sd(vec(1,0),vec(3,2)), 1); // right
+    EXPECT_EQ(vec(2,1).sd(vec(1,0),vec(3,2)), 0); // colin
+    EXPECT_EQ(vec(2,1).sd(vec(3,2),vec(1,0)), 0); // colin
+    EXPECT_EQ(vec(1,0).sd(vec(2,1),vec(3,2)), 0); // before line
+    EXPECT_EQ(vec(1,0).sd(vec(3,2),vec(2,1)), 0); // after line
+    EXPECT_EQ(vec(-50,-48).sd(vec(-49,-50),vec(-47,-48)), -1); // all neg
+    EXPECT_EQ(vec(-3, 1).sd(vec(1,-5),vec(-4,10)), -1); // mixed
 
-    EXPECT_TRUE(vec(11,-11).lf(vec(0,0),vec(-1,0))); // extra test
+    EXPECT_EQ(vec(11,-11).sd(vec(0,0),vec(-1,0)), -1); // extra test
 
     EXPECT_EQ(vec(99,101).ar(vec(100,100),vec(101,101)), 2);
     EXPECT_EQ(vec(10,13).ar(vec(80,83),vec(-20,-17)), 0);
