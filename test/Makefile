@@ -42,7 +42,7 @@ GTEST_HEADERS = $(GTEST_DIR)/include/gtest/*.h \
 
 # House-keeping build targets.
 
-all : test_all
+all : test_all .gitignore
 
 # Builds gtest.a and gtest_main.a.
 
@@ -76,6 +76,7 @@ gtest_main.a : gtest-all.o gtest_main.o
 
 TESTS = $(basename $(wildcard **/*.cpp *.cpp))
 
+.PHONY: .gitignore clean
 clean:
 	rm -f $(TESTS) gtest.a gtest_main.a **/*.o *.o
 
@@ -86,6 +87,9 @@ $(TESTS) : % : %.cpp gtest_main.a ../code/$$(basename %).cpp
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $< gtest_main.a -o $@
 
 test_all: $(addsuffix .test, $(TESTS))
+
+.gitignore:
+	@echo "${TESTS}" | sed -e 's/ /\n/g' >$@
 
 $(addsuffix .test, $(TESTS)) : % : $$(basename %)
 	./$<

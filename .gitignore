@@ -2,7 +2,3 @@
 **/*.a
 **/*.swp
 **/*.swo
-test/all_tests
-test/geometry_vec_ll
-test/geometry_vec_double
-test/math/fft
