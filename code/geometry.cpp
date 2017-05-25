@@ -73,10 +73,9 @@ struct vec { // vector
 		return (l == -1);
 	}
 
-	// tests TODO
 	// is this inside segment st? (tip of segment included, change for -eps otherwise)
 	bool in_seg (vec s, vec t)
-	{ return (sd(s, t) == 0) && ((*this) - s) * ((*this) - t) < eps; }
+	{ return (sd(s, t) == 0) && ((*this) - s) * ((*this) - t) <= eps; }
 };
 ostream& operator<<(ostream& os, vec o)
 { return os << '(' << o.x << ", " << o.y << ')'; }
