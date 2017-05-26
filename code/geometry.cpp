@@ -73,7 +73,7 @@ struct vec { // vector
 		return (l == -1);
 	}
 
-	// is this inside segment st? (tip of segment included, change for -eps otherwise)
+	// is this inside segment st? (tip of segment included, change for < -eps otherwise)
 	bool in_seg (vec s, vec t)
 	{ return (sd(s, t) == 0) && ((*this) - s) * ((*this) - t) <= eps; }
 };
