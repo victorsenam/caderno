@@ -1,4 +1,6 @@
-# Initialiing
+[![Build Status](https://travis-ci.org/victorsenam/caderno.svg?branch=master)](https://travis-ci.org/victorsenam/caderno)
+
+# Initializing
 The tests are made using [googletest](https://github.com/google/googletest/). It may be necessary to run
 `git submodule update --init --recursive` once after you clone the repository for the first time, if the
 folder `test/gtest/` is empty.
