@@ -1,0 +1,7 @@
+dist: trusty
+branches:
+    only:
+        - master
+jobs:
+    include:
+        script: make
