@@ -13,6 +13,9 @@ typedef pair<ll,ll> pii;
 
 // NOT STANDART FROM HERE
 
+// typedef ll cood;
+// cood eps = 0;
+
 const double pi = acos(-1.);
 
 struct vec { // vector
@@ -43,7 +46,7 @@ struct vec { // vector
 	cood ar (vec a, vec b) // ccw signed area (positive if this is to the left of ab)
 	{ return (b - a) ^ ((*this) - a); }
 	int sd (vec a, vec b) // which side is this from ab? (-1 left, 0 over, 1 right)
-	{ cood o = ar(a, b); return (o < -eps) - (o > eps); }
+	{ cood o = ar(a, b); return (o < -eps) - (eps < o); }
 
 	// === ADVANCED ===
 	// rotate ccw by a (fails with ll)
@@ -53,7 +56,7 @@ struct vec { // vector
 	// divide the plane relative to anc
 	// 0 if the ccw angle from anc to this is in [0,pi) and 1 otherwise, origin goes to 0
 	bool halfplane (vec anc = vec(1,0)) {
-		cood l = sd(vec(), anc);
+		int l = sd(vec(), anc);
 		if (l == 0)
 			return (x < -eps);
 		return (l == 1);
@@ -67,15 +70,15 @@ struct vec { // vector
 		if (s[0] != s[1])
 			return s[0] < s[1];
 
-		cood l = sd(o, vec());
+		int l = sd(o, vec());
 		if (l == 0)
-			return sq() < o.sq() - eps;
+			return sq() - o.sq() < -eps;
 		return (l == -1);
 	}
 
 	// is this inside segment st? (tip of segment included, change for < -eps otherwise)
 	bool in_seg (vec s, vec t)
-	{ return (sd(s, t) == 0) && ((*this) - s) * ((*this) - t) <= eps; }
+	{ return (sd(s, t) == 0) && !(eps < ((*this) - s) * ((*this) - t)); }
 };
 ostream& operator<<(ostream& os, vec o)
 { return os << '(' << o.x << ", " << o.y << ')'; }
@@ -94,7 +97,7 @@ struct lin { // line
 	// line intersection
 	vec inter (lin o) {
 		cood d = a * o.b - o.a * b;
-		if (abs(d) < eps) throw 0; // parallel
+		if (d < eps && -eps < d) throw 0; // parallel
 		return vec((o.b * c - b * o.c) / d, (a * o.c - o.a * c) / d);
 	}
 };
