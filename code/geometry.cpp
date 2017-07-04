@@ -1,10 +1,5 @@
 #include <bits/stdc++.h>
-//#define ONLINE_JUDGE
-#ifndef ONLINE_JUDGE
-#define debug(...) {fprintf(stdout, __VA_ARGS__);}
-#else
-#define debug(...) {}
-#endif
+#define debug if (1)
 
 using namespace std;
 typedef long long int ll;
