@@ -109,3 +109,37 @@ bool seg_inter (vec a, vec b, vec c, vec d) {
 		return true;
 	return (c.sd(a, b) * d.sd(a, b) == -1 && a.sd(c, d) * b.sd(c, d) == -1);
 }
+
+// tests TODO
+// brd = do points on the border belong to convex?
+// computes convex hull of given vector (inplace)
+// returns size of convex hull
+int graham (vec v[], int n, int brd) {
+    for (int i = 1; i < n; i++) {
+        if (v[i].x < v[0].x || (v[i].x == v[0].x && v[i].y < v[0].y))
+            swap(v[0], v[i]);
+    }
+
+    sort(v+1, v+n, [v] (vec a, vec b) {
+        int o = b.sd(v[0], a);
+        if (o) return (o == -1);
+        return v[0].sq(a) < v[0].sq(b);
+    });
+
+    if (brd) {
+        int s = n-1;
+        while (s > 1 && v[s].sd(v[s-1],v[0]) == 0)
+            s--;
+        for (int i = s; i < n - 1 - (i - s); i++)
+            swap(v[i], v[n-1-(i-s)]);
+    }
+
+    int s = 0;
+    for (int i = 0; i < n; i++) {
+        while (s >= 2 && v[s-1].sd(v[s-2],v[i]) <= -brd)
+            s--;
+        v[s++] = v[i];
+    }
+
+    return s;
+}
