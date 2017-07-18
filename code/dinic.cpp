@@ -6,6 +6,7 @@ typedef long long ll;
 
 // typedef ll num;
 // const num eps = 0;
+// const num inf = LLONG_MAX;
 
 // const int N = ;
 // const int M = ;
@@ -35,14 +36,13 @@ struct dinic {
 
         qu[qf++] = snk;
         ds[snk] = 0;
-        sn[snk] = tr;
 
-        while (qi < qf && sn[src] < tr) {
+        while (qi < qf) {
             int u = qu[qi++];
 
-            if (vs[u] > tr)
+            if (sn[u] > tr)
                 continue;
-            vs[u] = tr+1;
+            sn[u] = tr+1;
 
             for (int ed = hd[u]; ed; ed = nx[ed]) {
                 if (cp[ed^1] - fl[ed^1] <= eps)
@@ -57,7 +57,7 @@ struct dinic {
             }
         }
 
-        return (sn[src] == tr);
+        return (sn[src] > tr);
     }
 
     num dfs (int u, num flw) {
@@ -68,7 +68,8 @@ struct dinic {
             int v = to[ed];
             if (cp[ed] - fl[ed] <= eps || sn[v] < tr || ds[v] + 1 != ds[u])
                 continue;
-            if ((num ret = dfs(v, min(flw, cp[ed] - fl[ed]))) > eps) {
+            num ret = dfs(v, min(flw, cp[ed] - fl[ed]));
+            if (ret > eps) {
                 fl[ed] += ret;
                 fl[ed^1] -= ret;
                 return ret;
@@ -83,8 +84,11 @@ struct dinic {
         while (bfs()) {
             for (int i = 0; i < n; i++)
                 ht[i] = hd[i];
-            while ((ll val = dfs(src, INF)) > eps)
+            num val = 0;
+            do {
                 res += val;
+                val = dfs(src, inf);
+            } while (val > eps);
         }
         return res;
     }
