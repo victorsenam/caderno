@@ -13,10 +13,17 @@ inline int rnd(int l, int r) {
 
 int check(int u, int pa=0) {
 	if(!u) return 0;
+	if(pa) EXPECT_EQ(pp[u], 0);
 	EXPECT_EQ(p[u], pa) << "wrong parent";
 	int s = 1 + check(C[u][0], u) + check(C[u][1], u);
 	EXPECT_EQ(sz[u], s) << "wrong size";
 	return s;
+}
+
+void check_all(int n) {
+	for(int i = 1; i <= n; i++)
+		if(p[i] == 0)
+			check(i);
 }
 
 
@@ -25,16 +32,17 @@ TEST(LinkCut, Simple) {
 	int a = new_node();
 	int b = new_node();
 	int c = new_node();
-	EXPECT_NE(find(a), find(b));
+	EXPECT_NE(find_root(a), find_root(b));
 	link(a, b);
-	EXPECT_EQ(find(a), find(b));
-	EXPECT_NE(find(a), find(c));
-	EXPECT_EQ(find(a), find(b));
+	EXPECT_EQ(find_root(a), find_root(b));
+	EXPECT_NE(find_root(a), find_root(c));
+	EXPECT_EQ(find_root(a), find_root(b));
 	cut(b);
 	link(a, c);
-	EXPECT_NE(find(a), find(b));
-	EXPECT_NE(find(b), find(c));
-	EXPECT_EQ(find(c), find(a));
+	EXPECT_NE(find_root(a), find_root(b));
+	EXPECT_NE(find_root(b), find_root(c));
+	EXPECT_EQ(find_root(c), find_root(a));
+	check_all(3);
 }
 
 int S[N];
@@ -53,12 +61,15 @@ TEST(LinkCut, UnionFind) {
 			splay(a);
 			check(a);
 		}
+		if(rnd(0, 100) == 0)
+			rootify(rnd(1, n)); // shouldn't change anything
 		if(rnd(0, 2) == 0) {
-			link(a, b);
+			link(a, find_root(b));
 			if((a = find_(a)) != (b = find_(b))) S[b] = a;
 		} else
-			EXPECT_EQ((find_(a) == find_(b)), (find(a) == find(b)));
+			EXPECT_EQ((find_(a) == find_(b)), (find_root(a) == find_root(b)));
 	}
+	check_all(n);
 }
 
 TEST(LinkCut, CutLine) {
@@ -71,10 +82,11 @@ TEST(LinkCut, CutLine) {
 		cut(g + 1);
 		for(int k = 0; k < 10; k++) {
 			int a = rnd(1, n), b = rnd(1, n);
-			EXPECT_EQ((find(a) == find(b)), ((a <= g) == (b <= g)));
+			EXPECT_EQ((find_root(a) == find_root(b)), ((a <= g) == (b <= g)));
 		}
 		link(g, g + 1);
 	}
+	check_all(n);
 }
 
 int pe[N];
@@ -82,7 +94,7 @@ int low[N];
 
 TEST(LinkCut, CutLine2) {
 	init();
-	int n = 100000;
+	int n = 100007;
 	for(int i = 1; i <= n; i++) new_node(), pe[i] = i, low[i] = 1;
 	for(int i = 1; i < n; i++) link(i, i + 1);
 	random_shuffle(pe + 1, pe + n);
@@ -92,9 +104,10 @@ TEST(LinkCut, CutLine2) {
 		for(int j = g + 1; j <= n && low[g] == low[j]; j++) low[j] = g + 1;
 		for(int k = 0; k < 10; k++) {
 			int a = rnd(1, n), b = rnd(1, n);
-			EXPECT_EQ((find(a) == find(b)), (low[a] == low[b]));
+			EXPECT_EQ((find_root(a) == find_root(b)), (low[a] == low[b]));
 		}
 	}
+	check_all(n);
 }
 
 TEST(LinkCut, CutLine3) {
@@ -113,9 +126,10 @@ TEST(LinkCut, CutLine3) {
 		cut(g + 1);
 		for(int k = 0; k < 10; k++) {
 			int a = rnd(1, n), b = rnd(1, n);
-			EXPECT_EQ((find(a) == find(b)), (s.lower_bound(a) == s.lower_bound(b)));
+			EXPECT_EQ((find_root(a) == find_root(b)), (s.lower_bound(a) == s.lower_bound(b)));
 		}
 	}
+	check_all(n);
 }
 
 vector<int> adj[N];
@@ -136,15 +150,17 @@ bool dfs(int a, int b) {
 
 TEST(LinkCut, Brute) {
 	init();
-	int n = 3000;
+	int n = 5000;
 	for(int i = 1; i <= n; i++) new_node();
 	vector<pii> ed;
 	for(int i = 0; i < 2 * n; i++) {
+		check_all(n);
 		if(ed.size() > 200 && rnd(0, 10) == 0) {
 			int x = rnd(0, int(ed.size()) - 1);
 			swap(ed[x], ed.back());
-			cut(ed.back().snd);
 			int u = ed.back().fst, v = ed.back().snd;
+			if(get_parent(u) == v) cut(u);
+			else { ASSERT_EQ(get_parent(v), u); cut(v); }
 			adj[u].erase(search_n(adj[u].begin(), adj[u].end(), 1, v));
 			adj[v].erase(search_n(adj[v].begin(), adj[v].end(), 1, u));
 			ed.pop_back();
@@ -152,17 +168,50 @@ TEST(LinkCut, Brute) {
 			int a = rnd(1, n), b = rnd(1, n);
 			tempo++;
 			if(dfs(a, b)) {
-				EXPECT_EQ(find(a), find(b));
+				EXPECT_EQ(find_root(a), find_root(b));
 			} else {
-				EXPECT_NE(find(a), find(b));
-				if(b == find(b)) {
-					link(a, b);
-					ed.push_back(pii(a, b));
-					adj[a].push_back(b);
-					adj[b].push_back(a);
-				}
+				EXPECT_NE(find_root(a), find_root(b));
+				rootify(b);
+				link(a, b);
+				ed.push_back(pii(a, b));
+				adj[a].push_back(b);
+				adj[b].push_back(a);
 			}
 		}
+	}
+	for(int i = 1; i <= n; i++) adj[i].clear();
+}
+
+int dist(int u, int p, int t) {
+	if(u == t) return 1;
+	for(int v : adj[u])
+		if(v != p)
+			if(int x = dist(v, u, t))
+				return x + 1;
+	return 0;
+}
+
+TEST(LinkCut, Rootify) {
+	init();
+	int n = 5000;
+	for(int i = 1; i <= n; i++) new_node();
+	for(int i = 0; i < n * .8; i++) {
+		int a = rnd(1, n), b = rnd(1, n);
+		tempo++;
+		if(!dfs(a, b)) {
+			adj[a].push_back(b);
+			adj[b].push_back(a);
+		}
+		rootify(b);
+		link(a, b);
+	}
+	for(int i = 0; i < 2 * n; i++) {
+		if(i % 2)
+			rootify(rnd(1, n));
+		int u = rnd(1, n);
+		access(u);
+		int s = sz[u];
+		assert(s == dist(u, 0, find_root(u)));
 	}
 	for(int i = 1; i <= n; i++) adj[i].clear();
 }
