@@ -1,4 +1,5 @@
 math/fft.all
+linkcut.test
 geometry.vec_double
 splay.int
 treap.int
