@@ -13,4 +13,7 @@ Add the test on the `test` folder, the file name should be `dir/file.testname.cp
 Follow this format closely.
 
 # Testing
-Run `make` on the main folder to test all files. Individual executables are created with the same name as the test files.
+Run `make` on the `test` folder (or on the main folder) to test all files. Individual executables are created with the same name as the test files.
+
+# Generate Notebook
+Run `make` on the `latex` folder (or on the main folder) to generate `latex/notebook.pdf`.
