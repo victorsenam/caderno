@@ -1,9 +1,14 @@
 \documentclass{article}
-\usepackage[margin=1in]{geometry}
 \usepackage[Glenn]{fncychap}
 \usepackage{listings}
 \usepackage{color}
 \usepackage{verbatim}
+
+\usepackage[a4paper,top=1cm,bottom=1.5cm,left=1cm,right=1cm]{geometry}
+
+\usepackage{titlesec}
+\titlespacing*{\section}
+{0pt}{2ex}{1ex}
 
 \definecolor{dkgreen}{rgb}{0,0.6,0}
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
@@ -11,8 +16,8 @@
 
 \lstset{frame=tb,
   language=c++,
-  aboveskip=3mm,
-  belowskip=3mm,
+  aboveskip=.1em,
+  belowskip=.1em,
   showstringspaces=false,
   columns=flexible,
   basicstyle={\small\ttfamily},
@@ -22,7 +27,9 @@
   stringstyle=\color{mauve},
   breaklines=true,
   breakatwhitespace=true,
-  tabsize=4
+  tabsize=4,
+  showtabs=true,
+  tab={\color{gray} \rightarrowfill}
 }
 
 \begin{document}
@@ -33,3 +40,8 @@ colo evening
 set ai si noet ts=4 sw=4 sta sm nu rnu t_Co=8
 imap {<CR> {<CR>}<Esc>O
 \end{lstlisting}
+
+\begin{lstlisting}
+alias g="g++ -std=c++11 -g -fdiagnostics-color"
+\end{lstlisting}
+
