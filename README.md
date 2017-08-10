@@ -18,4 +18,5 @@ Follow this format closely.
 Run `make` on the `test` folder (or on the main folder) to test all files. Individual executables are created with the same name as the test files.
 
 # Generate Notebook
+The code for latex generation is based on [this repository](https://github.com/jasison27/ACM-ICPC-CodeTemplate-Latex).  
 Run `make` on the `latex` folder (or on the main folder) to generate `latex/notebook.pdf`.
