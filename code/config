@@ -4,4 +4,5 @@
 <Splay Tree> <splay.cpp>
 <Treap> <treap.cpp>
 <FFT> <math/fft.cpp>
-
+<Centroid> <centroid.cpp>
+<Envelope> <envelope.cpp>
