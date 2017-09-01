@@ -6,3 +6,4 @@
 <FFT> <math/fft.cpp>
 <Centroid> <centroid.cpp>
 <Envelope> <envelope.cpp>
+<Ordered Set> <orderedset.cpp>
