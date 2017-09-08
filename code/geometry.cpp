@@ -13,6 +13,7 @@ typedef pair<ll,ll> pii;
 
 // typedef ll cood;
 // cood eps = 0;
+// tests for double were made with eps = 1e-8
 
 const double pi = acos(-1.);
 
@@ -46,32 +47,30 @@ struct vec { // vector
 	int sd (vec a, vec b) // which side is this from ab? (-1 left, 0 over, 1 right)
 	{ cood o = ar(a, b); return (o < -eps) - (eps < o); }
 
+	cood pr (vec a, vec b)
+	{ return (a-(*this)) * (b-(*this)); }
+	int dr (vec a, vec b)
+	{ cood o = pr(a, b); return (o < -eps) - (eps < o); }
+
 	// === ADVANCED ===
 	// rotate ccw by a (fails with ll)
 	vec rotate (double a)
 	{ return vec(cos(a) * x - sin(a) * y, sin(a) * x + cos(a) * y); }
 
-	// divide the plane relative to anc
-	// 0 if the ccw angle from anc to this is in [0,pi) and 1 otherwise, origin goes to 0
-	bool halfplane (vec anc = vec(1,0)) {
-		int l = sd(vec(), anc);
-		if (l == 0)
-			return (x < -eps);
-		return (l == 1);
-	}
+	// on which half plane is this point?
+	// 0 is upper half plane (y > 0) and (x,0) where x >= 0, 1 is otherwise
+	inline bool halfplane ()
+	{ return (y < eps || (abs(y) <= eps && x < eps)); }
 
-	// ordering (ccw angle from anc, distance to origin)
-	// is this < o?
-	// PRECISION : ok with double if norm in [-1e4,1e3]
-	bool compare (vec o, vec anc = vec(1,0)) {
-		bool s[2] = {halfplane(anc), o.halfplane(anc)};
-		if (s[0] != s[1])
-			return s[0] < s[1];
-
-		int l = sd(o, vec());
-		if (l == 0)
-			return sq() - o.sq() < -eps;
-		return (l == -1);
+	// full ordering (ccw angle from this+(1,0), distance to this)
+	// is a < b?
+	// PRECISION : ok with double if norm in [-1e9,5e3]
+	bool compare (vec a, vec b) {
+		if ((a-(*this)).halfplane() != (b-(*this)).halfplane())
+			return (b-(*this)).halfplane();
+		int o = sd(a,b);
+		if (o) return o < 0;
+		return a.dr((*this),b) > 0;
 	}
 
 	// is this inside segment st? (tip of segment included, change for < -eps otherwise)

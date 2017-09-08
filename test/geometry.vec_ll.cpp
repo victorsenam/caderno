@@ -43,27 +43,29 @@ TEST(VecLL, OrientedArea) {
 }
 
 TEST(VecLL, HalfPlane) {
-	EXPECT_TRUE(vec(-1,0).halfplane());
-	EXPECT_FALSE(vec(0,0).halfplane());
+	EXPECT_FALSE(vec(1,1).halfplane());
 	EXPECT_FALSE(vec(1,0).halfplane());
-	EXPECT_TRUE(vec(-7274,0).halfplane());
-	EXPECT_TRUE(vec(32,-42).halfplane());
-	EXPECT_TRUE(vec(-41, -231).halfplane());
-	EXPECT_FALSE(vec(-232, 182).halfplane());
-	EXPECT_FALSE(vec(415, 3214).halfplane());
-	EXPECT_TRUE(vec(11,-11).halfplane());
+	EXPECT_FALSE(vec(0,0).halfplane());
+	EXPECT_FALSE(vec(0,1).halfplane());
+	EXPECT_FALSE(vec(-1,1).halfplane());
+	EXPECT_FALSE(vec(-1000,1).halfplane());
+	EXPECT_FALSE(vec(-1,100).halfplane());
 
-	EXPECT_FALSE(vec(50, 50).halfplane(vec(100,100)));
-	EXPECT_TRUE(vec(-50, -50).halfplane(vec(100,100)));
-	EXPECT_FALSE(vec().halfplane(vec(100,100)));
-	EXPECT_TRUE(vec(10,0).halfplane(vec(100,100)));
+	EXPECT_TRUE(vec(-1,0).halfplane());
+	EXPECT_TRUE(vec(-1000,0).halfplane());
+	EXPECT_TRUE(vec(1,-1).halfplane());
+	EXPECT_TRUE(vec(10000,-1).halfplane());
+	EXPECT_TRUE(vec(-10,-1).halfplane());
+	EXPECT_TRUE(vec(0,-1).halfplane());
+	EXPECT_TRUE(vec(0,-100).halfplane());
 }
 
 TEST(VecLL, Compare) {
-	EXPECT_TRUE(vec(1,0).compare(vec(0,1)));
-	EXPECT_TRUE(vec(1,0).compare(vec(2,0)));
-	EXPECT_FALSE(vec(-1,0).compare(vec(1,0)));
-	EXPECT_FALSE(vec(11,-11).compare(vec(-1,0)));
+	EXPECT_FALSE(vec(0,0).compare(vec(-1,0),vec(1,0))) << "Works ok from origin.";
+	EXPECT_FALSE(vec(0,0).compare(vec(11,-11),vec(-1,0))) << "Works ok for lower half.";
+	EXPECT_TRUE(vec(0,0).compare(vec(1,0),vec(0,1))) << "Compares first by halfplane.";
+	EXPECT_TRUE(vec(0,0).compare(vec(1,0),vec(2,0))) << "Unties with distance.";
+	EXPECT_TRUE(vec(2,1).compare(vec(1,1),vec(1,0))) << "Works ok from some other point.";
 
 	vector<vec> ans({
 		vec(3,0), vec(10,0),
@@ -78,9 +80,9 @@ TEST(VecLL, Compare) {
 	vector<vec> res = ans;
 	srand(42); rand(); rand();
 	random_shuffle(res.begin(), res.end());
-	sort(res.begin(), res.end(), [] (vec a, vec b) { return a.compare(b); });
+	sort(res.begin(), res.end(), [] (vec a, vec b) { return vec(0,0).compare(a,b); });
 
-	EXPECT_EQ(res, ans);
+	EXPECT_EQ(res, ans) << "Sorts a vector correctly";
 }
 
 TEST(VecLL, InSeg) {
