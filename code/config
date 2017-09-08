@@ -7,3 +7,5 @@
 <Centroid> <centroid.cpp>
 <Envelope> <envelope.cpp>
 <Ordered Set> <orderedset.cpp>
+<Miller-Rabin> <millerrabin.cpp>
+<Suffix Tree> <sufftree.cpp>
