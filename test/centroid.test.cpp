@@ -19,6 +19,18 @@ pair<bool,pii> isBalanced (vector<int> adj[], int u, int p) {
 	return pair<bool,pii>((cur.first >= cur.second),cur);
 }
 
+bool areDistancesCorrect (vector<int> adj[], int u, int p, int f, int dist) {
+	if (cn_dist[cn_dep[f]][u] != dist)
+		return 0;
+	for (int v : adj[u]) {
+		if (p == v || cn_dep[v] < cn_dep[f])
+			continue;
+		if (!areDistancesCorrect(adj, v, u, f, dist+1))
+			return 0;
+	}
+	return 1;
+}
+
 void setUp (int sz) {
 	n = sz;
 	for (int i = 0; i < n; i++) {
@@ -37,12 +49,16 @@ TEST(CentroidSimple, Path) {
 		adj[i+1].pb(i);
 	}
 
-	int u = cn_build(0);
+	int u = cn_build(0,0);
 	EXPECT_TRUE(isBalanced(cn_adj,u,u).first);
+	for (int i = 0; i < n; i++)
+		EXPECT_TRUE(areDistancesCorrect(adj,i,i,i,0)) << "Centroid calculates distances to antecessors of node " << i << " correctly";
 
 	setUp(n);
-	u = cn_build(n/2);
+	u = cn_build(n/2,0);
 	EXPECT_TRUE(isBalanced(cn_adj,u,u).first);
+	for (int i = 0; i < n; i++)
+		EXPECT_TRUE(areDistancesCorrect(adj,i,i,i,0)) << "Centroid calculates distances to antecessors of node " << i << " correctly";
 }
 
 TEST(CentroidSimple, Star) {
@@ -55,12 +71,16 @@ TEST(CentroidSimple, Star) {
 		adj[0].pb(i);
 	}
 
-	int u = cn_build(0);
+	int u = cn_build(0,0);
 	EXPECT_TRUE(isBalanced(cn_adj,u,u).first);
+	for (int i = 0; i < n; i++)
+		EXPECT_TRUE(areDistancesCorrect(adj,i,i,i,0)) << "Centroid calculates distances to antecessors of node " << i << " correctly";
 
 	setUp(n);
-	u = cn_build(n/2);
+	u = cn_build(n/2,0);
 	EXPECT_TRUE(isBalanced(cn_adj,u,u).first);
+	for (int i = 0; i < n; i++)
+		EXPECT_TRUE(areDistancesCorrect(adj,i,i,i,0)) << "Centroid calculates distances to antecessors of node " << i << " correctly";
 }
 
 TEST(CentroidLarge, Path) {
@@ -73,8 +93,33 @@ TEST(CentroidLarge, Path) {
 		adj[i-1].pb(i);
 	}
 
-	int u = cn_build(n-1);
+	int u = cn_build(n-1,0);
 	EXPECT_TRUE(isBalanced(cn_adj,u,u).first);
+	for (int i = 0; i < n; i++)
+		EXPECT_TRUE(areDistancesCorrect(adj,i,i,i,0)) << "Centroid calculates distances to antecessors of node " << i << " correctly";
+}
+
+TEST(CentroidMedium, Random) {
+	srand(42); rand(); rand();
+
+	int ts = 5;
+
+	while (ts--) {
+		setUp(1000);
+
+		for (int i = 0; i < n; i++)
+			adj[i].clear();
+		for (int i = 1; i < n; i++) {
+			int j = rand()%i;
+			adj[i].pb(j);
+			adj[j].pb(i);
+		}
+
+		int u = cn_build(rand()%n,0);
+		EXPECT_TRUE(isBalanced(cn_adj,u,u).first);
+		for (int i = 0; i < n; i++)
+			EXPECT_TRUE(areDistancesCorrect(adj,i,i,i,0)) << "Centroid calculates distances to antecessors of node " << i << " correctly";
+	}
 }
 
 TEST(CentroidLarge, Random) {
@@ -93,7 +138,9 @@ TEST(CentroidLarge, Random) {
 			adj[j].pb(i);
 		}
 
-		int u = cn_build(rand()%n);
+		int u = cn_build(rand()%n,0);
 		EXPECT_TRUE(isBalanced(cn_adj,u,u).first);
+		for (int i = 0; i < n; i++)
+			EXPECT_TRUE(areDistancesCorrect(adj,i,i,i,0)) << "Centroid calculates distances to antecessors of node " << i << " correctly";
 	}
 }

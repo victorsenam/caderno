@@ -10,6 +10,8 @@ int n;
 vector<int> adj[N];
 
 int cn_sz[N];
+int cn_dep[N]; // depth on cent tree
+int cn_dist[20][N]; // distance to centroid antecessor with given depth
 vector<int> cn_adj[N];
 
 int cn_getsz (int u, int p) {
@@ -21,7 +23,15 @@ int cn_getsz (int u, int p) {
 	return cn_sz[u];
 }
 
-int cn_build (int u) {
+void cn_setdist (int u, int p, int depth, int dist) {
+	cn_dist[depth][u] = dist;
+	for (int v : adj[u]) {
+		if (p == v || cn_sz[v] == -1) continue;
+		cn_setdist(v, u, depth, dist+1);
+	}
+}
+
+int cn_build (int u, int depth) {
 	int siz = cn_getsz(u,u);
 	int w = u;
 	do {
@@ -33,10 +43,13 @@ int cn_build (int u) {
 		}
 	} while (u != w);
 
+	cn_setdist(u,u,depth,0);
 	cn_sz[u] = -1;
+	cn_dep[u] = depth;
+
 	for (int v : adj[u]) {
 		if (cn_sz[v] == -1) continue;
-		int w = cn_build(v);
+		int w = cn_build(v, depth+1);
 		cn_adj[u].pb(w);
 		cn_adj[w].pb(u);
 	}
