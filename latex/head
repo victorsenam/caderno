@@ -5,16 +5,16 @@
 \usepackage{verbatim}
 \usepackage{amssymb}
 \usepackage[inline]{enumitem}
+\usepackage{pxfonts}
 
-\usepackage[a4paper,top=1cm,bottom=1.5cm,left=1cm,right=1cm]{geometry}
+\usepackage[a4paper,top=1cm,bottom=2.5cm,left=1.5cm,right=1.5cm]{geometry}
 
 \usepackage{titlesec}
 \titlespacing*{\section}
 {0pt}{2ex}{1ex}
 
-\definecolor{dkgreen}{rgb}{0,0.6,0}
-\definecolor{gray}{rgb}{0.5,0.5,0.5}
-\definecolor{mauve}{rgb}{0.58,0,0.82}
+\definecolor{dkgray}{rgb}{0.4,0.4,0.4}
+\definecolor{gray}{rgb}{0.6,0.6,0.6}
 
 \lstset{frame=tb,
   language=c++,
@@ -24,15 +24,14 @@
   columns=flexible,
   basicstyle={\small\ttfamily},
   numbers=left,
-  keywordstyle=\color{blue},
-  commentstyle=\color{dkgreen},
-  stringstyle=\color{mauve},
+  keywordstyle=\bfseries,
+  commentstyle=\color{gray},
   morekeywords={num, cood},
   breaklines=true,
   breakatwhitespace=true,
   tabsize=4,
   showtabs=true,
-  tab={\color{gray}{\tiny $\vartriangleright$}\hfill}
+  tab={\color{dkgray}{\tiny $\vartriangleright$}\hfill}
 }
 
 \begin{document}
