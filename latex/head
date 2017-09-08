@@ -4,6 +4,7 @@
 \usepackage{color}
 \usepackage{verbatim}
 \usepackage{amssymb}
+\usepackage[inline]{enumitem}
 
 \usepackage[a4paper,top=1cm,bottom=1.5cm,left=1cm,right=1cm]{geometry}
 
@@ -36,14 +37,21 @@
 
 \begin{document}
 
+\begin{enumerate*}
+ \item workspaces/teclado 
+ \item .vimrc and .bashrc
+ \item temp.cpp
+\end{enumerate*}
+
 \begin{lstlisting}
 syntax on
 colo evening
-set ai si noet ts=4 sw=4 sta sm nu rnu t_Co=8
+set ai si noet ts=4 sw=4 sta sm nu rnu so=7 t_Co=8
 imap {<CR> {<CR>}<Esc>O
 \end{lstlisting}
 
 \begin{lstlisting}
 alias g="g++ -std=c++11 -g -fdiagnostics-color"
+function submit { boca-submit-run user pass `basename $1 .cpp` C++11 $1 }
 \end{lstlisting}
 
