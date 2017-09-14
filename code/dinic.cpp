@@ -31,7 +31,7 @@ struct dinic {
 	}
 
 	bool bfs () {
-		tr += 2;
+		tr++;
 		qi = qf = 0;
 
 		qu[qf++] = snk;
@@ -40,16 +40,9 @@ struct dinic {
 		while (qi < qf) {
 			int u = qu[qi++];
 
-			if (sn[u] > tr)
-				continue;
-			sn[u] = tr+1;
-
 			for (int ed = hd[u]; ed; ed = nx[ed]) {
-				if (cp[ed^1] - fl[ed^1] <= eps)
-					continue;
 				int v = to[ed];
-
-				if (sn[v] >= tr && ds[v] <= ds[u] + 1)
+				if (cp[ed^1] - fl[ed^1] <= eps || sn[v] == tr)
 					continue;
 				sn[v] = tr;
 				ds[v] = ds[u] + 1;
@@ -57,7 +50,7 @@ struct dinic {
 			}
 		}
 
-		return (sn[src] > tr);
+		return (sn[src] == tr);
 	}
 
 	num dfs (int u, num flw) {
@@ -66,7 +59,7 @@ struct dinic {
 
 		for (int & ed = ht[u]; ed; ed = nx[ed]) {
 			int v = to[ed];
-			if (cp[ed] - fl[ed] <= eps || sn[v] < tr || ds[v] + 1 != ds[u])
+			if (cp[ed] - fl[ed] <= eps || sn[v] != tr || ds[v] + 1 != ds[u])
 				continue;
 			num ret = dfs(v, min(flw, cp[ed] - fl[ed]));
 			if (ret > eps) {
