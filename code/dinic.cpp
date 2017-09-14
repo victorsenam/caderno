@@ -16,7 +16,7 @@ struct dinic {
 	// O(MN^2)
 	// BipMatch: O(MN^(1/2))
 	// UnitCap: O(min{MV^(2/3),M^(3/2)}
-	int hd[N], nx[M], to[M], ht[M], es;
+	int hd[N], nx[M], to[M], ht[N], es;
 	num fl[M], cp[M];
 	int n, src, snk;
 	int ds[N], sn[N], tr;
