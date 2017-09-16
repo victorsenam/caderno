@@ -107,7 +107,6 @@ bool seg_inter (vec a, vec b, vec c, vec d) {
 	return (c.sd(a, b) * d.sd(a, b) == -1 && a.sd(c, d) * b.sd(c, d) == -1);
 }
 
-// tests TODO
 // brd = do points on the border belong to convex?
 // computes convex hull of given vector (inplace)
 // returns size of convex hull
