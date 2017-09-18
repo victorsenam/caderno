@@ -76,6 +76,64 @@ struct vec { // vector
 	// is this inside segment st? (tip of segment included, change for < -eps otherwise)
 	bool in_seg (vec s, vec t)
 	{ return (sd(s, t) == 0) && !(eps < ((*this) - s) * ((*this) - t)); }
+
+	// which range of points does this point remove from a convex polygon
+	// answer as an open range, it removes ]first..second[
+	// considers points in border as not in polygon
+	// p should be a vector with [0..n-1]
+	pii convex_cover (vec v[], int n, const vector<int> & p) {
+		if (nr(v[0]) <= eps)
+			return pii(n-1,1);
+		// i'm taking advantage of lower_bound
+		// it returns the first position where compare is false
+
+		// does this point remove 0?
+		// be careful adapting this condition for points in border considered in polygon
+		if (sd(v[0],v[1]) < 0 || sd(v[n-1],v[0]) < 0) {
+			// first diagonal to the left of this
+			int di = lower_bound(p.begin()+1, p.end(), -1, [this,v] (int i, int j) {
+				assert(j == -1);
+				return sd(v[0],v[i]) <= 0;
+			}) - p.begin();
+			// we know di is removed
+
+			// last vertex not removed before di
+			int lo = lower_bound(p.begin()+1, p.begin()+di, -1, [this,v] (int i, int j) {
+				assert(j == -1);
+				return sd(v[i-1],v[i]) < 0;
+			}) - p.begin() - 1;
+
+			// first vertex not removed after di
+			int hi = lower_bound(p.begin()+di, p.end(), -1, [this,v,n] (int i, int j) {
+				assert(j == -1);
+				return sd(v[(i+1)%n],v[i]) <= 0;
+			}) - p.begin();
+
+			return pii(lo%n,hi%n);
+		// now 0 is removed
+		} else {
+			// last diagonal to the left (or over) this
+			int di = lower_bound(p.begin()+1, p.end(), -1, [this,v] (int i, int j) {
+				assert(j == -1);
+				return sd(v[0],v[i]) >= 0;
+			}) - p.begin() - 1;
+			// we know di is not removed
+
+			// first vertex not removed before di
+			int lo = lower_bound(p.begin(), p.begin()+di, -1, [this,v] (int i, int j) {
+				assert(j == -1);
+				return sd(v[i+1],v[i]) <= 0;
+			}) - p.begin();
+
+			// last vertex not removed after di
+			int hi = lower_bound(p.begin()+di+1, p.end(), -1, [this,v] (int i, int j) {
+				assert(j == -1);
+				return sd(v[i-1],v[i]) < 0;
+			}) - p.begin() - 1;
+
+			return pii(hi%n,lo%n);
+		}
+	}
 };
 ostream& operator<<(ostream& os, vec o)
 { return os << '(' << o.x << ", " << o.y << ')'; }
