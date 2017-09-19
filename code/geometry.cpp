@@ -190,6 +190,7 @@ int graham (vec v[], int n, int brd) {
 
 	int s = 0;
 	for (int i = 0; i < n; i++) {
+		if (s && v[s-1].x == v[i].x && v[s-1].y == v[i].y) continue;
 		while (s >= 2 && v[s-1].sd(v[s-2],v[i]) <= -brd)
 			s--;
 		v[s++] = v[i];
