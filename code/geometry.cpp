@@ -47,10 +47,10 @@ struct vec { // vector
 	int sd (vec a, vec b) // which side is this from ab? (-1 left, 0 over, 1 right)
 	{ cood o = ar(a, b); return (o < -eps) - (eps < o); }
 
-	cood pr (vec a, vec b)
+	cood pr (vec a, vec b) // norm of projection of (this)a over (this)b times norm of (this)b
 	{ return (a-(*this)) * (b-(*this)); }
-	int dr (vec a, vec b)
-	{ cood o = pr(a, b); return (o < -eps) - (eps < o); }
+	int dr (vec a, vec b) // direction of (thia)a relative to (this)b (-1 opposite, 0 none, 1 same)
+	{ cood o = pr(a, b); return (eps < o) - (o < -eps); }
 
 	// === ADVANCED ===
 	// rotate ccw by a (fails with ll)
@@ -70,7 +70,7 @@ struct vec { // vector
 			return (b-(*this)).halfplane();
 		int o = sd(a,b);
 		if (o) return o < 0;
-		return a.dr((*this),b) > 0;
+		return a.dr((*this),b) < 0;
 	}
 
 	// is this inside segment st? (tip of segment included, change for < -eps otherwise)

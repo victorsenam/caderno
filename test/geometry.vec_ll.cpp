@@ -60,6 +60,20 @@ TEST(VecLL, HalfPlane) {
 	EXPECT_TRUE(vec(0,-100).halfplane());
 }
 
+TEST(VecLL, Projection) {
+	EXPECT_EQ(vec(0,0).pr(vec(1,1), vec(1,0)), 1);
+	EXPECT_EQ(vec(0,0).pr(vec(1,1), vec(-1,0)), -1);
+	EXPECT_EQ(vec(3,0).pr(vec(4,0), vec(3,1)), 0);
+}
+
+TEST(VecLL, Direction) {
+	EXPECT_EQ(vec(5,5).dr(vec(4,5), vec(6,5)), -1);
+	EXPECT_EQ(vec(5,5).dr(vec(6,6), vec(7,7)), 1);
+	EXPECT_EQ(vec(5,5).dr(vec(4,4), vec(3,3)), 1);
+	EXPECT_EQ(vec(7,6).dr(vec(8,6), vec(5,6)), -1);
+	EXPECT_EQ(vec(5,4).dr(vec(6,4), vec(5,5)), 0);
+}
+
 TEST(VecLL, Compare) {
 	EXPECT_FALSE(vec(0,0).compare(vec(-1,0),vec(1,0))) << "Works ok from origin.";
 	EXPECT_FALSE(vec(0,0).compare(vec(11,-11),vec(-1,0))) << "Works ok for lower half.";
