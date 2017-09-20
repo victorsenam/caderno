@@ -157,7 +157,29 @@ TEST(VecLL, InSegGeneratedTests) {
 	EXPECT_TRUE(vec(71505148, 59430354).in_seg(vec(-13132301, -58339227), vec(127930114, 137943408)));
 }
 
-TEST(VecLL, PolygonPosition) {
+::testing::AssertionResult in_conv_poly (vec v[], int n, vector<int> & p, vec x, int a) {
+	int prec, succ;
+	if (x.in_conv_poly(v, n, p, prec, succ)) {
+		if (prec != a)
+			return ::testing::AssertionFailure() << x << " is after " << prec << " instead of " << a;
+		return ::testing::AssertionSuccess();
+	} else {
+		return ::testing::AssertionFailure() << x << " is outside covering ]" << prec << ".." << succ << "[";
+	}
+}
+
+::testing::AssertionResult in_conv_poly (vec v[], int n, vector<int> & p, vec x, int a, int b) {
+	int prec, succ;
+	if (!x.in_conv_poly(v, n, p, prec, succ)) {
+		if (prec != a || succ != b)
+			return ::testing::AssertionFailure() << x << " covers ]" << prec << ".." << succ << "[ instead of ]" << a << ".." << b << "[";
+		return ::testing::AssertionSuccess();
+	} else {
+		return ::testing::AssertionFailure() << x << " is inside after " << prec;
+	}
+}
+
+TEST(in_conv_poly, Polygon) {
 	vec v[] = { vec(0,0), vec(1,-2), vec(2,-3), vec(3,-3), vec(3,0), vec(2,1), vec(1,1) };
 	int n = 7;
 
@@ -165,35 +187,38 @@ TEST(VecLL, PolygonPosition) {
 	for (int i = 0; i < n; i++)
 		p[i] = i;
 
-	EXPECT_EQ(vec(4,-2).convex_cover(v,n,p), pii(3,4)) << "Should work ok with no remotions";
-	EXPECT_EQ(vec(4,0).convex_cover(v,n,p), pii(3,5)) << "Should work ok with remotions";
-	EXPECT_EQ(vec(4,2).convex_cover(v,n,p), pii(3,6)) << "Should work ok with remotions";
+	EXPECT_TRUE(in_conv_poly(v, n, p, vec(4,-2), 3, 4)) << "Outside point with no remotions";
+	EXPECT_TRUE(in_conv_poly(v, n, p, vec(6,-2), 3, 5)) << "Point removing forwards";
+	EXPECT_TRUE(in_conv_poly(v, n, p, vec(4,-4), 2, 4)) << "Point removing backwards";
+	EXPECT_TRUE(in_conv_poly(v, n, p, vec(4,0), 3, 5)) << "Point removing over";
 
-	EXPECT_EQ(vec(4,-1).convex_cover(v,n,p), pii(3,5)) << "Border points should be removed";
-	EXPECT_EQ(vec(3,1).convex_cover(v,n,p), pii(3,6)) << "Border points should be removed";
+	EXPECT_TRUE(in_conv_poly(v, n, p, vec(4,-1), 3, 5)) << "Removing a border point";
+	EXPECT_TRUE(in_conv_poly(v, n, p, vec(3,1), 3, 6)) << "Removing two border points";
 
 	for (int i = 0; i < n; i++)
-		EXPECT_EQ(v[i].convex_cover(v,n,p), pii((i+n-1)%n,(i+1)%n)) << "Polygon vertex should return as expected";
+		EXPECT_TRUE(in_conv_poly(v, n, p, v[i], i)) << "Polygon vertexes should not be removed";
 	
-	EXPECT_EQ(vec(1,0).convex_cover(v,n,p), pii(4,5)) << "Should work ok with point inside polygon";
-	EXPECT_EQ(vec(2,-1).convex_cover(v,n,p), pii(3,4)) << "Should work ok with point inside polygon";
+	EXPECT_TRUE(in_conv_poly(v, n, p, vec(1,0), 4)) << "Point inside polygon";
+	EXPECT_TRUE(in_conv_poly(v, n, p, vec(2,-1), 3)) << "Point inside polygon";
 
-	EXPECT_EQ(vec(0,-1).convex_cover(v,n,p), pii(0,2)) << "Should work ok with point not in the direction of polygon";
-	EXPECT_EQ(vec(1,-3).convex_cover(v,n,p), pii(0,3)) << "Should work ok when point is to the right of v[0]v[1]";
-	EXPECT_EQ(vec(-1,0).convex_cover(v,n,p), pii(6,2)) << "Should work ok when point is to the left of the whole polygon";
-	EXPECT_EQ(vec(1,3).convex_cover(v,n,p), pii(4,0)) << "Should work ok when point is to the left of v[0]v[n-1]";
+	EXPECT_TRUE(in_conv_poly(v, n, p, vec(0,-1), 0, 2)) << "Point to the right of polygon";
+	EXPECT_TRUE(in_conv_poly(v, n, p, vec(1,-3), 0, 3)) << "Point to the right of polygon";
+	EXPECT_TRUE(in_conv_poly(v, n, p, vec(1,3), 4, 0)) << "Point to the left of polygon";
 
-	EXPECT_EQ(vec(-3,-1).convex_cover(v,n,p), pii(6,2)) << "Should work with point in opossite cone from v[n-1]v[0]v[1]";
+	EXPECT_TRUE(in_conv_poly(v, n, p, vec(-1,0), 6, 2)) << "Point covers v[0]";
+	EXPECT_TRUE(in_conv_poly(v, n, p, vec(-3,-1), 6, 2)) << "Point covers v[0]";
+	EXPECT_TRUE(in_conv_poly(v, n, p, vec(-1,-1), 6, 2)) << "Point covers v[0] and some from the ending";
+	EXPECT_TRUE(in_conv_poly(v, n, p, vec(-3,-3), 6, 3)) << "Point covers v[0] collinearly and some from the beginning collinearly";
+	EXPECT_TRUE(in_conv_poly(v, n, p, vec(-1,2), 5, 1)) << "Point covers v[0] collinearly and some from the ending";
+	EXPECT_TRUE(in_conv_poly(v, n, p, vec(-3,6), 4, 1)) << "Point covers v[0] collinearly and many from the ending";
 
-	EXPECT_EQ(vec(-1,1).convex_cover(v,n,p), pii(5,1)) << "Should work removing v[0] and a collinear point";
-
-	EXPECT_EQ(vec(-1,2).convex_cover(v,n,p), pii(5,1)) << "Should work with point that leaves v[0] on the border";
-	EXPECT_EQ(vec(-1,-1).convex_cover(v,n,p), pii(6,2)) << "Should work with point that leaves v[0] on the border";
+	// collinear to v[1]
+	// collinear to v[n-1]
 }
 
-TEST(VecLL, PolygonPosition_Triangle) {
+TEST(in_conv_poly, Triangle) {
 	vec v[6];
-	v[0] = vec(1,1); v[1] = vec(2,1); v[2] = vec(1,2);
+	v[0] = vec(2,2); v[1] = vec(4,2); v[2] = vec(2,4);
 	int n = 3;
 
 	vector<int> p(n);
@@ -201,23 +226,53 @@ TEST(VecLL, PolygonPosition_Triangle) {
 		v[i+n] = v[i];
 		p[i] = i;
 	}
-	
-	EXPECT_EQ(vec(1,1).convex_cover(v,n,p), pii(2,1)) << "Over polygon vertex";
-	EXPECT_EQ(vec(2,1).convex_cover(v,n,p), pii(0,2)) << "Over polygon vertex";
-	EXPECT_EQ(vec(1,2).convex_cover(v,n,p), pii(1,0)) << "Over polygon vertex";
+	EXPECT_TRUE(in_conv_poly(v, n, p, vec(2,2), 0)) << "Over polygon vertex";
+	EXPECT_TRUE(in_conv_poly(v, n, p, vec(4,2), 1)) << "Over polygon vertex";
+	EXPECT_TRUE(in_conv_poly(v, n, p, vec(2,4), 2)) << "Over polygon vertex";
 
-	EXPECT_EQ(vec(0,0).convex_cover(v,n,p), pii(2,1)) << "Covering vertex directly";
-	EXPECT_EQ(vec(4,0).convex_cover(v,n,p), pii(0,2)) << "Covering vertex directly";
-	EXPECT_EQ(vec(0,4).convex_cover(v,n,p), pii(1,0)) << "Covering vertex directly";
+	EXPECT_TRUE(in_conv_poly(v, n, p, vec(4,4), 1, 2)) << "No remotions";
+	EXPECT_TRUE(in_conv_poly(v, n, p, vec(4,0), 0, 1)) << "No remotions";
+	EXPECT_TRUE(in_conv_poly(v, n, p, vec(0,4), 2, 0)) << "No remotions";
 
-	EXPECT_EQ(vec(2,2).convex_cover(v,n,p), pii(1,2)) << "Added to polygon";
-	EXPECT_EQ(vec(2,0).convex_cover(v,n,p), pii(0,1)) << "Added to polygon";
-	EXPECT_EQ(vec(0,2).convex_cover(v,n,p), pii(2,0)) << "Added to polygon";
+	EXPECT_TRUE(in_conv_poly(v, n, p, vec(8,0), 0, 2)) << "Removing";
+	EXPECT_TRUE(in_conv_poly(v, n, p, vec(0,8), 1, 0)) << "Removing";
 
-	EXPECT_EQ(vec(1,0).convex_cover(v,n,p), pii(2,1)) << "Collinear to removed point";
-	EXPECT_EQ(vec(0,1).convex_cover(v,n,p), pii(2,1)) << "Collinear to removed point";
+	EXPECT_TRUE(in_conv_poly(v, n, p, vec(0,0), 2, 1)) << "Removing v[0]";
+	EXPECT_TRUE(in_conv_poly(v, n, p, vec(0,2), 2, 1)) << "Removing v[0]";
+	EXPECT_TRUE(in_conv_poly(v, n, p, vec(0,1), 2, 1)) << "Removing v[0]";
 
-	EXPECT_EQ(vec(2,2).convex_cover(v+1,n,p), pii(0,1)) << "Shifted beginning";
-	EXPECT_EQ(vec(3,0).convex_cover(v+1,n,p), pii(2,1)) << "Shifted beginning";
-	EXPECT_EQ(vec(3,1).convex_cover(v+1,n,p), pii(2,1)) << "Shifted beginning";
+	EXPECT_TRUE(in_conv_poly(v, n, p, vec(2,0), 2, 1)) << "Collinear to removed point v[0]";
+	EXPECT_TRUE(in_conv_poly(v, n, p, vec(0,2), 2, 1)) << "Collinear to removed point v[0]";
+	EXPECT_TRUE(in_conv_poly(v, n, p, vec(6,0), 0, 2)) << "Collinear to removed point v[1]";
+	EXPECT_TRUE(in_conv_poly(v, n, p, vec(6,2), 0, 2)) << "Collinear to removed point v[1]";
+	EXPECT_TRUE(in_conv_poly(v, n, p, vec(0,6), 1, 0)) << "Collinear to removed point v[2]";
+	EXPECT_TRUE(in_conv_poly(v, n, p, vec(2,6), 1, 0)) << "Collinear to removed point v[2]";
+
+	EXPECT_TRUE(in_conv_poly(v, n, p, vec(3,2), 1)) << "In polygon segment";
+	EXPECT_TRUE(in_conv_poly(v, n, p, vec(3,3), 1)) << "In polygon segment";
+	EXPECT_TRUE(in_conv_poly(v, n, p, vec(2,3), 2)) << "In polygon segment";
+
+	EXPECT_TRUE(in_conv_poly(v+1, n, p, vec(4,4), 0, 1)) << "Shifted beginning";
+	EXPECT_TRUE(in_conv_poly(v+1, n, p, vec(6,0), 2, 1)) << "Shifted beginning";
+	EXPECT_TRUE(in_conv_poly(v+1, n, p, vec(6,2), 2, 1)) << "Shifted beginning";
+
+	EXPECT_TRUE(in_conv_poly(v+2, n, p, vec(4,4), 2, 0)) << "Shifted beginning";
+	EXPECT_TRUE(in_conv_poly(v+2, n, p, vec(6,0), 1, 0)) << "Shifted beginning";
+	EXPECT_TRUE(in_conv_poly(v+2, n, p, vec(6,2), 1, 0)) << "Shifted beginning";
+}
+
+TEST(in_conv_poly, Segment) {
+	vec v[2] = { vec(-10,-10), vec(10,10) };
+	int n = 2;
+
+	vector<int> p(n);
+	for (int i = 0; i < n; i++)
+		p[i] = i;
+
+	EXPECT_TRUE(in_conv_poly(v, n, p, vec(0,0), 1)) << "Inside segment";
+	EXPECT_TRUE(in_conv_poly(v, n, p, vec(20,20), 0, 0)) << "Should work when point covers last tip";
+	EXPECT_TRUE(in_conv_poly(v, n, p, vec(-20,-20), 1, 1)) << "Should work when point covers first tip";
+
+	EXPECT_TRUE(in_conv_poly(v, n, p, vec(-10,10), 1, 0)) << "Should work when point forms a triangle";
+	EXPECT_TRUE(in_conv_poly(v, n, p, vec(10,-10), 0, 1)) << "Should work when point forms a triangle";
 }

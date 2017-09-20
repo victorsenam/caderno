@@ -77,62 +77,87 @@ struct vec { // vector
 	bool in_seg (vec s, vec t)
 	{ return (sd(s, t) == 0) && !(eps < ((*this) - s) * ((*this) - t)); }
 
-	// which range of points does this point remove from a convex polygon
-	// answer as an open range, it removes ]first..second[
-	// considers points in border as not in polygon
+	// is this inside (borders included) the convex polygon v of size n?
+	// if yes, prec is the vec that this on acw order from v[0] or 0 if there is no such
+	// if not, prec is the predecessor of this when added to poly and succ is the sucessor
 	// p should be a vector with [0..n-1]
-	pii convex_cover (vec v[], int n, const vector<int> & p) {
-		if (nr(v[0]) <= eps)
-			return pii(n-1,1);
-		// i'm taking advantage of lower_bound
-		// it returns the first position where compare is false
+	// n should be >= 2
+	bool in_conv_poly (vec v[], int n, const vector<int> & p, int & prec, int & succ) {
+		if (nr(v[0]) <= eps) {
+			prec = 0;
+			return 1;
+		}
 
-		// does this point remove 0?
-		// be careful adapting this condition for points in border considered in polygon
-		if (sd(v[0],v[1]) < 0 || sd(v[n-1],v[0]) < 0) {
-			// first diagonal to the left of this
-			int di = lower_bound(p.begin()+1, p.end(), -1, [this,v] (int i, int j) {
+		if (n == 2) {
+			if (in_seg(v[0],v[1]))
+				return (prec = 1);
+
+			if (sd(v[0],v[1]) < 0) {
+				prec = 1;
+				succ = 0;
+			} else if (sd(v[0],v[1]) > 0) {
+				prec = 0;
+				succ = 1;
+			} else {
+				prec = succ = (v[0].dr((*this),v[1]) < 0);
+			}
+			return 0;
+		}
+		
+		if (sd(v[0],v[1]) < 0 || sd(v[0],v[n-1]) > 0) {
+		// case where v[0] is not removed
+			// last diagonal before or over this
+			int di = lower_bound(p.begin() + 1, p.end(), -1, [this,v] (int i, int j) {
 				assert(j == -1);
 				return sd(v[0],v[i]) <= 0;
-			}) - p.begin();
-			// we know di is removed
+			}) - p.begin() - 1;
 
-			// last vertex not removed before di
-			int lo = lower_bound(p.begin()+1, p.begin()+di, -1, [this,v] (int i, int j) {
+			// is this inside the polygon?
+			prec = di;
+			if (di == n-1) {
+			// last segment
+				if (sd(v[0],v[n-1]) == 0 && sd(v[n-2],v[n-1]) <= 0)
+					return 1;
+			} else {
+			// inside otherwise
+				if (sd(v[di],v[di+1]) <= 0)
+					return 1;
+			}
+
+			// last that stays before (or eq to) di
+			prec = lower_bound(p.begin() + 1, p.begin() + di + 1, -1, [this,v] (int i, int j) {
 				assert(j == -1);
 				return sd(v[i-1],v[i]) < 0;
 			}) - p.begin() - 1;
 
-			// first vertex not removed after di
-			int hi = lower_bound(p.begin()+di, p.end(), -1, [this,v,n] (int i, int j) {
+			// first that stays after di
+			succ = lower_bound(p.begin() + di + 1, p.end(), -1, [this,v,n] (int i, int j) {
 				assert(j == -1);
 				return sd(v[(i+1)%n],v[i]) <= 0;
 			}) - p.begin();
-
-			return pii(lo%n,hi%n);
-		// now 0 is removed
+			if (succ == n) succ = 0;
 		} else {
-			// last diagonal to the left (or over) this
-			int di = lower_bound(p.begin()+1, p.end(), -1, [this,v] (int i, int j) {
+		// case where v[0] is removed
+			// first diagonal before of over this
+			// di is certainly not removed
+			int di = lower_bound(p.begin() + 1, p.end() - 1, -1, [this,v] (int i, int j) {
 				assert(j == -1);
-				return sd(v[0],v[i]) >= 0;
-			}) - p.begin() - 1;
-			// we know di is not removed
+				return sd(v[0],v[i]) > 0;
+			}) - p.begin();
 
-			// first vertex not removed before di
-			int lo = lower_bound(p.begin(), p.begin()+di, -1, [this,v] (int i, int j) {
+			// first that stays (<= di)
+			succ = lower_bound(p.begin(), p.begin() + di, -1, [this,v] (int i, int j) {
 				assert(j == -1);
 				return sd(v[i+1],v[i]) <= 0;
 			}) - p.begin();
 
-			// last vertex not removed after di
-			int hi = lower_bound(p.begin()+di+1, p.end(), -1, [this,v] (int i, int j) {
+			// last that stays (>= di)
+			prec = lower_bound(p.begin() + di + 1, p.end(), -1, [this,v] (int i, int j) {
 				assert(j == -1);
 				return sd(v[i-1],v[i]) < 0;
 			}) - p.begin() - 1;
-
-			return pii(hi%n,lo%n);
 		}
+		return 0;
 	}
 };
 ostream& operator<<(ostream& os, vec o)
