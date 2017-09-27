@@ -9,3 +9,4 @@
 <Ordered Set> <orderedset.cpp>
 <Miller-Rabin> <millerrabin.cpp>
 <Suffix Tree> <sufftree.cpp>
+<MinCost MaxFlow> <mincost.cpp>
