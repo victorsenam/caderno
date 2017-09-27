@@ -52,16 +52,15 @@ struct vec { // vector
 	int dr (vec a, vec b) // direction of (thia)a relative to (this)b (-1 opposite, 0 none, 1 same)
 	{ cood o = pr(a, b); return (eps < o) - (o < -eps); }
 
-	// === ADVANCED ===
-	// rotate ccw by a (fails with ll)
-	vec rotate (double a)
+	vec rotate (double a) // rotate ccw by a (fails with ll)
 	{ return vec(cos(a) * x - sin(a) * y, sin(a) * x + cos(a) * y); }
+	vec flip () // rotate pi/2 ccw
+	{ return vec(-y, x); }
 
-	// on which half plane is this point?
-	// 0 is upper half plane (y > 0) and (x,0) where x >= 0, 1 is otherwise
-	inline bool halfplane ()
+	inline bool halfplane () // 0 is upper half plane (y > 0) and (x,0) where x >= 0, 1 is otherwise
 	{ return (y < eps || (abs(y) <= eps && x < eps)); }
 
+	// === ADVANCED ===
 	// full ordering (ccw angle from this+(1,0), distance to this)
 	// is a < b?
 	// PRECISION : ok with double if norm in [-1e9,5e3]
