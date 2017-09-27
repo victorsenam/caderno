@@ -1,6 +1,8 @@
 #include <bits/stdc++.h>
 #define debug if (1)
 
+// XXX without explanation marks untested functions
+
 using namespace std;
 typedef long long int ll;
 typedef pair<ll,ll> pii;
@@ -16,6 +18,11 @@ typedef pair<ll,ll> pii;
 // tests for double were made with eps = 1e-8
 
 const double pi = acos(-1.);
+
+inline ll sq (ll x)
+{ return x*x; }
+inline double sq (double x)
+{ return x*x; }
 
 struct vec { // vector
 	// === BASIC ===
@@ -75,6 +82,14 @@ struct vec { // vector
 	// is this inside segment st? (tip of segment included, change for dr < 0 otherwise)
 	bool in_seg (vec s, vec t)
 	{ return (sd(s,t) == 0) && (dr(s,t) <= 0); }
+
+	// squared distance from this to line defined by st
+	double dist_lin (vec s, vec t)
+	{ return double(sq((t-s).flip().sq(t-(*this)))) / (t-s).sq(); }
+
+	// squared distance from this to segment st
+	double dist_seg (vec s, vec t) 
+	{ return dr(s,t) < 0 ? dist_lin(s,t) : min(sq(s),sq(t)); }
 
 	// is this inside (borders included) the convex polygon v of size n?
 	// if yes, prec is the vec that this on acw order from v[0] or 0 if there is no such
@@ -162,7 +177,7 @@ struct vec { // vector
 ostream& operator<<(ostream& os, vec o)
 { return os << '(' << o.x << ", " << o.y << ')'; }
 
-// tests TODO
+// XXX
 struct lin { // line
 	cood a, b, c;
 
@@ -181,13 +196,16 @@ struct lin { // line
 	}
 };
 
-// tests TODO
-// returns any point on the intersection of ab and cd (including all tips)
+// do the segments ab and cd intersect? (borders included) XXX
 bool seg_inter (vec a, vec b, vec c, vec d) {
 	if (a.in_seg(c, d) || b.in_seg(c, d) || c.in_seg(a, b) || d.in_seg(a, b))
 		return true;
 	return (c.sd(a, b) * d.sd(a, b) == -1 && a.sd(c, d) * b.sd(c, d) == -1);
 }
+
+// squared distance from segments ab and cd XXX
+double seg_dist (vec a, vec b, vec c, vec d)
+{ return seg_inter(a,b,c,d) ? 0. : min({ a.dist_seg(c,d), b.dist_seg(c,d), c.dist_seg(a,b), d.dist_seg(a,b) }); }
 
 // brd = do points on the border belong to convex?
 // computes convex hull of given vector (inplace)
