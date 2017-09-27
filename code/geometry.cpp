@@ -73,9 +73,9 @@ struct vec { // vector
 		return a.dr((*this),b) < 0;
 	}
 
-	// is this inside segment st? (tip of segment included, change for < -eps otherwise)
+	// is this inside segment st? (tip of segment included, change for dr < 0 otherwise)
 	bool in_seg (vec s, vec t)
-	{ return (sd(s, t) == 0) && !(eps < ((*this) - s) * ((*this) - t)); }
+	{ return (sd(s,t) == 0) && (dr(s,t) <= 0); }
 
 	// is this inside (borders included) the convex polygon v of size n?
 	// if yes, prec is the vec that this on acw order from v[0] or 0 if there is no such
