@@ -85,7 +85,7 @@ struct vec { // vector
 
 	// squared distance from this to line defined by st
 	double dist_lin (vec s, vec t)
-	{ return double(sq((t-s).flip().sq(t-(*this)))) / (t-s).sq(); }
+	{ return double(::sq((t-s).flip().sq(t-(*this)))) / (t-s).sq(); }
 
 	// squared distance from this to segment st
 	double dist_seg (vec s, vec t) 
@@ -185,14 +185,37 @@ struct lin { // line
 	lin (cood x, cood y, cood z) : a(x), b(y), c(z) {}
 	lin (vec s, vec t) : a(t.y - s.y), b(s.x - t.x), c(a * s.x + b * s.y) {}
 
-	// parallel to this through p
-	lin parll (vec p) { return lin(a, b, a * p.x + b * p.y); }
+	lin parll (vec p) // parallel to this through p
+	{ return lin(a, b, a * p.x + b * p.y); }
 
-	// line intersection
 	vec inter (lin o) {
 		cood d = a * o.b - o.a * b;
 		if (d < eps && -eps < d) throw 0; // parallel
 		return vec((o.b * c - b * o.c) / d, (a * o.c - o.a * c) / d);
+	}
+};
+
+// XXX
+struct cir { // circle
+	vec v; cood r;
+
+	bool conta (vec w) // is w in this? (borders included)
+	{ return v.sq(w) <= sq(r) + eps; }
+
+	bool inter (cir c) // do this intersect with c? (borders included)
+	{ return v.sq(c.v) <= sq(r + c.r) + eps; }
+
+	bool insid (cir c) // is this inside c? (borders can touch)
+	{ return (r <= c.r + eps && v.sq(c.v) <= sq(r - c.r) + eps); }
+
+	// watch out for fully contained case
+	vec inter (cir c, bool q) { // get q-th intersection this border with c border (assumes 1 or 2 pts)
+		cood d = v.nr(c.v);
+		double a = (r*r + d*d - c.r*c.r)/(2.*d); // r*cos(ans,v,c.v)
+		double h = sqrt(r*r - a*a);
+		if (h != h) h = 0;
+		vec p = c.v - v;
+		return v + p*(a/d) + (p.flip()*(h/d))*(q - !q);
 	}
 };
 
