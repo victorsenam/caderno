@@ -108,7 +108,7 @@ TEST(geometry_vec, in_seg) {
 	EXPECT_FALSE(vec(0, 0).in_seg(vec(-1e8, -1e8), vec(1.2e8, int(1.2e8) + 1)));
 }
 
-TEST(geometry_vec, in_seg) {
+TEST(geometry_vec, in_seg_Generated) {
 	// Very close to the segments.
 	EXPECT_FALSE(vec(4, 3).in_seg(vec(100000006, 100000003), vec(-99999996, -99999995)));
 	EXPECT_FALSE(vec(-1, 4).in_seg(vec(-100000000, -99999998), vec(100000000, 100000008)));
