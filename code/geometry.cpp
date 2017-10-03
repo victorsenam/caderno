@@ -197,25 +197,40 @@ struct lin { // line
 
 // XXX
 struct cir { // circle
-	vec v; cood r;
+	vec c; cood r;
 
-	bool conta (vec w) // is w in this? (borders included)
-	{ return v.sq(w) <= sq(r) + eps; }
+	bool contains (vec w) // is w in this? (borders included)
+	{ return c.sq(w) <= sq(r) + eps; }
 
-	bool inter (cir c) // do this intersect with c? (borders included)
-	{ return v.sq(c.v) <= sq(r + c.r) + eps; }
+	bool has_inter (cir o) // do this intersect with c? (borders included)
+	{ return c.sq(o.c) <= sq(r + o.r) + eps; }
 
-	bool insid (cir c) // is this inside c? (borders can touch)
-	{ return (r <= c.r + eps && v.sq(c.v) <= sq(r - c.r) + eps); }
+	bool has_inter_lin (vec s, vec t) // does line st intersect with this? (borders included)
+	{ return c.dist_lin(s,t) <= sq(r) + eps; }
 
+	bool is_inside (cir o) // is this inside c? (borders can touch)
+	{ return (r <= o.r + eps && c.sq(o.c) <= sq(r - o.r) + eps); }
+
+	// double only
 	// watch out for fully contained case
-	vec inter (cir c, bool q) { // get q-th intersection this border with c border (assumes 1 or 2 pts)
-		cood d = v.nr(c.v);
-		double a = (r*r + d*d - c.r*c.r)/(2.*d); // r*cos(ans,v,c.v)
+	pair<vec,vec> inter_pts (cir o) { // intersection of this border with c border
+		double d = c.nr(o.c);
+		double a = (r*r + d*d - o.r*o.r)/(2.*d); // r*cos(ans,v,c.v)
 		double h = sqrt(r*r - a*a);
-		if (h != h) h = 0;
-		vec p = c.v - v;
-		return v + p*(a/d) + (p.flip()*(h/d))*(q - !q);
+		if (isnan(h)) h = 0;
+		vec p = o.c - c;
+		return pair<vec,vec>(c + p*(a/d) + (p.flip()*(h/d)), c + p*(a/d) - (p.flip()*(h/d)));
+	}
+
+	// double only
+	pair<vec,vec> inter_pts (vec s, vec t) { // intersection of this border with line st
+		double d = s.nr(t);
+		double h = abs(s.ar(t,c)) / 2.*d;
+		double x = sqrt(s.sq(c) - h*h);
+		double y = sqrt(r*r - h*h);
+		if (isnan(y)) y = 0;
+		vec p = t - s;
+		return pair<vec,vec>(s + p*((x-y)/d), s + p*((x+y)/d));
 	}
 };
 
