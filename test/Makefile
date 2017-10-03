@@ -92,4 +92,4 @@ test_all: $(addsuffix .test, $(TESTS))
 	@echo "${TESTS}" | sed -e 's/ /\n/g' >$@
 
 $(addsuffix .test, $(TESTS)) : % : $$(basename %)
-	./$<
+	./$< --gtest_color=yes
