@@ -7,7 +7,7 @@ const double eps = 1e-8;
 bool operator== (vec a, vec b)
 { return (abs(a.x - b.x) < eps && abs(a.y - b.y) < eps); }
 
-TEST(geometry_vec_dbl, Rotate) {
+TEST(geometry_vec, rotate) {
 	EXPECT_EQ(vec(1,0).rotate(0), vec(1,0));
 	EXPECT_EQ(vec(1,0).rotate(.5*pi), vec(0,1));
 	EXPECT_EQ(vec(1,0).rotate(pi), vec(-1,0));
@@ -18,7 +18,7 @@ TEST(geometry_vec_dbl, Rotate) {
 	EXPECT_EQ(vec(416.942431806166155,466.834976408843204).rotate(1.728496650520573), vec(-526.521805830923995, 338.453356644054281));
 }
 
-TEST(geometry_vec_dbl_STRESS, SidePrecision) {
+TEST(geometry_vec_rand, CrossProduct__Precision) {
 	mt19937_64 gen(42);
 	uniform_real_distribution<double> rnd_module(1e-9, 5e3);
 	uniform_real_distribution<double> rnd_angle(0., 2.*pi);
@@ -38,7 +38,7 @@ TEST(geometry_vec_dbl_STRESS, SidePrecision) {
 	}
 }
 
-TEST(geometry_vec_dbl_STRESS, ComparePrecision) {
+TEST(geometry_vec_rand, compare__Precision) {
 	mt19937_64 gen(42);
 	uniform_int_distribution<int> rnd_size(100, 10000);
 	uniform_real_distribution<double> rnd_module(1e-9, 5e3);
@@ -59,7 +59,7 @@ TEST(geometry_vec_dbl_STRESS, ComparePrecision) {
 	}
 }
 
-TEST(geometry_vec_dbl_STRESS, CompareSort) {
+TEST(geometry_vec_rand, compare__Sorting) {
 	// generates a random anchor
 	// generates random points
 	// sorts them by the anchor two different ways

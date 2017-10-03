@@ -7,7 +7,7 @@ const cood eps = 0;
 bool operator== (vec a, vec b)
 { return a.x == b.x && a.y == b.y; }
 
-TEST(VecLL, BasicOperations) {
+TEST(geometry_vec, Operations) {
 	vec a(45,16), b(50,13);
 	ll c = 10;
 
@@ -26,7 +26,7 @@ TEST(VecLL, BasicOperations) {
 	EXPECT_DOUBLE_EQ(a.nr(), sqrt(a.sq()));
 }
 
-TEST(VecLL, OrientedArea) {
+TEST(geometry_vec, CrossProduct) {
 	EXPECT_EQ(vec(0,2).sd(vec(1,0),vec(3,2)), -1) << "should return -1 when left";	// left
 	EXPECT_EQ(vec(2,0).sd(vec(1,0),vec(3,2)), 1); // right
 	EXPECT_EQ(vec(2,1).sd(vec(1,0),vec(3,2)), 0); // colin
@@ -42,7 +42,19 @@ TEST(VecLL, OrientedArea) {
 	EXPECT_EQ(vec(10,13).ar(vec(80,83),vec(-20,-17)), 0);
 }
 
-TEST(VecLL, HalfPlane) {
+TEST(geometry_vec, InnerPoduct) {
+	EXPECT_EQ(vec(0,0).pr(vec(1,1), vec(1,0)), 1);
+	EXPECT_EQ(vec(0,0).pr(vec(1,1), vec(-1,0)), -1);
+	EXPECT_EQ(vec(3,0).pr(vec(4,0), vec(3,1)), 0);
+
+	EXPECT_EQ(vec(5,5).dr(vec(4,5), vec(6,5)), -1);
+	EXPECT_EQ(vec(5,5).dr(vec(6,6), vec(7,7)), 1);
+	EXPECT_EQ(vec(5,5).dr(vec(4,4), vec(3,3)), 1);
+	EXPECT_EQ(vec(7,6).dr(vec(8,6), vec(5,6)), -1);
+	EXPECT_EQ(vec(5,4).dr(vec(6,4), vec(5,5)), 0);
+}
+
+TEST(geometry_vec, halfplane) {
 	EXPECT_FALSE(vec(1,1).halfplane());
 	EXPECT_FALSE(vec(1,0).halfplane());
 	EXPECT_FALSE(vec(0,0).halfplane());
@@ -60,21 +72,7 @@ TEST(VecLL, HalfPlane) {
 	EXPECT_TRUE(vec(0,-100).halfplane());
 }
 
-TEST(VecLL, Projection) {
-	EXPECT_EQ(vec(0,0).pr(vec(1,1), vec(1,0)), 1);
-	EXPECT_EQ(vec(0,0).pr(vec(1,1), vec(-1,0)), -1);
-	EXPECT_EQ(vec(3,0).pr(vec(4,0), vec(3,1)), 0);
-}
-
-TEST(VecLL, Direction) {
-	EXPECT_EQ(vec(5,5).dr(vec(4,5), vec(6,5)), -1);
-	EXPECT_EQ(vec(5,5).dr(vec(6,6), vec(7,7)), 1);
-	EXPECT_EQ(vec(5,5).dr(vec(4,4), vec(3,3)), 1);
-	EXPECT_EQ(vec(7,6).dr(vec(8,6), vec(5,6)), -1);
-	EXPECT_EQ(vec(5,4).dr(vec(6,4), vec(5,5)), 0);
-}
-
-TEST(VecLL, Compare) {
+TEST(geometry_vec, compare) {
 	EXPECT_FALSE(vec(0,0).compare(vec(-1,0),vec(1,0))) << "Works ok from origin.";
 	EXPECT_FALSE(vec(0,0).compare(vec(11,-11),vec(-1,0))) << "Works ok for lower half.";
 	EXPECT_TRUE(vec(0,0).compare(vec(1,0),vec(0,1))) << "Compares first by halfplane.";
@@ -99,7 +97,7 @@ TEST(VecLL, Compare) {
 	EXPECT_EQ(res, ans) << "Sorts a vector correctly";
 }
 
-TEST(VecLL, InSeg) {
+TEST(geometry_vec, in_seg) {
 	EXPECT_TRUE(vec(1, 1).in_seg(vec(0, 0), vec(2, 2)));
 	EXPECT_TRUE(vec(1, 1).in_seg(vec(0, 0), vec(1, 1))) << "Tip not included";
 	EXPECT_TRUE(vec(1, 1).in_seg(vec(1, 1), vec(1, 1))) << "Degenerate segment not working";
@@ -110,7 +108,7 @@ TEST(VecLL, InSeg) {
 	EXPECT_FALSE(vec(0, 0).in_seg(vec(-1e8, -1e8), vec(1.2e8, int(1.2e8) + 1)));
 }
 
-TEST(VecLL, InSegGeneratedTests) {
+TEST(geometry_vec, in_seg) {
 	// Very close to the segments.
 	EXPECT_FALSE(vec(4, 3).in_seg(vec(100000006, 100000003), vec(-99999996, -99999995)));
 	EXPECT_FALSE(vec(-1, 4).in_seg(vec(-100000000, -99999998), vec(100000000, 100000008)));
@@ -179,7 +177,7 @@ TEST(VecLL, InSegGeneratedTests) {
 	}
 }
 
-TEST(in_conv_poly, Polygon) {
+TEST(geometry_vec, in_conv_poly) {
 	vec v[] = { vec(0,0), vec(1,-2), vec(2,-3), vec(3,-3), vec(3,0), vec(2,1), vec(1,1) };
 	int n = 7;
 
@@ -216,7 +214,7 @@ TEST(in_conv_poly, Polygon) {
 	// collinear to v[n-1]
 }
 
-TEST(in_conv_poly, Triangle) {
+TEST(geometry_vec, in_conv_poly__Triangle) {
 	vec v[6];
 	v[0] = vec(2,2); v[1] = vec(4,2); v[2] = vec(2,4);
 	int n = 3;
@@ -261,7 +259,7 @@ TEST(in_conv_poly, Triangle) {
 	EXPECT_TRUE(in_conv_poly(v+2, n, p, vec(6,2), 1, 0)) << "Shifted beginning";
 }
 
-TEST(in_conv_poly, Segment) {
+TEST(geometry_vec, in_conv_poly__Segment) {
 	vec v[2] = { vec(-10,-10), vec(10,10) };
 	int n = 2;
 
