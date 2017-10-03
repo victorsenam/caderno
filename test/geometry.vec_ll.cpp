@@ -27,31 +27,31 @@ TEST(geometry_vec, Operations) {
 }
 
 TEST(geometry_vec, CrossProduct) {
-	EXPECT_EQ(vec(0,2).sd(vec(1,0),vec(3,2)), -1) << "should return -1 when left";	// left
-	EXPECT_EQ(vec(2,0).sd(vec(1,0),vec(3,2)), 1); // right
-	EXPECT_EQ(vec(2,1).sd(vec(1,0),vec(3,2)), 0); // colin
-	EXPECT_EQ(vec(2,1).sd(vec(3,2),vec(1,0)), 0); // colin
-	EXPECT_EQ(vec(1,0).sd(vec(2,1),vec(3,2)), 0); // before line
-	EXPECT_EQ(vec(1,0).sd(vec(3,2),vec(2,1)), 0); // after line
-	EXPECT_EQ(vec(-50,-48).sd(vec(-49,-50),vec(-47,-48)), -1); // all neg
-	EXPECT_EQ(vec(-3, 1).sd(vec(1,-5),vec(-4,10)), -1); // mixed
+	EXPECT_EQ(vec(0,2).ccw(vec(1,0),vec(3,2)), 1) << "should return 1 when left";	// left
+	EXPECT_EQ(vec(2,0).ccw(vec(1,0),vec(3,2)), -1); // right
+	EXPECT_EQ(vec(2,1).ccw(vec(1,0),vec(3,2)), 0); // colin
+	EXPECT_EQ(vec(2,1).ccw(vec(3,2),vec(1,0)), 0); // colin
+	EXPECT_EQ(vec(1,0).ccw(vec(2,1),vec(3,2)), 0); // before line
+	EXPECT_EQ(vec(1,0).ccw(vec(3,2),vec(2,1)), 0); // after line
+	EXPECT_EQ(vec(-50,-48).ccw(vec(-49,-50),vec(-47,-48)), 1); // all neg
+	EXPECT_EQ(vec(-3, 1).ccw(vec(1,-5),vec(-4,10)), 1); // mixed
 
-	EXPECT_EQ(vec(11,-11).sd(vec(0,0),vec(-1,0)), -1); // extra test
+	EXPECT_EQ(vec(11,-11).ccw(vec(0,0),vec(-1,0)), 1); // extra test
 
-	EXPECT_EQ(vec(99,101).ar(vec(100,100),vec(101,101)), 2);
-	EXPECT_EQ(vec(10,13).ar(vec(80,83),vec(-20,-17)), 0);
+	EXPECT_EQ(vec(99,101).cross(vec(100,100),vec(101,101)), 2);
+	EXPECT_EQ(vec(10,13).cross(vec(80,83),vec(-20,-17)), 0);
 }
 
 TEST(geometry_vec, InnerPoduct) {
-	EXPECT_EQ(vec(0,0).pr(vec(1,1), vec(1,0)), 1);
-	EXPECT_EQ(vec(0,0).pr(vec(1,1), vec(-1,0)), -1);
-	EXPECT_EQ(vec(3,0).pr(vec(4,0), vec(3,1)), 0);
+	EXPECT_EQ(vec(0,0).inner(vec(1,1), vec(1,0)), 1);
+	EXPECT_EQ(vec(0,0).inner(vec(1,1), vec(-1,0)), -1);
+	EXPECT_EQ(vec(3,0).inner(vec(4,0), vec(3,1)), 0);
 
-	EXPECT_EQ(vec(5,5).dr(vec(4,5), vec(6,5)), -1);
-	EXPECT_EQ(vec(5,5).dr(vec(6,6), vec(7,7)), 1);
-	EXPECT_EQ(vec(5,5).dr(vec(4,4), vec(3,3)), 1);
-	EXPECT_EQ(vec(7,6).dr(vec(8,6), vec(5,6)), -1);
-	EXPECT_EQ(vec(5,4).dr(vec(6,4), vec(5,5)), 0);
+	EXPECT_EQ(vec(5,5).dir(vec(4,5), vec(6,5)), -1);
+	EXPECT_EQ(vec(5,5).dir(vec(6,6), vec(7,7)), 1);
+	EXPECT_EQ(vec(5,5).dir(vec(4,4), vec(3,3)), 1);
+	EXPECT_EQ(vec(7,6).dir(vec(8,6), vec(5,6)), -1);
+	EXPECT_EQ(vec(5,4).dir(vec(6,4), vec(5,5)), 0);
 }
 
 TEST(geometry_vec, halfplane) {

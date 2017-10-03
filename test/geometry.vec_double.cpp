@@ -32,9 +32,9 @@ TEST(geometry_vec_rand, CrossProduct__Precision) {
 		vec colin = ref + base*rnd_module(gen);
 		vec to_left = ref + base.rotate(rnd_angle(gen)*.5)*rnd_module(gen);
 
-		ASSERT_EQ(ref.sd(main,to_left), -1) << to_left << " should be to the left of " << ref << " " << main << endl;
-		ASSERT_EQ(ref.sd(to_left,main), 1) << main << " should be to the right of " << ref << " " << to_left << endl;
-		ASSERT_EQ(ref.sd(main,colin), 0) << colin << " shoulde be collinear to " << ref << " " << main << endl;
+		ASSERT_EQ(ref.ccw(main,to_left), 1) << to_left << " should be to the left of " << ref << " " << main << endl;
+		ASSERT_EQ(ref.ccw(to_left,main), -1) << main << " should be to the right of " << ref << " " << to_left << endl;
+		ASSERT_EQ(ref.ccw(main,colin), 0) << colin << " shoulde be collinear to " << ref << " " << main << endl;
 	}
 }
 
