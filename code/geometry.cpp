@@ -219,7 +219,7 @@ struct cir { // circle
 		double d = c.nr(o.c);
 		double a = (r*r + d*d - o.r*o.r) / (2.*d); // r*cos(ans,v,c.v)
 		double h = sqrt(r*r - a*a);
-		if (isnan(h)) h = 0;
+		if (h != h) h = 0;
 		vec p = o.c - c;
 		return pair<vec,vec>(c + p*(a/d) + (p.rot90()*(h/d)), c + p*(a/d) - (p.rot90()*(h/d)));
 	}
@@ -231,7 +231,7 @@ struct cir { // circle
 		double h = abs(s.cross(t,c)) / (2.*d);
 		double x = sqrt(s.sq(c) - h*h);
 		double y = sqrt(r*r - h*h);
-		if (isnan(y)) y = 0;
+		if (y != y) y = 0;
 		vec p = t - s;
 		return pair<vec,vec>(s + p*((x-y)/d), s + p*((x+y)/d));
 	}
