@@ -42,11 +42,7 @@ TEST(geometry_vec, CrossProduct) {
 	EXPECT_EQ(vec(10,13).cross(vec(80,83),vec(-20,-17)), 0);
 }
 
-TEST(geometry_vec, InnerPoduct) {
-	EXPECT_EQ(vec(0,0).inner(vec(1,1), vec(1,0)), 1);
-	EXPECT_EQ(vec(0,0).inner(vec(1,1), vec(-1,0)), -1);
-	EXPECT_EQ(vec(3,0).inner(vec(4,0), vec(3,1)), 0);
-
+TEST(geometry_vec, dir) {
 	EXPECT_EQ(vec(5,5).dir(vec(4,5), vec(6,5)), -1);
 	EXPECT_EQ(vec(5,5).dir(vec(6,6), vec(7,7)), 1);
 	EXPECT_EQ(vec(5,5).dir(vec(4,4), vec(3,3)), 1);
@@ -273,4 +269,8 @@ TEST(geometry_vec, in_conv_poly__Segment) {
 
 	EXPECT_TRUE(in_conv_poly(v, n, p, vec(-10,10), 1, 0)) << "Should work when point forms a triangle";
 	EXPECT_TRUE(in_conv_poly(v, n, p, vec(10,-10), 0, 1)) << "Should work when point forms a triangle";
+}
+
+TEST(geometry_vec, dist2_seg) {
+	EXPECT_DOUBLE_EQ(vec(1,1).dist2_seg(vec(4,0), vec(-3,-1)), 2.);
 }
