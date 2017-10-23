@@ -18,6 +18,14 @@ TEST(geometry_vec, rotate) {
 	EXPECT_EQ(vec(416.942431806166155,466.834976408843204).rotate(1.728496650520573), vec(-526.521805830923995, 338.453356644054281));
 }
 
+TEST(geometry_vec, proj) {
+	EXPECT_EQ(vec(-2.7,1.8).proj(vec(-5.4, 0.6), vec(-1.5, -0.7)), vec(-3.33, -0.09));
+	EXPECT_EQ(vec(-5.3,2.9).proj(vec(-5.4, 0.6), vec(-1.5, -0.7)), vec(-6, 0.8));
+	EXPECT_EQ(vec(-4.5,-3).proj(vec(-5.4, 0.6), vec(-1.5, -0.7)), vec(-3.51,-0.03));
+	EXPECT_EQ(vec(-4.5,-3).proj(vec(2.5,1), vec(1.5, 4)), vec(3,-0.5));
+	EXPECT_EQ(vec(0,2).proj(vec(2.5,1), vec(1.5, 4)), vec(1.95,2.65));
+}
+
 TEST(geometry_vec_rand, CrossProduct__Precision) {
 	mt19937_64 gen(42);
 	uniform_real_distribution<double> rnd_module(1e-9, 5e3);
