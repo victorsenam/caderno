@@ -218,7 +218,6 @@ struct cir { // circle
 	{ return (o.r < r - eps && c.sq(o.c) < sq(r - o.r) - eps); }
 
 	// double only
-	// XXX
 	pair<vec,vec> inter_pts (cir o) {
 		assert(has_inter(o) && !contains(o)); // fully contained case
 		double d = c.nr(o.c);
@@ -229,17 +228,21 @@ struct cir { // circle
 		return pair<vec,vec>(c + p*(a/d) + (p.rot90()*(h/d)), c + p*(a/d) - (p.rot90()*(h/d)));
 	}
 
-	// double only
-	// XXX
+	// double only XXX careful precision
 	pair<vec,vec> inter_pts (vec s, vec t) { 
 		assert(has_inter_lin(s,t));
-		double d = s.nr(t);
-		double h = abs(s.cross(t,c)) / (2.*d);
-		double x = sqrt(s.sq(c) - h*h);
-		double y = sqrt(r*r - h*h);
-		if (y != y) y = 0;
-		vec p = t - s;
-		return pair<vec,vec>(s + p*((x-y)/d), s + p*((x+y)/d));
+		double h2 = c.dist2_lin(s,t);
+		double d = sqrt(c.sq(t) - h2);
+		if (d != d) d = 0;
+		vec p = (s-t);
+		vec m = t + p*(d/p.nr());
+		vec m_b = t - p*(d/p.nr());
+		if (m_b.sq(c) < m.sq(c))
+			m = m_b;
+
+		d = sqrt(r*r - h2);
+		if (d != d) d = 0;
+		return pair<vec,vec>(m + p*(d/p.nr()), m - p*(d/p.nr()));
 	}
 };
 

@@ -9,3 +9,4 @@ geometry.graham
 centroid.test
 geometry.lin_double
 geometry.cir_ll
+geometry.cir_double
