@@ -54,10 +54,13 @@ struct vec { // vector
 	int ccw (vec a, vec b) // which side is this from ab? (1 left, 0 over, -1 right)
 	{ cood o = cross(a, b); return (eps < o) - (o < -eps); } 
 
-	int dir (vec a, vec b) // direction of (thia)a relative to (this)b (-1 opposite, 0 none, 1 same)
-	{ cood o = (a - (*this)) * (b - (*this)); return (eps < o) - (o < -eps); }
+	int dir (vec a, vec b) // direction of (this)a relative to (this)b (-1 opposite, 0 none, 1 same)
+	{ cood o = ((*this) - a)*((*this) - b); return (eps < o) - (o < -eps); }
+
+	cood inner (vec s, vec t) // (p-s)*(t-s) where p = this projected on st
+	{ return ((*this) - s) * (t - s); }
 	vec proj (vec s, vec t) // projection of this point over line st
-	{ return s + (t - s)*( ((*this) - s) * (t - s) / t.sq(s) ); }
+	{ return s + (t - s)*(inner(s,t) / t.sq(s)); }
 
 	vec rotate (double a) // rotate ccw by a (fails with ll)
 	{ return vec(cos(a) * x - sin(a) * y, sin(a) * x + cos(a) * y); }

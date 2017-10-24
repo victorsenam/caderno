@@ -43,11 +43,17 @@ TEST(geometry_vec, CrossProduct) {
 }
 
 TEST(geometry_vec, dir) {
+	EXPECT_EQ(vec(0,0).dir(vec(0,0), vec(2,0)), 0);
+	EXPECT_EQ(vec(1,0).dir(vec(0,0), vec(2,0)), -1);
+	EXPECT_EQ(vec(2,0).dir(vec(0,0), vec(2,0)), 0);
+	EXPECT_EQ(vec(3,0).dir(vec(0,0), vec(2,0)), 1);
+
 	EXPECT_EQ(vec(5,5).dir(vec(4,5), vec(6,5)), -1);
 	EXPECT_EQ(vec(5,5).dir(vec(6,6), vec(7,7)), 1);
 	EXPECT_EQ(vec(5,5).dir(vec(4,4), vec(3,3)), 1);
 	EXPECT_EQ(vec(7,6).dir(vec(8,6), vec(5,6)), -1);
 	EXPECT_EQ(vec(5,4).dir(vec(6,4), vec(5,5)), 0);
+	EXPECT_EQ(vec(0,2).dir(vec(2,1), vec(1,4)), 0);
 }
 
 TEST(geometry_vec, halfplane) {
