@@ -7,3 +7,4 @@ treap.int
 geometry.vec_ll
 geometry.graham
 centroid.test
+geometry.lin_double

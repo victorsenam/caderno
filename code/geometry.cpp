@@ -179,9 +179,8 @@ struct vec { // vector
 ostream& operator<<(ostream& os, vec o)
 { return os << '(' << o.x << ", " << o.y << ')'; }
 
-// XXX
 struct lin { // line
-	cood a, b, c;
+	cood a, b, c; // a*x + b*y = c
 
 	lin () {}
 	lin (cood x, cood y, cood z) : a(x), b(y), c(z) {}
@@ -189,6 +188,8 @@ struct lin { // line
 
 	lin parll (vec p) // parallel to this through p
 	{ return lin(a, b, a * p.x + b * p.y); }
+	lin perp ()
+	{ return lin(-b, a, c); }
 
 	vec inter (lin o) {
 		cood d = a * o.b - o.a * b;
