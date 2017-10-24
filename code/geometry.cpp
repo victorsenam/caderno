@@ -86,13 +86,12 @@ struct vec { // vector
 	bool in_seg (vec s, vec t)
 	{ return (ccw(s,t) == 0) && (dir(s,t) <= 0); }
 
-	// XXX squared distance from this to line defined by st
+	// squared distance from this to line defined by st
 	double dist2_lin (vec s, vec t)
-	{ return double(::sq((t-s).rot90().sq(t-(*this)))) / t.sq(s); }
-
-	// XXX squared distance from this to segment st
+	{ return double(::sq(cross(s,t))) / t.sq(s); }
+	// squared distance from this to segment st
 	double dist2_seg (vec s, vec t) 
-	{ return dir(s,t) < 0 ? dist2_lin(s,t) : min(sq(s),sq(t)); }
+	{ return s.dir((*this),t) == t.dir((*this),s) ? dist2_lin(s,t) : min(sq(s),sq(t)); }
 
 	// is this inside (borders included) the convex polygon v of size n?
 	// if yes, prec is the vec that this on acw order from v[0] or 0 if there is no such

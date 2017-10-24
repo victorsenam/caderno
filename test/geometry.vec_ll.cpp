@@ -277,6 +277,28 @@ TEST(geometry_vec, in_conv_poly__Segment) {
 	EXPECT_TRUE(in_conv_poly(v, n, p, vec(10,-10), 0, 1)) << "Should work when point forms a triangle";
 }
 
+TEST(geometry_vec, dist2_lin) {
+	EXPECT_DOUBLE_EQ(vec(0,1).dist2_lin(vec(1,0), vec(3,0)), 1);
+	EXPECT_DOUBLE_EQ(vec(1,1).dist2_lin(vec(1,0), vec(3,0)), 1);
+	EXPECT_DOUBLE_EQ(vec(2,1).dist2_lin(vec(1,0), vec(3,0)), 1);
+	EXPECT_DOUBLE_EQ(vec(3,1).dist2_lin(vec(1,0), vec(3,0)), 1);
+	EXPECT_DOUBLE_EQ(vec(4,1).dist2_lin(vec(1,0), vec(3,0)), 1);
+
+	EXPECT_DOUBLE_EQ(vec(0,11).dist2_lin(vec(2,1), vec(1,4)), 1.6);
+	EXPECT_DOUBLE_EQ(vec(0,2).dist2_lin(vec(2,1), vec(1,4)), 2.5);
+	EXPECT_DOUBLE_EQ(vec(1,1).dist2_lin(vec(4,0), vec(-3,-1)), 2.);
+	EXPECT_DOUBLE_EQ(vec(0,0).dist2_lin(vec(-8,8), vec(-7,5)), 25.6);
+}
+
 TEST(geometry_vec, dist2_seg) {
+	EXPECT_DOUBLE_EQ(vec(0,1).dist2_seg(vec(1,0), vec(3,0)), 2);
+	EXPECT_DOUBLE_EQ(vec(1,1).dist2_seg(vec(1,0), vec(3,0)), 1);
+	EXPECT_DOUBLE_EQ(vec(2,1).dist2_seg(vec(1,0), vec(3,0)), 1);
+	EXPECT_DOUBLE_EQ(vec(3,1).dist2_seg(vec(1,0), vec(3,0)), 1);
+	EXPECT_DOUBLE_EQ(vec(4,1).dist2_seg(vec(1,0), vec(3,0)), 2);
+
+	EXPECT_DOUBLE_EQ(vec(0,11).dist2_seg(vec(2,1), vec(1,4)), 50);
+	EXPECT_DOUBLE_EQ(vec(0,2).dist2_seg(vec(2,1), vec(1,4)), 2.5);
 	EXPECT_DOUBLE_EQ(vec(1,1).dist2_seg(vec(4,0), vec(-3,-1)), 2.);
+	EXPECT_DOUBLE_EQ(vec(0,0).dist2_seg(vec(-8,8), vec(-7,5)), 74);
 }
