@@ -17,6 +17,8 @@ typedef pair<ll,ll> pii;
 // cood eps = 0;
 // tests for double were made with eps = 1e-8
 
+double eps_d = 1e-8; // necessary even in integer geometry, should be eps otherwise
+
 const double pi = acos(-1.);
 
 inline ll sq (ll x)
@@ -198,7 +200,6 @@ struct lin { // line
 	}
 };
 
-// XXX
 struct cir { // circle
 	vec c; cood r;
 
@@ -208,15 +209,16 @@ struct cir { // circle
 	bool has_inter (cir o)
 	{ return c.sq(o.c) <= sq(r + o.r) + eps; }
 	bool has_inter_lin (vec s, vec t)
-	{ return c.dist2_lin(s,t) <= sq(r) + eps; }
+	{ return c.dist2_lin(s,t) <= sq(r) + eps_d; }
 	bool has_inter_seg (vec s, vec t)
-	{ return c.dist2_seg(s,t) <= sq(r) + eps; }
+	{ return c.dist2_seg(s,t) <= sq(r) + eps_d; }
 
 	// borders not included
 	bool contains (cir o)
 	{ return (o.r < r - eps && c.sq(o.c) < sq(r - o.r) - eps); }
 
 	// double only
+	// XXX
 	pair<vec,vec> inter_pts (cir o) {
 		assert(has_inter(o) && !contains(o)); // fully contained case
 		double d = c.nr(o.c);
@@ -228,6 +230,7 @@ struct cir { // circle
 	}
 
 	// double only
+	// XXX
 	pair<vec,vec> inter_pts (vec s, vec t) { 
 		assert(has_inter_lin(s,t));
 		double d = s.nr(t);
