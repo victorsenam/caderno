@@ -50,7 +50,7 @@ const vector<pair<vec,vec> > lines({
 });
 
 TEST(geometry_cir, contains) {
-	bool res[][points.size()] = {
+	bool res[][15] = {
 		{1,0,0,0,0,0,0,0,0,0,0,1,0,0,0},
 		{1,1,1,1,1,1,1,0,0,0,1,1,0,0,0},
 		{0,1,1,0,0,1,0,0,0,0,1,1,0,0,0},
@@ -72,7 +72,7 @@ TEST(geometry_cir, contains) {
 }
 
 TEST(geometry_cir, has_inter) {
-	bool res[][circles.size()] = {
+	bool res[][8] = {
 		{1,1,1,0,0,0,0,0},
 		{1,1,1,1,0,0,0,0},
 		{1,1,1,1,0,0,0,0},
@@ -94,7 +94,7 @@ TEST(geometry_cir, has_inter) {
 }
 
 TEST(geometry_cir, has_inter_lin) {
-	bool res[][lines.size()] = {
+	bool res[][5] = {
 		{0,1,0,1,0},
 		{0,1,0,1,1},
 		{0,1,0,1,1},
@@ -116,7 +116,7 @@ TEST(geometry_cir, has_inter_lin) {
 }
 
 TEST(geometry_cir, has_inter_seg) {
-	bool res[][lines.size()] = {
+	bool res[][5] = {
 		{0,1,0,0,0},
 		{0,1,0,0,1},
 		{0,1,0,0,1},
@@ -138,7 +138,7 @@ TEST(geometry_cir, has_inter_seg) {
 }
 
 TEST(geometry_cir, contains_cir) {
-	bool res[][circles.size()] = {
+	bool res[][8] = {
 		{0,0,0,0,0,0,0,0},
 		{1,0,0,0,0,0,0,0},
 		{0,0,0,0,0,0,0,0},
