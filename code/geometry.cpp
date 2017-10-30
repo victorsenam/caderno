@@ -69,16 +69,22 @@ struct vec { // vector
 	vec rot90 () // rotate pi/2 ccw
 	{ return vec(-y, x); }
 
-	inline bool halfplane () // 0 is upper half plane (y > 0) and (x,0) where x >= 0, 1 is otherwise
-	{ return (y < eps || (abs(y) <= eps && x < eps)); }
-
 	// === ADVANCED ===
+	// ordering that defines the compare method
+	// used only there, change it accordingly
+	// sorts increasing on y and, then increasing on x
+	bool operator < (const vec & o) const {
+		if (y != o.y)
+			return y < o.y;
+		return x < o.x;
+	}
+
 	// full ordering (ccw angle from this+(1,0), distance to this)
 	// is a < b?
 	// PRECISION : ok with double if norm in [-1e9,5e3]
 	bool compare (vec a, vec b) {
-		if ((a-(*this)).halfplane() != (b-(*this)).halfplane())
-			return (b-(*this)).halfplane();
+		if (((*this) < a) != ((*this) < b))
+			return (*this) < a;
 		int o = ccw(a,b);
 		if (o) return o > 0;
 		return a.dir((*this),b) < 0;

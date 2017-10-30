@@ -56,24 +56,6 @@ TEST(geometry_vec, dir) {
 	EXPECT_EQ(vec(0,2).dir(vec(2,1), vec(1,4)), 0);
 }
 
-TEST(geometry_vec, halfplane) {
-	EXPECT_FALSE(vec(1,1).halfplane());
-	EXPECT_FALSE(vec(1,0).halfplane());
-	EXPECT_FALSE(vec(0,0).halfplane());
-	EXPECT_FALSE(vec(0,1).halfplane());
-	EXPECT_FALSE(vec(-1,1).halfplane());
-	EXPECT_FALSE(vec(-1000,1).halfplane());
-	EXPECT_FALSE(vec(-1,100).halfplane());
-
-	EXPECT_TRUE(vec(-1,0).halfplane());
-	EXPECT_TRUE(vec(-1000,0).halfplane());
-	EXPECT_TRUE(vec(1,-1).halfplane());
-	EXPECT_TRUE(vec(10000,-1).halfplane());
-	EXPECT_TRUE(vec(-10,-1).halfplane());
-	EXPECT_TRUE(vec(0,-1).halfplane());
-	EXPECT_TRUE(vec(0,-100).halfplane());
-}
-
 TEST(geometry_vec, compare) {
 	EXPECT_FALSE(vec(0,0).compare(vec(-1,0),vec(1,0))) << "Works ok from origin.";
 	EXPECT_FALSE(vec(0,0).compare(vec(11,-11),vec(-1,0))) << "Works ok for lower half.";
