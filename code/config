@@ -10,3 +10,4 @@
 <Miller-Rabin> <millerrabin.cpp>
 <Envelope> <envelope.cpp>
 <Geometry> <geometry.cpp>
+<Linear System Solver> <linsys.cpp>
