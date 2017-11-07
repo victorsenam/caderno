@@ -46,6 +46,10 @@ struct vec { // vector
 	cood operator * (vec o)
 	{ return x * o.x + y * o.y; }
 
+	// positive is (*this)b is clockwise from (*this)a
+	double angle (vec a, vec b)
+	{ return atan2((a-(*this))^(b-(*this)), (a-(*this))*(b-(*this))); }
+
 	cood sq (vec o = vec())
 	{ return ((*this)-o)*((*this)-o); }
 	double nr (vec o = vec())
@@ -223,6 +227,12 @@ struct cir { // circle
 	bool contains (cir o)
 	{ return (o.r < r - eps && c.sq(o.c) < sq(r - o.r) - eps); }
 
+	// ccw area of arc from ca to cb
+	double arc_area (vec a, vec b) {
+		double ang = c.angle(a,b);
+		return r*r*ang*.5;
+	}
+
 	// double only
 	pair<vec,vec> inter_pts (cir o) {
 		assert(has_inter(o) && !contains(o)); // fully contained case
@@ -249,6 +259,48 @@ struct cir { // circle
 		d = sqrt(r*r - h2);
 		if (d != d) d = 0;
 		return pair<vec,vec>(m + p*(d/p.nr()), m - p*(d/p.nr()));
+	}
+
+	// double only XXX not tested
+	// signed area of intersection of this with triangle (this.c,a,b)
+	double inter (vec a, vec b) {
+		double res = 0.; bool inv = 0;
+		if (contains(b)) {
+			swap(a,b);
+			inv = 1;
+		}
+
+		if (contains(b)) {
+			res = c.cross(a,b)*.5;
+		} else if (contains(a)) {
+			pair<vec,vec> rt = inter_pts(a,b);
+			vec q = rt.first;
+			if (!q.in_seg(a,b) || (a.sq(q) <= eps && rt.second.in_seg(a,b)))
+				q = rt.second;
+			res += c.cross(a,q)*.5;
+			res += arc_area(q,b);
+		} else if (has_inter_seg(a,b)) {
+			pair<vec,vec> rt = inter_pts(a,b);
+			if (a.sq(rt.second) < a.sq(rt.first))
+				swap(rt.first,rt.second);
+			res += arc_area(a,rt.first);
+			res += c.cross(rt.first,rt.second)*.5;
+			res += arc_area(rt.second,b);
+		} else {
+			res += arc_area(a,b);
+		}
+
+		if (inv) return -res;
+		return res;
+	}
+
+	// double only XXX not tested
+	// signed area of intersection of this with polygon
+	double inter (vector<vec> & p) {
+		double res = 0;
+		for (int i = 0; i < p.size(); i++)
+			res += inter(p[i],p[(i+1)%p.size()]);
+		return res;
 	}
 };
 
