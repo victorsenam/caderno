@@ -1,5 +1,5 @@
 #include <bits/stdc++.h>
-#define debug if (1)
+#define cout if (1) cout
 
 // XXX without explanation marks untested functions
 
