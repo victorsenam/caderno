@@ -10,6 +10,7 @@ treap.int
 zfunction.test
 geometry.vec_ll
 geometry.graham
+manacher.test
 geometry.cir_double
 centroid.test
 linsys.test
