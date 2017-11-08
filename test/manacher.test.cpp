@@ -59,7 +59,7 @@ TEST(Simple, Random) {
 	for(int i = 0; i < 100; i++) {
 		int l = rand() % n, r = rand() % n; if(l > r) swap(l, r);
 		string x = s.substr(l, r - l + 1);
-		int p = rand() % n;
+		int p = rand() % (n - (r - l));
 		for(int j = 0; j < r - l + 1; j++)
 			s[j + p] = x[x.size() - 1 - j];
 	}
