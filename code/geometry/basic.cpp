@@ -59,6 +59,7 @@ struct lin { // line
 struct cir { // circle
 	vec c; cood r;
 	cir () {}
+	cir (vec a, vec b, vec c) { c = lin(a,a+(c-a).rot90()).parll((a+c)/2)).inter(lin(b,b+(c-b).rot90()).parll((b+c)/2)); r = c.nr(a); }
 	inline bool contains (vec w) { c.sq(w) <= sq(r) + eps; } // border included
 	inline bool has_inter (cir o) { c.sq(o.c) <= sq(r + o.r) + eps; } // borders included
 	inline bool has_border_inter (cir o) { has_inter(o) && c.sq(o.c) + eps >= sq(r - o.r); }
