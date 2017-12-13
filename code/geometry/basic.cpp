@@ -27,13 +27,13 @@ struct vec { // vector
 	inline double nr (vec o = vec()) { return sqrt(sq(o)); }
 	inline vec proj (vec a, vec b) { return a + (b-a)*(a.inner((*this),b) / a.sq(b)); }
 	inline vec rotate (double a) { return vec(cos(a) * x - sin(a) * y, sin(a) * x + cos(a) * y); } // ccw by a radians
-	inline vec rot90 () { return vec{-y,x}; } // rotate(pi/2)
+	inline vec rot90 () { return vec(-y,x); } // rotate(pi/2)
 
 	inline bool operator < (const vec & o) const { return (x != o.x)?(x < o.x):(y > o.y); } // lex compare (inc x, dec y)
 	// full ccw angle from compare beginning upwards (this+(0,1)) around (*this)
 	// incresing distance on ties
 	bool compare (vec a, vec b) { 
-		if (((*this) < a) != ((*this) < b)) return (*this) < a;
+		if ((a < (*this)) != (b < (*this))) return a < (*this);
 		int o = ccw(a,b); if (o) return o > 0;
 		return a.dir((*this),b) < 0;
 	}
@@ -55,6 +55,8 @@ struct lin { // line
 		if (d < eps && -eps < d) throw 0; // parallel
 		return vec((o.b * c - b * o.c) / d, (a * o.c - o.a * c) / d);
 	}
+	vec at_x (cood x) { return vec(x,(c-a*x)/b); }
+	vec at_y (cood y) { return vec((c-b*y)/a,y); }
 };
 struct cir { // circle
 	vec c; cood r;
