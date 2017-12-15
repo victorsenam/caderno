@@ -55,7 +55,7 @@ struct lin { // line
 	vec at_x (cood x) { return vec(x,(c-a*x)/b); }
 	vec at_y (cood y) { return vec((c-b*y)/a,y); }
 };
-struct cir { // circle
+struct cir { // circle TODO NADA TESTADO
 	vec c; cood r;
 	cir () {} cir (vec v, cood d) : c(v), r(d) {}
 	cir (vec a, vec b, vec c) { c = lin(a,a+(c-a).rot90()).parll((a+c)/2).inter(lin(b,b+(c-b).rot90()).parll((b+c)/2)); r = c.nr(a); }
