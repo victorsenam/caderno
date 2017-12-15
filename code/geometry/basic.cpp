@@ -9,8 +9,6 @@ inline double sq (double x) { return x*x; }
 struct vec { // vector
 	cood x, y;
 	vec () : x(0), y(0) {} vec (cood a, cood b) : x(a), y(b) {}
-	friend ostream& operator<<(ostream& os, vec o);
-
 	inline vec operator - (vec o) { return vec(x - o.x, y - o.y); }
 	inline vec operator + (vec o) { return vec(x + o.x, y + o.y); }
 	inline vec operator * (cood o) { return vec(x * o, y * o); }
@@ -42,8 +40,6 @@ struct vec { // vector
 	double dist2_lin (vec a, vec b) { return double(::sq(cross(a,b)))/a.sq(b); } // see cir.has_inter_lin
 	double dist2_seg (vec a, vec b) { return a.dir((*this),b) == (b.dir((*this),a)) ? dist2_lin(a,b) : min(sq(a),sq(b)); }
 };
-ostream& operator<<(ostream& os, vec o)
-{ return os << '(' << o.x << ", " << o.y << ')'; }
 struct lin { // line
 	cood a, b, c; // a*x + b*y = c
 	lin () {} lin (cood x, cood y, cood z) : a(x), b(y), c(z) {}
@@ -52,9 +48,10 @@ struct lin { // line
 	inline lin perp () { return lin{-b, a, c}; }
 	vec inter (lin o) {
 		cood d = a * o.b - o.a * b;
-		if (d < eps && -eps < d) throw 0; // parallel
+		if (-eps <= d && d <= eps) throw 1; // parallel
 		return vec((o.b * c - b * o.c) / d, (a * o.c - o.a * c) / d);
 	}
+	bool contains (vec v) { return abs(a*v.x + b*v.y - c) <= eps; }
 	vec at_x (cood x) { return vec(x,(c-a*x)/b); }
 	vec at_y (cood y) { return vec((c-b*y)/a,y); }
 };
@@ -94,9 +91,11 @@ struct cir { // circle
 		return inv?-res:res;
 	}
 };
-
 bool inter_seg (vec a, vec b, vec c, vec d) {
 	if (a.in_seg(c, d) || b.in_seg(c, d) || c.in_seg(a, b) || d.in_seg(a, b)) return true;
 	return (c.ccw(a, b) * d.ccw(a, b) == -1 && a.ccw(c, d) * b.ccw(c, d) == -1);
 }
 double dist2_seg (vec a, vec b, vec c, vec d){return inter_seg(a,b,c,d)?0.:min({ a.dist2_seg(c,d), b.dist2_seg(c,d), c.dist2_seg(a,b), d.dist2_seg(a,b) });}
+ostream& operator<<(ostream& os, vec o) { return os << '(' << o.x << ", " << o.y << ')'; }
+ostream& operator<<(ostream& os, lin o) { return os << '[' << o.a << "x + " << o.b << "y = " << o.c << ']'; }
+ostream& operator<<(ostream& os, cir o) { return os << '[' << o.c << o.r << ']'; }
