@@ -16,3 +16,5 @@ geometry.cir_double
 centroid.test
 linsys.test
 centroid.test
+geometry/basic.ll
+geometry/basic.double
