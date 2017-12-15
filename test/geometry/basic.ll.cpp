@@ -14,6 +14,8 @@ const cood eps = 0;
 
 bool operator == (vec a, vec b)
 { return a.x == b.x && a.y == b.y; }
+bool operator != (vec a, vec b)
+{ return !(a==b); }
 
 TEST(geometry_basic_vec, vec) {
 	vec a(45,16), b(50,13);
@@ -69,6 +71,11 @@ TEST(geometry_basic_vec, inner) {
 	EXPECT_EQ(vec(7,6).dir(vec(8,6), vec(5,6)), -1);
 	EXPECT_EQ(vec(5,4).dir(vec(6,4), vec(5,5)), 0);
 	EXPECT_EQ(vec(0,2).dir(vec(2,1), vec(1,4)), 0);
+}
+
+TEST(geometry_basic_vec, sq) {
+	EXPECT_EQ(vec(1,0).sq(vec(0,1)), 2);
+	EXPECT_EQ(vec(3,3).sq(vec(7,0)), 25);
 }
 
 TEST(geometry_basic_vec, rot90) {
@@ -163,28 +170,63 @@ TEST(geometry_basic_vec, in_seg_Generated) {
 	EXPECT_TRUE(vec(71505148, 59430354).in_seg(vec(-13132301, -58339227), vec(127930114, 137943408)));
 }
 
-TEST(geometry_basic_vec, dist2_lin) {
-	EXPECT_DOUBLE_EQ(vec(0,1).dist2_lin(vec(1,0), vec(3,0)), 1);
-	EXPECT_DOUBLE_EQ(vec(1,1).dist2_lin(vec(1,0), vec(3,0)), 1);
-	EXPECT_DOUBLE_EQ(vec(2,1).dist2_lin(vec(1,0), vec(3,0)), 1);
-	EXPECT_DOUBLE_EQ(vec(3,1).dist2_lin(vec(1,0), vec(3,0)), 1);
-	EXPECT_DOUBLE_EQ(vec(4,1).dist2_lin(vec(1,0), vec(3,0)), 1);
+TEST(geometry_basic_lin, at) {
+	lin s(4,8,52), t(-5,3,0);
 
-	EXPECT_DOUBLE_EQ(vec(0,11).dist2_lin(vec(2,1), vec(1,4)), 1.6);
-	EXPECT_DOUBLE_EQ(vec(0,2).dist2_lin(vec(2,1), vec(1,4)), 2.5);
-	EXPECT_DOUBLE_EQ(vec(1,1).dist2_lin(vec(4,0), vec(-3,-1)), 2.);
-	EXPECT_DOUBLE_EQ(vec(0,0).dist2_lin(vec(-8,8), vec(-7,5)), 25.6);
+	EXPECT_EQ(s.at_x(1), vec(1,6));
+	EXPECT_EQ(s.at_y(4), vec(5,4));
+	EXPECT_EQ(t.at_x(0), vec(0,0));
+	EXPECT_EQ(t.at_x(3), vec(3,5));
+
+	vec a(3,4), b(4,9);
+	lin r(a,b);
+	EXPECT_EQ(r.at_x(a.x), a);
+	EXPECT_EQ(r.at_x(b.x), b);
+	EXPECT_EQ(r.at_y(a.y), a);
+	EXPECT_EQ(r.at_y(b.y), b);
 }
 
-TEST(geometry_basic_vec, dist2_seg) {
-	EXPECT_DOUBLE_EQ(vec(0,1).dist2_seg(vec(1,0), vec(3,0)), 2);
-	EXPECT_DOUBLE_EQ(vec(1,1).dist2_seg(vec(1,0), vec(3,0)), 1);
-	EXPECT_DOUBLE_EQ(vec(2,1).dist2_seg(vec(1,0), vec(3,0)), 1);
-	EXPECT_DOUBLE_EQ(vec(3,1).dist2_seg(vec(1,0), vec(3,0)), 1);
-	EXPECT_DOUBLE_EQ(vec(4,1).dist2_seg(vec(1,0), vec(3,0)), 2);
+TEST(geometry_basic_lin, inter) {
+	lin s(4,8,52), t(-5,3,0), r(4,8,50);
+	EXPECT_EQ(s.inter(t), vec(3,5));
+	EXPECT_ANY_THROW(s.inter(r));
+}
 
-	EXPECT_DOUBLE_EQ(vec(0,11).dist2_seg(vec(2,1), vec(1,4)), 50);
-	EXPECT_DOUBLE_EQ(vec(0,2).dist2_seg(vec(2,1), vec(1,4)), 2.5);
-	EXPECT_DOUBLE_EQ(vec(1,1).dist2_seg(vec(4,0), vec(-3,-1)), 2.);
-	EXPECT_DOUBLE_EQ(vec(0,0).dist2_seg(vec(-8,8), vec(-7,5)), 74);
+TEST(geometry_basic_lin, contains) {
+	lin s(4,8,52);
+	EXPECT_TRUE(s.contains(vec(3,5)));
+	EXPECT_TRUE(s.contains(vec(1,6)));
+	EXPECT_FALSE(s.contains(vec(2,5)));
+	EXPECT_FALSE(s.contains(vec(1,5)));
+	EXPECT_FALSE(s.contains(vec(2,6)));
+}
+
+TEST(geometry_basic_lin, parll) {
+	lin s(4,8,52);
+	lin t = s.parll(vec(10,4));
+
+	vec s0 = s.at_x(3), s1 = s.at_x(1);
+	ASSERT_TRUE(s.contains(s0));
+	ASSERT_TRUE(s.contains(s1));
+
+	vec t0 = t.at_x(10), t1 = t.at_x(8);
+	ASSERT_TRUE(t.contains(t0));
+	ASSERT_TRUE(t.contains(t1));
+
+	EXPECT_EQ((s1-s0)^(t1-t0), 0);
+}
+
+TEST(geometry_basic_lin, perp) {
+	lin s(4,8,52);
+	lin t = s.perp();
+
+	vec s0 = s.at_x(3), s1 = s.at_x(1);
+	ASSERT_TRUE(s.contains(s0));
+	ASSERT_TRUE(s.contains(s1));
+
+	vec t0 = t.at_y(3), t1 = t.at_y(1);
+	ASSERT_TRUE(t.contains(t0));
+	ASSERT_TRUE(t.contains(t1));
+
+	EXPECT_EQ((s1-s0)*(t1-t0), 0);
 }
