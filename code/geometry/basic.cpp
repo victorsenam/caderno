@@ -2,7 +2,7 @@
 // volume de calota na altura h : pi.h/6 * (3r^2 + h^2)
 
 // XXX marks risky behaviour and TODO marks untested functions
-// typedef double cood; cood eps = 1e-8;
+// typedef double cood; cood eps = 1e-8; cood inf = 1./0.;
 const double pi = acos(-1.);
 inline ll sq (ll x) { return x*x; }
 inline double sq (double x) { return x*x; }
@@ -91,7 +91,7 @@ struct cir { // circle TODO NADA TESTADO
 		return inv?-res:res;
 	}
 };
-bool inter_seg (vec a, vec b, vec c, vec d) {
+bool inter_seg (vec a, vec b, vec c, vec d) { // tips included
 	if (a.in_seg(c, d) || b.in_seg(c, d) || c.in_seg(a, b) || d.in_seg(a, b)) return true;
 	return (c.ccw(a, b) * d.ccw(a, b) == -1 && a.ccw(c, d) * b.ccw(c, d) == -1);
 }
