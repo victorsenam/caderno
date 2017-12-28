@@ -17,6 +17,7 @@ bool operator == (vec a, vec b)
 bool operator != (vec a, vec b)
 { return !(a==b); }
 
+// vec
 TEST(geometry_basic_vec, vec) {
 	vec a(45,16), b(50,13);
 	ll c = 10;
@@ -170,6 +171,7 @@ TEST(geometry_basic_vec, in_seg_Generated) {
 	EXPECT_TRUE(vec(71505148, 59430354).in_seg(vec(-13132301, -58339227), vec(127930114, 137943408)));
 }
 
+// lin
 TEST(geometry_basic_lin, at) {
 	lin s(4,8,52), t(-5,3,0);
 
@@ -230,3 +232,4 @@ TEST(geometry_basic_lin, perp) {
 
 	EXPECT_EQ((s1-s0)*(t1-t0), 0);
 }
+

@@ -13,8 +13,11 @@ const double eps = 1e-8;
 #include "../../code/geometry/basic.cpp"
 
 bool operator== (vec a, vec b)
-{ return (abs(a.x - b.x) < eps && abs(a.y - b.y) < eps); }
+{ return (abs(a.x - b.x) < eps && abs(a.y - b.y) <= eps); }
+bool operator== (cir a, cir b)
+{ return (a.c == b.c && abs(a.r - b.r) <= eps); }
 
+// vec
 TEST(geometry_basic_vec, rotate) {
 	EXPECT_EQ(vec(1,0).rotate(0), vec(1,0));
 	EXPECT_EQ(vec(1,0).rotate(.5*pi), vec(0,1));
@@ -178,3 +181,6 @@ TEST(geometry_basic_vec_rand, compare__Sorting) {
 		}
 	}
 }
+
+// lin
+

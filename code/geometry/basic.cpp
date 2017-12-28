@@ -55,25 +55,29 @@ struct lin { // line
 	vec at_x (cood x) { return vec(x,(c-a*x)/b); }
 	vec at_y (cood y) { return vec((c-b*y)/a,y); }
 };
-struct cir { // circle TODO NADA TESTADO
+struct cir { // circle
 	vec c; cood r;
 	cir () {} cir (vec v, cood d) : c(v), r(d) {}
-	cir (vec a, vec b, vec c) { c = lin(a,a+(c-a).rot90()).parll((a+c)/2).inter(lin(b,b+(c-b).rot90()).parll((b+c)/2)); r = c.nr(a); }
+	cir (vec u, vec v, vec w) {
+		vec mv = (u+v)/2; lin s(mv, mv+(v-u).rot90());
+		vec mw = (u+w)/2; lin t(mw, mw+(w-u).rot90());
+		c = s.inter(t); r = c.nr(u);
+	}
 	inline bool contains (vec w) { return c.sq(w) <= sq(r) + eps; } // border included
 	inline bool has_inter (cir o) { return c.sq(o.c) <= sq(r + o.r) + eps; } // borders included
 	inline bool has_border_inter (cir o) { return has_inter(o) && c.sq(o.c) + eps >= sq(r - o.r); }
-	inline bool has_inter_lin (vec a, vec b) { return sq(c.cross(a,b)) <= sq(r)*a.sq(b)*4 + eps; } // borders included XXX overflow
+	inline bool has_inter_lin (vec a, vec b) { return sq(c.cross(a,b)) <= sq(r)*a.sq(b) + eps; } // borders included XXX overflow
 	inline bool has_inter_seg (vec a, vec b) { return has_inter_lin(a,b) && (contains(a) || contains(b) || a.dir(c,b)*b.dir(c,a) != -1); } // borders and tips included XXX overflow
 	inline double arc_area (vec a, vec b) { return c.angle(a,b)*r*r/2; } // smallest arc, ccw positive
-	inline double arc_perim (vec a, vec b) { return c.angle(a,b)*r; } // smallest arc, ccw positive
-	pair<vec,vec> border_inter (cir o) {
+	inline double arc_len (vec a, vec b) { return c.angle(a,b)*r; } // smallest arc, ccw positive
+	pair<vec,vec> border_inter (cir o) { // TODO
 		if (!has_border_inter(o)) throw 0;
 		double d2 = c.sq(o.c); vec p = (o.c - c)/sqrt(d2);
 		double h = sqrt(r*r  - (sq((r*r - o.r*o.r + d2)) / (4.*d2))); h = h!=h?0:h;
 		double a = sqrt(r*r - h*h); a = a!=a?0:a;
 		return pair<vec,vec>(c + p*a + p.rot90()*h, c + p*a - p.rot90()*h);
 	}
-	pair<vec,vec> border_inter_lin (vec a, vec b) { // first is closest to a than second
+	pair<vec,vec> border_inter_lin (vec a, vec b) { // first is closest to a than second TODO
 		if (a.dir(b,c) == -1) swap(a,b);
 		if (!has_inter_lin(a,b)) throw 0;
 		double d2 = c.dist2_lin(a,b); vec p = (b-a)/a.nr(b);
@@ -81,7 +85,7 @@ struct cir { // circle TODO NADA TESTADO
 		double y = sqrt(c.sq(a) - d2); y = y!=y?0:y;
 		return pair<vec,vec>(a + p*(y-h), a + p*(y+h));
 	}
-	double triang_inter (vec a, vec b) { // ccw oriented, this with (c,a,b)
+	double triang_inter (vec a, vec b) { // ccw oriented, this with (c,a,b) TODO
 		double res = 0.; bool inv = 0; pair<vec,vec> itr = border_inter_lin(a,b);
 		if (contains(b)) { swap(a,b); inv = 1; }
 		if (contains(b)) res = c.cross(a,b)/2;
@@ -91,11 +95,11 @@ struct cir { // circle TODO NADA TESTADO
 		return inv?-res:res;
 	}
 };
-bool inter_seg (vec a, vec b, vec c, vec d) { // tips included
+bool inter_seg (vec a, vec b, vec c, vec d) { // tips included TODO
 	if (a.in_seg(c, d) || b.in_seg(c, d) || c.in_seg(a, b) || d.in_seg(a, b)) return true;
 	return (c.ccw(a, b) * d.ccw(a, b) == -1 && a.ccw(c, d) * b.ccw(c, d) == -1);
 }
-double dist2_seg (vec a, vec b, vec c, vec d){return inter_seg(a,b,c,d)?0.:min({ a.dist2_seg(c,d), b.dist2_seg(c,d), c.dist2_seg(a,b), d.dist2_seg(a,b) });}
+double dist2_seg (vec a, vec b, vec c, vec d){return inter_seg(a,b,c,d)?0.:min({ a.dist2_seg(c,d), b.dist2_seg(c,d), c.dist2_seg(a,b), d.dist2_seg(a,b) });} // TODO
 ostream& operator<<(ostream& os, vec o) { return os << '(' << o.x << ", " << o.y << ')'; }
 ostream& operator<<(ostream& os, lin o) { return os << '[' << o.a << "x + " << o.b << "y = " << o.c << ']'; }
 ostream& operator<<(ostream& os, cir o) { return os << '[' << o.c << o.r << ']'; }
