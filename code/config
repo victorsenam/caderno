@@ -1,4 +1,5 @@
-<Geometry> <geometry.cpp>
+<Geometry Base> <geometry/basic.cpp>
+<Geometry> <geometry/algorithms.cpp>
 <Dinic> <dinic.cpp>
 <Ordered Set> <orderedset.cpp>
 <MinCost MaxFlow> <mincost.cpp>
