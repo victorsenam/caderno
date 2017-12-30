@@ -86,13 +86,12 @@ struct cir { // circle
 		return pair<vec,vec>(a + p*(y-h), a + p*(y+h));
 	}
 	double triang_inter (vec a, vec b) { // ccw oriented, this with (c,a,b) TODO
-		double res = 0.; bool inv = 0; pair<vec,vec> itr = border_inter_lin(a,b);
-		if (contains(b)) { swap(a,b); inv = 1; }
-		if (contains(b)) res = c.cross(a,b)/2;
-		else if (contains(a)) res = c.cross(a,itr.first)/2 + arc_area(itr.first,b);
-		else if (has_inter_seg(a,b)) res = arc_area(a,itr.first) + c.cross(itr.first,itr.second)/2 + arc_area(itr.second,b);
-		else res = arc_area(a,b);
-		return inv?-res:res;
+		if (c.sq(a) > c.sq(b)) return -triang_inter(b,a);
+		if (contains(b)) return c.cross(a,b)/2;
+		if (!has_inter_seg(a,b)) return arc_area(a,b);
+		pair<vec,vec> itr = border_inter_lin(b,a); // order important
+		if (contains(a)) return c.cross(a,itr.first)/2 + arc_area(itr.first,b);
+		return arc_area(a,itr.second) + c.cross(itr.second,itr.first)/2 + arc_area(itr.first,b);
 	}
 };
 bool inter_seg (vec a, vec b, vec c, vec d) { // tips included TODO

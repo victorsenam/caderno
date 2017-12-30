@@ -28,7 +28,8 @@ bool operator == (cir a, cir b)
 vec A[] = {vec(1,4), vec(3,2), vec(7,6), vec(4,6)},
 	B = vec(4,14),
 	E[] = {vec(72,92), vec(78,90), vec(84,88), vec(54,98)},
-	F[] = {vec(-30,10), vec(-35,10), vec(-22,5), vec(-23,7), vec(-28,9), vec(-27,11), vec(-32,13), vec(-34,5), vec(-34,7), vec(-35,8), vec(-22,15), vec(-27,17)};
+	F[] = {vec(-30,10), vec(-35,10), vec(-22,5), vec(-23,7), vec(-28,9), vec(-27,11), vec(-32,13), vec(-34,5), vec(-34,7), vec(-35,8), vec(-22,15), vec(-27,17)},
+	G[] = {vec(-10,-9), vec(-2,-9), vec(3,-9), vec(8,-9), vec(-4,1), vec(2,-4), vec(14,1), vec(-5,-21), vec(-21,-25), vec(7,-3), vec(-15,-36), vec(-17,-5), vec(-4,3), vec(3,-14), vec(-22,-16), vec(7,-3)};
 
 TEST(geometry_basic_cir, cir) {
 	cir a0(A[0],A[1],A[2]);
@@ -201,6 +202,36 @@ TEST(geometry_basic_cir, border_inter_lin) {
 	EXPECT_ANY_THROW(f.border_inter_lin(F[11],F[10])) << " no inter";
 	EXPECT_ANY_THROW(f.border_inter_lin(F[2],F[11])) << " almost has inter";
 	EXPECT_ANY_THROW(f.border_inter_lin(F[11],F[2])) << " almost has inter";
+}
 
+TEST(geometry_basic_cir, triang_inter) {
+	cir g(G[0],13);
 
+	for (int i : {1,2})
+		for (int j : {4,5})
+			EXPECT_DOUBLE_EQ(g.triang_inter(G[i],G[j]), g.c.cross(G[i],G[j])/2) << "full triangle where i = " << i << " j = " << j;
+
+	for (int i : {2,3})
+		for (int j : {5,6})
+			if (i != 2 || j != 5) {
+				EXPECT_DOUBLE_EQ(g.triang_inter(G[i],G[j]), g.arc_area(G[i],G[j])) << "full arc where i = " << i << " j = " << j;
+			}
+
+	EXPECT_DOUBLE_EQ(g.triang_inter(G[3],G[4]), g.arc_area(G[3],G[5]) + g.c.cross(G[5],G[4])/2) << "intersecting once";
+	EXPECT_DOUBLE_EQ(g.triang_inter(G[9],G[10]), g.arc_area(G[9],G[2]) + g.c.cross(G[2],G[7])/2 + g.arc_area(G[7],G[10])) << "intersecting twice";
+
+	for (int i = 1; i <= 14; i++) {
+		for (int j = 1; j <= 14; j++) {
+			if (i == j) continue;
+			EXPECT_EQ(g.triang_inter(G[i],G[j]), -g.triang_inter(G[j],G[i])) << "consistent where i = " << i << " and j = " << j;
+
+			if (g.contains(G[i]) && g.contains(G[j])) {
+				EXPECT_DOUBLE_EQ(g.triang_inter(G[i],G[j]), g.c.cross(G[i],G[j])/2) << "full triangle where i = " << i << " j = " << j;
+			} else {
+				// XXX important test!
+				// if this fails, the intersection point might be chosen wrong
+				EXPECT_PRED_FORMAT2(::testing::DoubleLE, abs(g.triang_inter(G[i],G[j])), abs(g.c.cross(G[i],G[j])/2)) << "not full triangle where i = " << i << " j = " << j;
+			}
+		}
+	}
 }
