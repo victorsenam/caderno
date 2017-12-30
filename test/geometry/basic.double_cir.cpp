@@ -27,7 +27,8 @@ bool operator == (cir a, cir b)
 
 vec A[] = {vec(1,4), vec(3,2), vec(7,6), vec(4,6)},
 	B = vec(4,14),
-	E[] = {vec(72,92), vec(78,90), vec(84,88), vec(54,98)};
+	E[] = {vec(72,92), vec(78,90), vec(84,88), vec(54,98)},
+	F[] = {vec(-30,10), vec(-35,10), vec(-22,5), vec(-23,7), vec(-28,9), vec(-27,11), vec(-32,13), vec(-34,5), vec(-34,7), vec(-35,8), vec(-22,15), vec(-27,17)};
 
 TEST(geometry_basic_cir, cir) {
 	cir a0(A[0],A[1],A[2]);
@@ -99,12 +100,10 @@ TEST(geometry_basic_cir, arc_len) {
 }
 
 ::testing::AssertionResult is_on_circle (vec v, cir c) { 
-	if (abs(v.nr(c.c) - c.r) <= eps)
+	if (isClose(v.nr(c.c), c.r))
 		return ::testing::AssertionSuccess();
 	return ::testing::AssertionFailure() << v << " is not on " << c;
 }
-
-bool is_on_lin (vec v, lin l) { return abs(v.x * l.a + v.y * l.b - l.c) <= eps; }
 
 ::testing::AssertionResult check_cir_border_inter (cir a, cir b, bool once) {
 	pair<vec,vec> res = a.border_inter(b);
@@ -145,10 +144,57 @@ TEST(geometry_basic_cir, border_inter) {
 	EXPECT_TRUE(check_cir_border_inter(e[6],e[3],false)) << "Inters after center";
 	EXPECT_TRUE(check_cir_border_inter(e[8],e[7],true)) << "Borders touch";
 
-	EXPECT_ANY_THROW(check_cir_border_inter(e[1],e[9],true)) << "No intersection";
-	EXPECT_ANY_THROW(check_cir_border_inter(e[9],e[1],true)) << "No intersection";
-	EXPECT_ANY_THROW(check_cir_border_inter(e[4],e[6],true)) << "Fully contained";
-	EXPECT_ANY_THROW(check_cir_border_inter(e[6],e[4],true)) << "Fully contained";
-	EXPECT_ANY_THROW(check_cir_border_inter(e[2],e[7],true)) << "Fully contained different centers";
-	EXPECT_ANY_THROW(check_cir_border_inter(e[7],e[2],true)) << "Fully contained different centers";
+	EXPECT_ANY_THROW(e[1].border_inter(e[9])) << "No intersection";
+	EXPECT_ANY_THROW(e[9].border_inter(e[1])) << "No intersection";
+	EXPECT_ANY_THROW(e[4].border_inter(e[6])) << "Fully contained";
+	EXPECT_ANY_THROW(e[6].border_inter(e[4])) << "Fully contained";
+	EXPECT_ANY_THROW(e[2].border_inter(e[7])) << "Fully contained different centers";
+	EXPECT_ANY_THROW(e[7].border_inter(e[2])) << "Fully contained different centers";
+}
+
+::testing::AssertionResult is_on_lin (vec v, vec a, vec b) { 
+	return v.ccw(a,b) == 0 ? ::testing::AssertionSuccess() : ::testing::AssertionFailure() << v << " " << a << " and " << b << " not collinear";
+}
+
+::testing::AssertionResult check_cir_inter_lin (cir c, vec a, vec b, bool once) {
+	std::pair<vec,vec> res = c.border_inter_lin(a,b);
+	::testing::AssertionResult ret = ::testing::AssertionSuccess();
+	if (once) {
+		if (res.first != res.second) 
+			return ret = ::testing::AssertionFailure() << "two different intersections: " << res.first << " and " << res.second;
+	} else {
+		if (res.first == res.second)
+			return ret = ::testing::AssertionFailure() << "only one intersection: " << res.first;
+	}
+	
+	if (ret) ret = is_on_circle(res.first, c);
+	if (ret) ret = is_on_circle(res.second, c);
+	if (ret) ret = is_on_lin(res.first, a, b);
+	if (ret) ret = is_on_lin(res.second, a, b);
+
+	return ret;
+}
+
+TEST(geometry_basic_cir, border_inter_lin) {
+	cir f(F[0],5);
+	vec f_o(-38,5);
+	
+	for (int i = 1; i <= 11; i++) {
+		EXPECT_TRUE(check_cir_inter_lin(f, f_o, F[i], (i == 2 || i == 7))) << " where i = " << i;
+		EXPECT_TRUE(check_cir_inter_lin(f, F[i], f_o, (i == 2 || i == 7))) << " where i = " << i;
+	}
+
+	EXPECT_TRUE(check_cir_inter_lin(f, F[5], F[6], false)) << " both in";
+	EXPECT_TRUE(check_cir_inter_lin(f, F[6], F[5], false)) << " both in";
+	EXPECT_TRUE(check_cir_inter_lin(f, F[0], F[3], false)) << " with center";
+	EXPECT_TRUE(check_cir_inter_lin(f, F[3], F[0], false)) << " with center";
+	EXPECT_TRUE(check_cir_inter_lin(f, F[2], F[3], false)) << " close inters";
+	EXPECT_TRUE(check_cir_inter_lin(f, F[3], F[2], false)) << " close inters";
+	EXPECT_TRUE(check_cir_inter_lin(f, F[2], F[7], true)) << " tangent";
+	EXPECT_TRUE(check_cir_inter_lin(f, F[7], F[2], true)) << " tangent";
+
+	EXPECT_ANY_THROW(f.border_inter_lin(F[10],F[11])) << " no inter";
+	EXPECT_ANY_THROW(f.border_inter_lin(F[11],F[10])) << " no inter";
+	EXPECT_ANY_THROW(f.border_inter_lin(F[2],F[11])) << " almost has inter";
+	EXPECT_ANY_THROW(f.border_inter_lin(F[11],F[2])) << " almost has inter";
 }
