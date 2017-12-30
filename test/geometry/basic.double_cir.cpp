@@ -172,6 +172,8 @@ TEST(geometry_basic_cir, border_inter) {
 	if (ret) ret = is_on_lin(res.first, a, b);
 	if (ret) ret = is_on_lin(res.second, a, b);
 
+	if (res.second.sq(a) + eps < res.first.sq(a)) ret = ::testing::AssertionFailure() << "second (" << res.second << ") was closest to a (" << a << ") than first (" << res.first << ")";
+
 	return ret;
 }
 
@@ -192,9 +194,13 @@ TEST(geometry_basic_cir, border_inter_lin) {
 	EXPECT_TRUE(check_cir_inter_lin(f, F[3], F[2], false)) << " close inters";
 	EXPECT_TRUE(check_cir_inter_lin(f, F[2], F[7], true)) << " tangent";
 	EXPECT_TRUE(check_cir_inter_lin(f, F[7], F[2], true)) << " tangent";
+	EXPECT_TRUE(check_cir_inter_lin(cir(F[5],20), F[10], F[11], false)) << " other circle";
+	EXPECT_TRUE(check_cir_inter_lin(cir(F[5],20), F[11], F[10], false)) << " other circle";
 
 	EXPECT_ANY_THROW(f.border_inter_lin(F[10],F[11])) << " no inter";
 	EXPECT_ANY_THROW(f.border_inter_lin(F[11],F[10])) << " no inter";
 	EXPECT_ANY_THROW(f.border_inter_lin(F[2],F[11])) << " almost has inter";
 	EXPECT_ANY_THROW(f.border_inter_lin(F[11],F[2])) << " almost has inter";
+
+
 }

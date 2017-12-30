@@ -77,7 +77,7 @@ struct cir { // circle
 		double h = sqrt(sq(r) - sq(a)); h = h!=h?0:h;
 		return pair<vec,vec>(m + v.rot90()*h, m - v.rot90()*h);
 	}
-	pair<vec,vec> border_inter_lin (vec a, vec b) { // first is closest to a than second TODO
+	pair<vec,vec> border_inter_lin (vec a, vec b) { // first is closest to a than second
 		if (a.dir(b,c) == -1) swap(a,b);
 		if (!has_inter_lin(a,b)) throw 0;
 		double d2 = c.dist2_lin(a,b); vec p = (b-a)/a.nr(b);
