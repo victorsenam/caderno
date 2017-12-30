@@ -70,12 +70,12 @@ struct cir { // circle
 	inline bool has_inter_seg (vec a, vec b) { return has_inter_lin(a,b) && (contains(a) || contains(b) || a.dir(c,b)*b.dir(c,a) != -1); } // borders and tips included XXX overflow
 	inline double arc_area (vec a, vec b) { return c.angle(a,b)*r*r/2; } // smallest arc, ccw positive
 	inline double arc_len (vec a, vec b) { return c.angle(a,b)*r; } // smallest arc, ccw positive
-	pair<vec,vec> border_inter (cir o) { // TODO
+	pair<vec,vec> border_inter (cir o) {
 		if (!has_border_inter(o)) throw 0;
-		double d2 = c.sq(o.c); vec p = (o.c - c)/sqrt(d2);
-		double h = sqrt(r*r  - (sq((r*r - o.r*o.r + d2)) / (4.*d2))); h = h!=h?0:h;
-		double a = sqrt(r*r - h*h); a = a!=a?0:a;
-		return pair<vec,vec>(c + p*a + p.rot90()*h, c + p*a - p.rot90()*h);
+		double a = (sq(r) + o.c.sq(c) - sq(o.r))/(2*o.c.nr(c));
+		vec v = (o.c - c)/o.c.nr(c); vec m = c + v * a;
+		double h = sqrt(sq(r) - sq(a)); h = h!=h?0:h;
+		return pair<vec,vec>(m + v.rot90()*h, m - v.rot90()*h);
 	}
 	pair<vec,vec> border_inter_lin (vec a, vec b) { // first is closest to a than second TODO
 		if (a.dir(b,c) == -1) swap(a,b);

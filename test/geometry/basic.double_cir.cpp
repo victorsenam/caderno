@@ -13,12 +13,17 @@ const cood eps = 1e-8;
 #include "gtest/gtest.h"
 #include "../../code/geometry/basic.cpp"
 
+bool isClose (cood a, cood b) {
+	if (abs(a - b) <= eps) return true;
+	return min(a*(1-eps),a*(1+eps)) <= b + 1e-15 && b <= max(a*(1-eps),a*(1+eps)) + 1e-15;
+}
+
 bool operator == (vec a, vec b)
-{ return abs(a.x - b.x) <= eps && abs(a.y - b.y) <= eps; }
+{ return isClose(a.x,b.x) && isClose(a.y,b.y); }
 bool operator != (vec a, vec b)
 { return !(a==b); }
 bool operator == (cir a, cir b)
-{ return a.c == b.c && abs(a.r - b.r) <= eps; }
+{ return a.c == b.c && isClose(a.r,b.r); }
 
 vec A[] = {vec(1,4), vec(3,2), vec(7,6), vec(4,6)},
 	B = vec(4,14),
@@ -93,19 +98,31 @@ TEST(geometry_basic_cir, arc_len) {
 	EXPECT_DOUBLE_EQ(b_big.arc_len(Ba[0],Bb[1])/b.arc_len(Ba[0],Bb[1]), 2) << "Linear on ray";
 }
 
-void is_on_circle (vec v, cir c) { EXPECT_DOUBLE_EQ(v.nr(c.c), c.r) << v << " should be on " << c; }
-void is_on_lin (vec v, lin l) { EXPECT_DOUBLE_EQ(v.x * l.a + v.y * l.b, l.c) << v << " should be on " << l; }
+::testing::AssertionResult is_on_circle (vec v, cir c) { 
+	if (abs(v.nr(c.c) - c.r) <= eps)
+		return ::testing::AssertionSuccess();
+	return ::testing::AssertionFailure() << v << " is not on " << c;
+}
 
-void check_cir_border_inter (cir a, cir b, bool once) {
+bool is_on_lin (vec v, lin l) { return abs(v.x * l.a + v.y * l.b - l.c) <= eps; }
+
+::testing::AssertionResult check_cir_border_inter (cir a, cir b, bool once) {
 	pair<vec,vec> res = a.border_inter(b);
-	is_on_circle(res.first, a);
-	is_on_circle(res.first, b);
-	is_on_circle(res.second, a);
-	is_on_circle(res.second, b);
-	if (once)
-		EXPECT_EQ(res.first, res.second) << a << " and " << b << " intersect once";
-	else
-		EXPECT_NE(res.first, res.second) << a << " and " << b << " intersect twice";
+	::testing::AssertionResult ret = ::testing::AssertionSuccess();
+	if (once) {
+		if (res.first != res.second) 
+			return ret = ::testing::AssertionFailure() << "two different intersections: " << res.first << " and " << res.second;
+	} else {
+		if (res.first == res.second)
+			return ret = ::testing::AssertionFailure() << "only one intersection: " << res.first;
+	}
+	
+	if (ret) ret = is_on_circle(res.first, a);
+	if (ret) ret = is_on_circle(res.first, b);
+	if (ret) ret = is_on_circle(res.second, a);
+	if (ret) ret = is_on_circle(res.second, b);
+
+	return ret;
 }
 
 TEST(geometry_basic_cir, border_inter) {
@@ -117,9 +134,21 @@ TEST(geometry_basic_cir, border_inter) {
 		cir(E[3],2*e_d), cir(E[3],1.5*e_d) // blue
 	};
 
-	for (int i = 1; i <= 9; i++)
-		check_cir_border_inter(e[0], e[1], (i == 1 || i == 9));
+	for (int i = 1; i <= 9; i++) {
+		EXPECT_TRUE(check_cir_border_inter(e[0], e[i], (i == 1 || i == 9))) << " where i = " << i;
+		EXPECT_TRUE(check_cir_border_inter(e[i], e[0], (i == 1 || i == 9))) << " where i = " << i;
+	}
 
-	check_cir_border_inter(e[9],e[7],true);
-	check_cir_border_inter(e[6],e[3],false);
+	EXPECT_TRUE(check_cir_border_inter(e[3],e[4],false)) << "Inters after center";
+	EXPECT_TRUE(check_cir_border_inter(e[3],e[6],false)) << "Inters after center";
+	EXPECT_TRUE(check_cir_border_inter(e[4],e[3],false)) << "Inters after center";
+	EXPECT_TRUE(check_cir_border_inter(e[6],e[3],false)) << "Inters after center";
+	EXPECT_TRUE(check_cir_border_inter(e[8],e[7],true)) << "Borders touch";
+
+	EXPECT_ANY_THROW(check_cir_border_inter(e[1],e[9],true)) << "No intersection";
+	EXPECT_ANY_THROW(check_cir_border_inter(e[9],e[1],true)) << "No intersection";
+	EXPECT_ANY_THROW(check_cir_border_inter(e[4],e[6],true)) << "Fully contained";
+	EXPECT_ANY_THROW(check_cir_border_inter(e[6],e[4],true)) << "Fully contained";
+	EXPECT_ANY_THROW(check_cir_border_inter(e[2],e[7],true)) << "Fully contained different centers";
+	EXPECT_ANY_THROW(check_cir_border_inter(e[7],e[2],true)) << "Fully contained different centers";
 }
