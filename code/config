@@ -15,4 +15,3 @@
 <Discrete FFT> <math/fft_finite.cpp>
 <Linear System Solver> <linsys.cpp>
 <Splay Tree> <splay.cpp>
-<Minimum Spanning Circle> <msc.cpp>
