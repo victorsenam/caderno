@@ -17,6 +17,47 @@ bool operator == (vec a, vec b)
 bool operator != (vec a, vec b)
 { return !(a==b); }
 
+TEST(geometry_basic, inter_seg) {
+	vec A[] = {vec(1,4), vec(5,6), vec(7,7), vec(3,5), vec(-11,-2), vec(2,7), vec(4,3), vec(1,9), vec(4,8), vec(2,2), vec(1,-1), vec(-3,5)};
+
+	for (int i = 2; i <= 4; i++)
+		for (int j = i+1; j <= 4; j++) {
+			EXPECT_TRUE(inter_seg(A[0],A[1],A[i],A[j])) << "collinear cases where (i,j) = (" << i << "," << j << ") -> " << A[i] << A[j];
+		}
+	
+	EXPECT_TRUE(inter_seg(A[7],A[6],A[0],A[1])) << "perpendicular";
+	EXPECT_TRUE(inter_seg(A[5],A[6],A[0],A[1])) << "perpendicular true";
+	EXPECT_FALSE(inter_seg(A[7],A[5],A[0],A[1])) << "perpendicular false";
+
+	EXPECT_TRUE(inter_seg(A[8],A[9],A[0],A[1])) << "crossing true";
+	EXPECT_TRUE(inter_seg(A[8],A[3],A[0],A[1])) << "overline true";
+
+	EXPECT_TRUE(inter_seg(A[10],A[7],A[0],A[1])) << "tips";
+	EXPECT_FALSE(inter_seg(A[8],A[2],A[0],A[1])) << "overline false";
+	EXPECT_FALSE(inter_seg(A[11],A[9],A[0],A[1])) << "crossing false";
+	EXPECT_FALSE(inter_seg(A[7],A[5],A[0],A[1])) << "non crossing false";
+	EXPECT_FALSE(inter_seg(A[9],A[10],A[0],A[1])) << "non-crossing";
+	EXPECT_FALSE(inter_seg(A[9],A[6],A[0],A[1])) << "parallel false";
+
+	EXPECT_TRUE(inter_seg(A[0],A[1],A[3],A[3])) << "single point true";
+	EXPECT_TRUE(inter_seg(A[0],A[1],A[1],A[1])) << "single point true tip";
+	EXPECT_FALSE(inter_seg(A[0],A[1],A[11],A[11])) << "single point false";
+	EXPECT_FALSE(inter_seg(A[0],A[1],A[9],A[9])) << "single point false";
+	EXPECT_FALSE(inter_seg(A[0],A[1],A[4],A[4])) << "single point false collinear";
+
+	EXPECT_FALSE(inter_seg(A[5],A[7],A[6],A[9])) << "other segments false";
+	EXPECT_TRUE(inter_seg(A[8],A[10],A[11],A[6])) << "other segments true";
+
+	for (int i = 0; i <= 11; i++)
+		for (int j = 0; j <= 11; j++)
+			for (int k = 0; k <= 11; k++)
+				for (int l = 0; l <= 11; l++) {
+					EXPECT_EQ(inter_seg(A[i],A[j],A[k],A[l]),inter_seg(A[i],A[j],A[l],A[k])) << "consistent where (i,j,k,l) = (" << i << "," << j << "," << k << "," << l << ") -> " << A[i] << A[j] << A[k] << A[l];
+					EXPECT_EQ(inter_seg(A[i],A[j],A[k],A[l]),inter_seg(A[j],A[i],A[k],A[l])) << "consistent where (i,j,k,l) = (" << i << "," << j << "," << k << "," << l << ") -> " << A[i] << A[j] << A[k] << A[l];
+					EXPECT_EQ(inter_seg(A[i],A[j],A[k],A[l]),inter_seg(A[k],A[l],A[i],A[j])) << "consistent where (i,j,k,l) = (" << i << "," << j << "," << k << "," << l << ") -> " << A[i] << A[j] << A[k] << A[l];
+				}
+}
+
 // vec
 TEST(geometry_basic_vec, vec) {
 	vec a(45,16), b(50,13);
@@ -232,4 +273,3 @@ TEST(geometry_basic_lin, perp) {
 
 	EXPECT_EQ((s1-s0)*(t1-t0), 0);
 }
-

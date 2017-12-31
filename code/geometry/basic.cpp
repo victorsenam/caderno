@@ -85,7 +85,7 @@ struct cir { // circle
 		double y = sqrt(c.sq(a) - d2); y = y!=y?0:y;
 		return pair<vec,vec>(a + p*(y-h), a + p*(y+h));
 	}
-	double triang_inter (vec a, vec b) { // ccw oriented, this with (c,a,b) TODO
+	double triang_inter (vec a, vec b) { // ccw oriented, this with (c,a,b)
 		if (c.sq(a) > c.sq(b)) return -triang_inter(b,a);
 		if (contains(b)) return c.cross(a,b)/2;
 		if (!has_inter_seg(a,b)) return arc_area(a,b);
@@ -94,7 +94,7 @@ struct cir { // circle
 		return arc_area(a,itr.second) + c.cross(itr.second,itr.first)/2 + arc_area(itr.first,b);
 	}
 };
-bool inter_seg (vec a, vec b, vec c, vec d) { // tips included TODO
+bool inter_seg (vec a, vec b, vec c, vec d) {
 	if (a.in_seg(c, d) || b.in_seg(c, d) || c.in_seg(a, b) || d.in_seg(a, b)) return true;
 	return (c.ccw(a, b) * d.ccw(a, b) == -1 && a.ccw(c, d) * b.ccw(c, d) == -1);
 }
