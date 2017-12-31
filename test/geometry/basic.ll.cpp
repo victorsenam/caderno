@@ -18,6 +18,7 @@ bool operator != (vec a, vec b)
 { return !(a==b); }
 
 TEST(geometry_basic, inter_seg) {
+	// Geogebra: https://ggbm.at/eCup2T63
 	vec A[] = {vec(1,4), vec(5,6), vec(7,7), vec(3,5), vec(-11,-2), vec(2,7), vec(4,3), vec(1,9), vec(4,8), vec(2,2), vec(1,-1), vec(-3,5)};
 
 	for (int i = 2; i <= 4; i++)
