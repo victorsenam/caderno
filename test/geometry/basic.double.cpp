@@ -17,6 +17,32 @@ bool operator== (vec a, vec b)
 bool operator== (cir a, cir b)
 { return (a.c == b.c && abs(a.r - b.r) <= eps); }
 
+TEST(geomtery_basic, dist2_seg) {
+	vec A[] = {vec(-8,7), vec(-2,6), vec(-6,3), vec(4,5), vec(10,4), vec(2,3), vec(-10,5), vec(-12,6), vec(-10,11), vec(-14,9)};
+	
+	EXPECT_EQ(dist2_seg(A[0],A[1],A[5],A[6]), A[1].dist2_seg(A[5],A[6])) << "in seg";
+	EXPECT_EQ(dist2_seg(A[0],A[1],A[2],A[7]), A[0].dist2_seg(A[2],A[7])) << "in seg";
+	EXPECT_EQ(dist2_seg(A[0],A[1],A[5],A[3]), A[1].sq(A[5])) << "to point";
+	EXPECT_EQ(dist2_seg(A[0],A[1],A[3],A[4]), A[1].sq(A[3])) << "to point collinear";
+	EXPECT_EQ(dist2_seg(A[0],A[1],A[3],A[8]), A[1].dist2_seg(A[3],A[8])) << "collinear tip";
+	EXPECT_EQ(dist2_seg(A[0],A[1],A[6],A[8]), A[0].dist2_seg(A[6],A[8])) << "lines cross";
+
+	EXPECT_EQ(dist2_seg(A[0],A[1],A[5],A[8]), 0) << "cross";
+	EXPECT_EQ(dist2_seg(A[0],A[1],A[3],A[0]), 0) << "contained";
+
+	for (int i = 0; i <= 9; i++)
+		for (int j = 0; j <= 9; j++) {
+			if (i == j) continue;
+			for (int k = 0; k <= 9; k++) 
+				for (int l = 0; l <= 9; l++) {
+					if (l == k) continue;
+					EXPECT_EQ(dist2_seg(A[i],A[j],A[k],A[l]), dist2_seg(A[i],A[j],A[l],A[k])) << "consistent when (i,j,k,l) = (" << i << "," << j << "," << k << "," << l << ") -> " << A[i] << A[j] << A[k] << A[l];
+					EXPECT_EQ(dist2_seg(A[i],A[j],A[k],A[l]), dist2_seg(A[j],A[i],A[k],A[l])) << "consistent when (i,j,k,l) = (" << i << "," << j << "," << k << "," << l << ") -> " << A[i] << A[j] << A[k] << A[l];
+					EXPECT_EQ(dist2_seg(A[i],A[j],A[k],A[l]), dist2_seg(A[k],A[l],A[i],A[j])) << "consistent when (i,j,k,l) = (" << i << "," << j << "," << k << "," << l << ") -> " << A[i] << A[j] << A[k] << A[l];
+				}
+		}
+}
+
 // vec
 TEST(geometry_basic_vec, rotate) {
 	EXPECT_EQ(vec(1,0).rotate(0), vec(1,0));
