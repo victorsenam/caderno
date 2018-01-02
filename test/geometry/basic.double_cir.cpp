@@ -66,12 +66,24 @@ TEST(geometry_basic_cir, arc_area) {
 			double res = b.arc_area(u[0],v[0]);
 			for (int i = 0; i < 3; i++)
 				for (int j = 0; j < 3; j++)
-					EXPECT_DOUBLE_EQ(res,b.arc_area(u[i],v[j])) << "Doesn't depend on ray length";
+					EXPECT_DOUBLE_EQ(res,b.arc_area(u[i],v[j])) << "Doesn't depend on ray length i = " << i << " j = " << j;
+		}
+
+		for (int i = 0; i < 3; i++) {
+			EXPECT_NEAR(0.,b.arc_area(b.c,u[i]),1e-12) << "Degenerate with center i = " << i;
+			EXPECT_NEAR(0.,b.arc_area(u[i],b.c),1e-12) << "Degenerate with center i = " << i;
+			for (int j = 0; j < 3; j++) {
+				EXPECT_NEAR(0.,b.arc_area(u[i],u[j]),1e-12) << "Degenerate regular i = " << i << " j = " << j;
+				EXPECT_NEAR(pi*b.r*b.r/2,abs(b.arc_area(u[i],b.c - (u[j] - b.c))),1e-12) << "Degenerate opposite i = " << i << " j = " << j;
+				EXPECT_NEAR(pi*b.r*b.r/2,abs(b.arc_area(b.c - (u[j] - b.c),u[i])),1e-12) << "Degenerate opposite i = " << i << " j = " << j;
+				EXPECT_NEAR(0.,b.arc_area(u[i],b.c + (u[j] - b.c)*1.5),1e-12) << "Degenerate further i = " << i << " j = " << j;
+				EXPECT_NEAR(0.,b.arc_area(u[i],b.c + (u[j] - b.c)*.5),1e-12) << "Degenerate closer i = " << i << " j = " << j;
+			}
 		}
 	}
 
 	cir b_big(b.c,b.r*2);
-	EXPECT_DOUBLE_EQ(b_big.arc_area(Ba[0],Bb[1])/b.arc_area(Ba[0],Bb[1]), 4) << "Quadratic on ray";
+	EXPECT_NEAR(b_big.arc_area(Ba[0],Bb[1])/b.arc_area(Ba[0],Bb[1]), 4,1e-12) << "Quadratic on ray";
 }
 
 TEST(geometry_basic_cir, arc_len) {
@@ -93,11 +105,23 @@ TEST(geometry_basic_cir, arc_len) {
 			double res = b.arc_len(u[0],v[0]);
 			for (int i = 0; i < 3; i++)
 				for (int j = 0; j < 3; j++)
-					EXPECT_DOUBLE_EQ(res,b.arc_len(u[i],v[j])) << "Doesn't depend on ray length";
+					EXPECT_DOUBLE_EQ(res,b.arc_len(u[i],v[j])) << "Doesn't depend on ray length i = " << i << " j = " << j;
+		}
+
+		for (int i = 0; i < 3; i++) {
+			EXPECT_NEAR(0.,b.arc_len(b.c,u[i]),1e-12) << "Degenerate with center i = " << i;
+			EXPECT_NEAR(0.,b.arc_len(u[i],b.c),1e-12) << "Degenerate with center i = " << i;
+			for (int j = 0; j < 3; j++) {
+				EXPECT_NEAR(0.,b.arc_len(u[i],u[j]),1e-12) << "Degenerate regular i = " << i << " j = " << j;
+				EXPECT_NEAR(pi*b.r,abs(b.arc_len(u[i],b.c - (u[j] - b.c))),1e-12) << "Degenerate opposite i = " << i << " j = " << j;
+				EXPECT_NEAR(pi*b.r,abs(b.arc_len(b.c - (u[j] - b.c),u[i])),1e-12) << "Degenerate opposite i = " << i << " j = " << j;
+				EXPECT_NEAR(0.,b.arc_len(u[i],b.c + (u[j] - b.c)*1.5),1e-12) << "Degenerate further i = " << i << " j = " << j;
+				EXPECT_NEAR(0.,b.arc_len(u[i],b.c + (u[j] - b.c)*.5),1e-12) << "Degenerate closer i = " << i << " j = " << j;
+			}
 		}
 	}
 	cir b_big(b.c,b.r*2);
-	EXPECT_DOUBLE_EQ(b_big.arc_len(Ba[0],Bb[1])/b.arc_len(Ba[0],Bb[1]), 2) << "Linear on ray";
+	EXPECT_NEAR(b_big.arc_len(Ba[0],Bb[1])/b.arc_len(Ba[0],Bb[1]), 2,1e-12) << "Linear on ray";
 }
 
 ::testing::AssertionResult is_on_circle (vec v, cir c) { 
@@ -151,6 +175,18 @@ TEST(geometry_basic_cir, border_inter) {
 	EXPECT_ANY_THROW(e[6].border_inter(e[4])) << "Fully contained";
 	EXPECT_ANY_THROW(e[2].border_inter(e[7])) << "Fully contained different centers";
 	EXPECT_ANY_THROW(e[7].border_inter(e[2])) << "Fully contained different centers";
+
+	for (int i = 0; i <= 9; i++) {
+		for (int j = 0; j <= 0; j++) {
+			if (abs(e[i].c.sq(E[j]) - sq(e[i].r)) <= eps) { // on border
+				EXPECT_TRUE(check_cir_border_inter(e[i], cir(E[j],0), true)) << "Degenerate with inter";
+				EXPECT_TRUE(check_cir_border_inter(cir(E[j],0), e[i], true)) << "Degenerate with inter";
+			} else {
+				EXPECT_ANY_THROW(e[i].border_inter(cir(E[j],0))) << "Degenerate no inter";
+				EXPECT_ANY_THROW(cir(E[j],0).border_inter(e[i])) << "Degenerate no inter";
+			}
+		}
+	}
 }
 
 ::testing::AssertionResult is_on_lin (vec v, vec a, vec b) { 
@@ -186,7 +222,7 @@ TEST(geometry_basic_cir, border_inter_lin) {
 		EXPECT_TRUE(check_cir_inter_lin(f, f_o, F[i], (i == 2 || i == 7))) << " where i = " << i;
 		EXPECT_TRUE(check_cir_inter_lin(f, F[i], f_o, (i == 2 || i == 7))) << " where i = " << i;
 	}
-
+	
 	EXPECT_TRUE(check_cir_inter_lin(f, F[5], F[6], false)) << " both in";
 	EXPECT_TRUE(check_cir_inter_lin(f, F[6], F[5], false)) << " both in";
 	EXPECT_TRUE(check_cir_inter_lin(f, F[0], F[3], false)) << " with center";
@@ -202,6 +238,18 @@ TEST(geometry_basic_cir, border_inter_lin) {
 	EXPECT_ANY_THROW(f.border_inter_lin(F[11],F[10])) << " no inter";
 	EXPECT_ANY_THROW(f.border_inter_lin(F[2],F[11])) << " almost has inter";
 	EXPECT_ANY_THROW(f.border_inter_lin(F[11],F[2])) << " almost has inter";
+
+	for (int i = 0; i <= 11; i++) {
+		if (abs(f.c.sq(F[i]) - sq(f.r)) <= eps) { // on border
+			EXPECT_TRUE(check_cir_inter_lin(f, F[i], F[i], 1)) << " degenerate where i = " << i;
+		} else {
+			EXPECT_ANY_THROW(f.border_inter_lin(F[i],F[i]));
+		}
+		if (i) {
+			EXPECT_TRUE(check_cir_inter_lin(f, F[i], F[0], 1)) << " degenerate with center where i = " << i;
+			EXPECT_TRUE(check_cir_inter_lin(f, F[0], F[i], 1)) << " degenerate with center where i = " << i;
+		}
+	}
 }
 
 TEST(geometry_basic_cir, triang_inter) {
@@ -224,6 +272,9 @@ TEST(geometry_basic_cir, triang_inter) {
 		for (int j = 1; j <= 14; j++) {
 			if (i == j) continue;
 			EXPECT_EQ(g.triang_inter(G[i],G[j]), -g.triang_inter(G[j],G[i])) << "consistent where i = " << i << " and j = " << j;
+			if (g.c.ccw(G[i],G[j]) == 0) {
+				EXPECT_DOUBLE_EQ(g.triang_inter(G[i],G[j]), 0) << "colinear where i = " << i << " and j = " << j;
+			}
 
 			if (g.contains(G[i]) && g.contains(G[j])) {
 				EXPECT_DOUBLE_EQ(g.triang_inter(G[i],G[j]), g.c.cross(G[i],G[j])/2) << "full triangle where i = " << i << " j = " << j;
@@ -233,5 +284,11 @@ TEST(geometry_basic_cir, triang_inter) {
 				EXPECT_PRED_FORMAT2(::testing::DoubleLE, abs(g.triang_inter(G[i],G[j])), abs(g.c.cross(G[i],G[j])/2)) << "not full triangle where i = " << i << " j = " << j;
 			}
 		}
+
+		EXPECT_NEAR(g.triang_inter(G[i],G[i]), 0, 1e-12) << "Degenerate same i = " << i;
+		EXPECT_NEAR(g.triang_inter(G[i],G[i] + (G[i] - g.c)), 0, 1e-12) << "Degenerate colin i = " << i;
+		EXPECT_NEAR(g.triang_inter(G[i],G[i] - (G[i] - g.c)/2), 0, 1e-12) << "Degenerate colin i = " << i;
+		EXPECT_NEAR(g.triang_inter(G[0],G[i]), 0, 1e-12) << "Degenerate with center i = " << i;
+		EXPECT_NEAR(g.triang_inter(G[i],G[0]), 0, 1e-12) << "Degenerate with center i = " << i;
 	}
 }
