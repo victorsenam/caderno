@@ -1,12 +1,12 @@
 cir min_spanning_circle (vector<vec> v) {
 	srand(time(NULL)); random_shuffle(v.begin(), v.end());
-    int n = v.size(); circ c(vec(), 0);
+    int n = v.size(); cir c(vec(), 0);
 	for (int i = 0; i < n; i++) if (!c.contains(v[i])) {
-		c = circ(v[i], 0);
+		c = cir(v[i], 0);
 		for (int j = 0; j < i; j++) if (!c.contains(v[j])) {
-			c = circ((v[i] + v[j])/2, abs(v[i] - v[j]) / 2);
+			c = cir((v[i] + v[j])/2, v[i].nr(v[j])/2);
 			for (int k = 0; k < j; k++) if (!c.contains(v[k]))
-				c = circ(v[i],v[j],v[k]);
+				c = cir(v[i],v[j],v[k]);
 		}
 	}
     return c;
@@ -26,29 +26,30 @@ int convex_hull (vector<vec> & v, int border_in) {
 	int s = 0;
 	for (int i = 0; i < n; i++) {
 		if (s && v[s-1].x == v[i].x && v[s-1].y == v[i].y) continue;
-		while (s >= 2 && v[s-1].ccw(v[s-2],v[i]) >= brd) s--;
+		while (s >= 2 && v[s-1].ccw(v[s-2],v[i]) >= border_in) s--;
 		v[s++] = v[i];
 	} 
+	v.resize(s);
 	return s;
 }
-double polygon_inter (vector<vec> & p, cir c) { // signed intersection area between polygon and circle
-	return inner_product(p.begin(), p.end()-1, p.begin()+1, c.inter(*p.rbegin(),*p.begin()), std::plus<double>(), c.inter);
+double polygon_inter (vector<vec> & p, cir c) { // signed area
+	return inner_product(p.begin(), p.end()-1, p.begin()+1, c.triang_inter(*p.rbegin(),*p.begin()), std::plus<double>(), [&c] (vec a, vec b) { return c.triang_inter(a,b); });
 }
 bool in_polygon (vector<vec> & p, vec v) { // p should be simple, borders included
 	bool in = 0;
-	for (int i = 0; i < p.size(); i++) {
+	for (int i = 0; i < (int) p.size(); i++) {
 		vec a = p[i], b = p[i?i-1:p.size()-1];
 		in ^= inter_seg(a,b,v,vec(v.x,inf)) && max(a.x,b.x) > v.x + eps;
 	}
 	return in;
 }
-
 // if false, p[t..s] + v is the convex hull of p + v
 // if true, v is inside (p[0],p[s],p[t]), s <= t and t - s is minimal
 // border is considered inside, assumes convex hull excludes border points
+/*
 bool in_convex_polygon (vector<vec> & p, vec v, int & s, int & t) {
 	int n = p.size(); assert(n > 2);
-	if (v.nr(p[0]) <= eps) { prec = succ = 0; return 1; }
+	if (v.nr(p[0]) <= eps) { s = t = 0; return 1; }
 	if (v.ccw(p[0],p[1]) > 0 || v.ccw(p[0],p[n-1]) < 0) { // p[0] stays
 		int di = t = s = lower_bound(p.begin() + 1, p.end(), v, [&p] (vec a, vec v) {
 			return v.ccw(p[0],a) >= 0;
@@ -78,3 +79,4 @@ bool in_convex_polygon (vector<vec> & p, vec v, int & s, int & t) {
 	}
 	return 0;
 }
+*/

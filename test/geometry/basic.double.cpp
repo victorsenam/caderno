@@ -18,6 +18,7 @@ bool operator== (cir a, cir b)
 { return (a.c == b.c && abs(a.r - b.r) <= eps); }
 
 TEST(geomtery_basic, dist2_seg) {
+	// Geogebra: https://ggbm.at/JjWJj28v
 	vec A[] = {vec(-8,7), vec(-2,6), vec(-6,3), vec(4,5), vec(10,4), vec(2,3), vec(-10,5), vec(-12,6), vec(-10,11), vec(-14,9)};
 	
 	EXPECT_EQ(dist2_seg(A[0],A[1],A[5],A[6]), A[1].dist2_seg(A[5],A[6])) << "in seg";
