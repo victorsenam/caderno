@@ -41,3 +41,10 @@ TEST(geometry, convex_hull) {
 	EXPECT_EQ(convex_hull(v, 1), 12) << "Convex hull should have size 12";
 	EXPECT_EQ(v,expect) << "border in";
 }
+
+TEST(geometry, polygon_inter) {
+	vector<vec> v({vec(3,4), vec(5, 2), vec(19, 3)});
+	cir c(vec(3,4), 5);
+
+	EXPECT_EQ(polygon_inter(v,c), c.triang_inter(vec(5,2), vec(19,3)));
+}
