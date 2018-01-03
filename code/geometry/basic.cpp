@@ -37,7 +37,7 @@ struct vec { // vector
 	}
 
 	bool in_seg (vec a, vec b) { return ccw(a,b) == 0 && dir(a,b) <= 0; } // tips included
-	double dist2_lin (vec a, vec b) { return double(::sq(cross(a,b)))/a.sq(b); } // see cir.has_inter_lin
+	double dist2_lin (vec a, vec b) { return a.sq(b) <= eps ? sq(a) : double(::sq(cross(a,b)))/a.sq(b); } // see cir.has_inter_lin
 	double dist2_seg (vec a, vec b) { return a.dir((*this),b) == (b.dir((*this),a)) ? dist2_lin(a,b) : min(sq(a),sq(b)); }
 };
 struct lin { // line
@@ -58,12 +58,13 @@ struct lin { // line
 struct cir { // circle
 	vec c; cood r;
 	cir () {} cir (vec v, cood d) : c(v), r(d) {}
-	cir (vec u, vec v, vec w) {
+	cir (vec u, vec v, vec w) { // XXX untreated degenerates
 		vec mv = (u+v)/2; lin s(mv, mv+(v-u).rot90());
 		vec mw = (u+w)/2; lin t(mw, mw+(w-u).rot90());
 		c = s.inter(t); r = c.nr(u);
 	}
 	inline bool contains (vec w) { return c.sq(w) <= sq(r) + eps; } // border included
+	inline bool border (vec w) { return abs(c.sq(w) - sq(r)) <= eps; }
 	inline bool has_inter (cir o) { return c.sq(o.c) <= sq(r + o.r) + eps; } // borders included
 	inline bool has_border_inter (cir o) { return has_inter(o) && c.sq(o.c) + eps >= sq(r - o.r); }
 	inline bool has_inter_lin (vec a, vec b) { return a.sq(b) <= eps ? contains(a) : sq(c.cross(a,b)) <= sq(r)*a.sq(b) + eps; } // borders included XXX overflow
@@ -78,6 +79,7 @@ struct cir { // circle
 		return pair<vec,vec>(m + v.rot90()*h, m - v.rot90()*h);
 	}
 	pair<vec,vec> border_inter_lin (vec a, vec b) { // first is closest to a than second
+		if (a.sq(b) <= eps) { if (border(a)) return pair<vec,vec>(a,a); throw 0; }
 		if (a.dir(b,c) == -1) swap(a,b);
 		if (!has_inter_lin(a,b)) throw 0;
 		double d2 = c.dist2_lin(a,b); vec p = (b-a)/a.nr(b);

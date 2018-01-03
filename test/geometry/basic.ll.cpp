@@ -50,13 +50,19 @@ TEST(geometry_basic, inter_seg) {
 	EXPECT_TRUE(inter_seg(A[8],A[10],A[11],A[6])) << "other segments true";
 
 	for (int i = 0; i <= 11; i++)
-		for (int j = 0; j <= 11; j++)
+		for (int j = 0; j <= 11; j++) {
+			if (i != j) {
+				EXPECT_FALSE(inter_seg(A[i],A[i],A[j],A[j])) << "degenerate on two points";
+			} else {
+				EXPECT_TRUE(inter_seg(A[i],A[i],A[j],A[j])) << "degenerate on two points";
+			}
 			for (int k = 0; k <= 11; k++)
 				for (int l = 0; l <= 11; l++) {
 					EXPECT_EQ(inter_seg(A[i],A[j],A[k],A[l]),inter_seg(A[i],A[j],A[l],A[k])) << "consistent where (i,j,k,l) = (" << i << "," << j << "," << k << "," << l << ") -> " << A[i] << A[j] << A[k] << A[l];
 					EXPECT_EQ(inter_seg(A[i],A[j],A[k],A[l]),inter_seg(A[j],A[i],A[k],A[l])) << "consistent where (i,j,k,l) = (" << i << "," << j << "," << k << "," << l << ") -> " << A[i] << A[j] << A[k] << A[l];
 					EXPECT_EQ(inter_seg(A[i],A[j],A[k],A[l]),inter_seg(A[k],A[l],A[i],A[j])) << "consistent where (i,j,k,l) = (" << i << "," << j << "," << k << "," << l << ") -> " << A[i] << A[j] << A[k] << A[l];
 				}
+		}
 }
 
 // vec
@@ -124,6 +130,7 @@ TEST(geometry_basic_vec, sq) {
 TEST(geometry_basic_vec, rot90) {
 	EXPECT_EQ(vec(1,0).rot90(), vec(0,1));
 	EXPECT_EQ(vec(2,4).rot90(), vec(-4,2));
+	EXPECT_EQ(vec(0,0).rot90(), vec(0,0));
 }
 
 TEST(geometry_basic_vec, compare) {
@@ -135,6 +142,7 @@ TEST(geometry_basic_vec, compare) {
 	EXPECT_TRUE(vec(0,0).compare(vec(5,10), vec(2,40))) << "Works ok for right half.";
 	EXPECT_TRUE(vec(0,0).compare(vec(1,0),vec(2,0))) << "Breaks ties using distance.";
 	EXPECT_TRUE(vec(2,1).compare(vec(1,1),vec(1,0))) << "Works ok from some other point.";
+	EXPECT_FALSE(vec(0,0).compare(vec(3,3),vec(3,3))) << "Strict.";
 
 	vector<vec> ans({
 		vec(0,5),
@@ -157,9 +165,9 @@ TEST(geometry_basic_vec, compare) {
 
 TEST(geometry_basic_vec, in_seg) {
 	EXPECT_TRUE(vec(1, 1).in_seg(vec(0, 0), vec(2, 2)));
-	EXPECT_TRUE(vec(1, 1).in_seg(vec(0, 0), vec(1, 1))) << "Tip not included";
-	EXPECT_TRUE(vec(1, 1).in_seg(vec(1, 1), vec(1, 1))) << "Degenerate segment not working";
-	EXPECT_FALSE(vec(0, 0).in_seg(vec(1, 1), vec(1, 1))) << "Degenerate segment not working";
+	EXPECT_TRUE(vec(1, 1).in_seg(vec(0, 0), vec(1, 1))) << "Tip";
+	EXPECT_TRUE(vec(1, 1).in_seg(vec(1, 1), vec(1, 1))) << "Degenerate segment";
+	EXPECT_FALSE(vec(0, 0).in_seg(vec(1, 1), vec(1, 1))) << "Degenerate segment";
 
 	EXPECT_FALSE(vec(0, 1).in_seg(vec(-1e8, -1e8), vec(1.2e8, 1.2e8)));
 	EXPECT_TRUE(vec(0, 0).in_seg(vec(-1e8, -1e8), vec(1.2e8, 1.2e8)));

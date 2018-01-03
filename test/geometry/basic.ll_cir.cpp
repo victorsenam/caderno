@@ -30,6 +30,18 @@ TEST(geometry_basic_cir, contains) {
 	EXPECT_TRUE(c[3].contains(C[2])) << "Simple";
 	EXPECT_FALSE(c[5].contains(C[2])) << "Simple";
 	EXPECT_TRUE(c[1].contains(C[0])) << "Border contained";
+	EXPECT_TRUE(cir(C[0],0).contains(C[0])) << "Degenerate";
+	EXPECT_FALSE(cir(C[0],0).contains(C[1])) << "Degenerate";
+}
+
+TEST(geometry_basic_cir, border) {
+	EXPECT_FALSE(c[0].border(C[0])) << "Simple";
+	EXPECT_FALSE(c[2].border(C[2])) << "Simple";
+	EXPECT_FALSE(c[3].border(C[2])) << "Simple";
+	EXPECT_FALSE(c[5].border(C[2])) << "Simple";
+	EXPECT_TRUE(c[1].border(C[0])) << "Border contained";
+	EXPECT_TRUE(cir(C[0],0).border(C[0])) << "Degenerate";
+	EXPECT_FALSE(cir(C[0],0).border(C[1])) << "Degenerate";
 }
 
 TEST(geometry_basic_cir, has_inter) {
@@ -39,6 +51,15 @@ TEST(geometry_basic_cir, has_inter) {
 	EXPECT_TRUE(c[1].has_inter(c[3])) << "Contained different center";
 	EXPECT_TRUE(c[6].has_inter(c[0])) << "Border touch";
 	EXPECT_TRUE(c[1].has_inter(c[2])) << "Contained and border touch";
+	EXPECT_TRUE(c[2].has_inter(c[2])) << "Same";
+
+	EXPECT_TRUE(c[0].has_inter(cir(C[0],0))) << "Degenerate";
+	EXPECT_TRUE(cir(C[0],0).has_inter(c[0])) << "Degenerate";
+	EXPECT_FALSE(c[0].has_inter(cir(C[3],0))) << "Degenerate";
+	EXPECT_TRUE(cir(C[0],0).has_inter(cir(C[0],0))) << "Degenerate";
+	EXPECT_FALSE(cir(C[0],0).has_inter(cir(C[3],0))) << "Degenerate";
+	EXPECT_TRUE(c[1].has_inter(cir(C[0],0))) << "Degenerate";
+	EXPECT_TRUE(c[3].has_inter(cir(C[2],0))) << "Degenerate";
 }
 
 TEST(geometry_basic_cir, has_border_inter) {
@@ -48,6 +69,15 @@ TEST(geometry_basic_cir, has_border_inter) {
 	EXPECT_FALSE(c[1].has_border_inter(c[3])) << "Contained different center";
 	EXPECT_TRUE(c[6].has_border_inter(c[0])) << "Border touch";
 	EXPECT_TRUE(c[1].has_border_inter(c[2])) << "Contained and border touch";
+	EXPECT_TRUE(c[2].has_inter(c[2])) << "Same";
+
+	EXPECT_FALSE(c[0].has_border_inter(cir(C[0],0))) << "Degenerate";
+	EXPECT_FALSE(cir(C[0],0).has_border_inter(c[0])) << "Degenerate";
+	EXPECT_FALSE(c[0].has_border_inter(cir(C[3],0))) << "Degenerate";
+	EXPECT_TRUE(cir(C[0],0).has_border_inter(cir(C[0],0))) << "Degenerate";
+	EXPECT_FALSE(cir(C[0],0).has_border_inter(cir(C[3],0))) << "Degenerate";
+	EXPECT_TRUE(c[1].has_border_inter(cir(C[0],0))) << "Degenerate";
+	EXPECT_FALSE(c[3].has_border_inter(cir(C[2],0))) << "Degenerate";
 }
 
 TEST(geometry_basic_cir, has_inter_seg) {
@@ -65,6 +95,10 @@ TEST(geometry_basic_cir, has_inter_seg) {
 	EXPECT_FALSE(d[0].has_inter_seg(D[11],D[12])) << "Far";
 	EXPECT_TRUE(d[1].has_inter_seg(D[11],D[12])) << "Other circle true";
 	EXPECT_FALSE(d[0].has_inter_seg(D[10],D[9]));
+
+	EXPECT_TRUE(d[0].has_inter_seg(D[0],D[0])) << "Degenerate";
+	EXPECT_TRUE(d[0].has_inter_seg(D[4],D[4])) << "Degenerate";
+	EXPECT_FALSE(d[0].has_inter_seg(D[7],D[7])) << "Degenerate";
 }
 
 TEST(geometry_basic_cir, has_inter_lin) {
@@ -81,6 +115,10 @@ TEST(geometry_basic_cir, has_inter_lin) {
 	EXPECT_TRUE(d[1].has_inter_lin(D[4],D[6])) << "Other circle false";
 	EXPECT_TRUE(d[0].has_inter_lin(D[11],D[12])) << "Far";
 	EXPECT_TRUE(d[1].has_inter_lin(D[11],D[12])) << "Other circle true";
+
+	EXPECT_TRUE(d[0].has_inter_lin(D[0],D[0])) << "Degenerate";
+	EXPECT_TRUE(d[0].has_inter_lin(D[4],D[4])) << "Degenerate";
+	EXPECT_FALSE(d[0].has_inter_lin(D[7],D[7])) << "Degenerate";
 
 	EXPECT_FALSE(d[0].has_inter_lin(D[3],D[7]));
 	EXPECT_FALSE(d[1].has_inter_lin(D[2],D[9]));

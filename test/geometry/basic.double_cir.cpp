@@ -125,9 +125,9 @@ TEST(geometry_basic_cir, arc_len) {
 }
 
 ::testing::AssertionResult is_on_circle (vec v, cir c) { 
-	if (isClose(v.nr(c.c), c.r))
+	if (c.border(v))
 		return ::testing::AssertionSuccess();
-	return ::testing::AssertionFailure() << v << " is not on " << c;
+	return ::testing::AssertionFailure() << v << " is not on " << c << ", has distance " << v.nr(c.c);
 }
 
 ::testing::AssertionResult check_cir_border_inter (cir a, cir b, bool once) {
@@ -178,7 +178,7 @@ TEST(geometry_basic_cir, border_inter) {
 
 	for (int i = 0; i <= 9; i++) {
 		for (int j = 0; j <= 0; j++) {
-			if (abs(e[i].c.sq(E[j]) - sq(e[i].r)) <= eps) { // on border
+			if (e[i].border(E[j])) {
 				EXPECT_TRUE(check_cir_border_inter(e[i], cir(E[j],0), true)) << "Degenerate with inter";
 				EXPECT_TRUE(check_cir_border_inter(cir(E[j],0), e[i], true)) << "Degenerate with inter";
 			} else {
@@ -240,14 +240,14 @@ TEST(geometry_basic_cir, border_inter_lin) {
 	EXPECT_ANY_THROW(f.border_inter_lin(F[11],F[2])) << " almost has inter";
 
 	for (int i = 0; i <= 11; i++) {
-		if (abs(f.c.sq(F[i]) - sq(f.r)) <= eps) { // on border
+		if (f.border(F[i])) {
 			EXPECT_TRUE(check_cir_inter_lin(f, F[i], F[i], 1)) << " degenerate where i = " << i;
 		} else {
-			EXPECT_ANY_THROW(f.border_inter_lin(F[i],F[i]));
+			EXPECT_ANY_THROW(f.border_inter_lin(F[i],F[i])) << " no inter degenerate where i = " << i;
 		}
 		if (i) {
-			EXPECT_TRUE(check_cir_inter_lin(f, F[i], F[0], 1)) << " degenerate with center where i = " << i;
-			EXPECT_TRUE(check_cir_inter_lin(f, F[0], F[i], 1)) << " degenerate with center where i = " << i;
+			EXPECT_TRUE(check_cir_inter_lin(f, F[i], F[0], 0)) << " degenerate with center where i = " << i;
+			EXPECT_TRUE(check_cir_inter_lin(f, F[0], F[i], 0)) << " degenerate with center where i = " << i;
 		}
 	}
 }
