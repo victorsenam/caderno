@@ -43,8 +43,14 @@ TEST(geometry, convex_hull) {
 }
 
 TEST(geometry, polygon_inter) {
-	vector<vec> v({vec(3,4), vec(5, 2), vec(19, 3)});
+	vector<vec> v({vec(3,4), vec(5, 2), vec(7, 3)});
 	cir c(vec(3,4), 5);
+	EXPECT_EQ(polygon_inter(v,c), c.triang_inter(v[1],v[2])) << "Same center inside";
 
-	EXPECT_EQ(polygon_inter(v,c), c.triang_inter(vec(5,2), vec(19,3)));
+	v[1] = vec(30,4); v[2] = vec(3,84);
+	EXPECT_EQ(polygon_inter(v,c), c.arc_area(v[1],v[2])) << "Same center outside";
+
+	c.c = vec(4,5);
+	v.resize(2);
+	EXPECT_NEAR(polygon_inter(v,c), 0., 1e-12) << "Degenerate";
 }
