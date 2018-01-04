@@ -54,3 +54,33 @@ TEST(geometry, polygon_inter) {
 	v.resize(2);
 	EXPECT_NEAR(polygon_inter(v,c), 0., 1e-12) << "Degenerate";
 }
+
+TEST(geometry, polygon_pos) {
+	vector<vec> p({ vec(14,14), vec(20,8), vec(10,2), vec(2,12), vec(6,16), vec(10,16), vec(10,20), vec(6,22), vec(14,24), vec(14,26), vec(6,26), vec(19,31), vec(10,31), vec(6,33), vec(19,35), vec(10,35), vec(10,39), vec(5,39), vec(17,42), vec(10,45), vec(10,48), vec(13,50), vec(24,44) });
+
+	EXPECT_EQ(polygon_pos(p, vec(10,10)), 1); // B_0
+	EXPECT_EQ(polygon_pos(p, vec(10,18)), 0); // B_1
+	EXPECT_EQ(polygon_pos(p, vec(10,22)), 1); // B_2
+	EXPECT_EQ(polygon_pos(p, vec(10,25)), -1); // B_3
+	EXPECT_EQ(polygon_pos(p, vec(10,27)), 1); // B_4
+	EXPECT_EQ(polygon_pos(p, vec(10,29)), -1); // B_5
+	EXPECT_EQ(polygon_pos(p, vec(10,32)), 1); // B_6
+	EXPECT_EQ(polygon_pos(p, vec(10,34)), -1); // B_7
+	EXPECT_EQ(polygon_pos(p, vec(10,36)), 0); // B_8
+	EXPECT_EQ(polygon_pos(p, vec(10,40)), 1); // B_9
+	EXPECT_EQ(polygon_pos(p, vec(13,41)), 0); // B_{10}
+	EXPECT_EQ(polygon_pos(p, vec(14,14)), 0); // B_{11}
+	EXPECT_EQ(polygon_pos(p, vec(10,20)), 0); // B_{12}
+	EXPECT_EQ(polygon_pos(p, vec(19,33)), 1); // B_{13}
+	EXPECT_EQ(polygon_pos(p, vec(5,13)), 1); // B_{14}
+	EXPECT_EQ(polygon_pos(p, vec(5,18)), -1); // B_{15}
+	EXPECT_EQ(polygon_pos(p, vec(6,12)), 1); // B_{16}
+	EXPECT_EQ(polygon_pos(p, vec(10,-1)), -1); // B_{17}
+	EXPECT_EQ(polygon_pos(p, vec(20,6)), -1); // B_{18}
+	EXPECT_EQ(polygon_pos(p, vec(20,10)), -1); // B_{19}
+	EXPECT_EQ(polygon_pos(p, vec(10,42)), -1); // B_{20}
+	EXPECT_EQ(polygon_pos(p, vec(10,47)), 0); // B_{21}
+	EXPECT_EQ(polygon_pos(p, vec(13,47)), 1); // B_{22}
+	EXPECT_EQ(polygon_pos(p, vec(16,9)), 1); // B_{23}
+	EXPECT_EQ(polygon_pos(p, vec(17,5)), -1); // B_{24}
+}

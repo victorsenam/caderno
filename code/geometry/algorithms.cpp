@@ -35,11 +35,13 @@ int convex_hull (vector<vec> & v, int border_in) {
 double polygon_inter (vector<vec> & p, cir c) { // signed area
 	return inner_product(p.begin(), p.end()-1, p.begin()+1, c.triang_inter(*p.rbegin(),*p.begin()), std::plus<double>(), [&c] (vec a, vec b) { return c.triang_inter(a,b); });
 }
-bool in_polygon (vector<vec> & p, vec v) { // p should be simple, borders included
-	bool in = 0;
+int polygon_pos (vector<vec> & p, vec v, bool verb = 0) { // p should be simple (-1 out, 0 border, 1 in)
+	if (verb) cout << v << endl;
+	int in = -1; // it's a good idea to randomly rotate the points in the double case, numerically safer
 	for (int i = 0; i < (int) p.size(); i++) {
-		vec a = p[i], b = p[i?i-1:p.size()-1];
-		in ^= inter_seg(a,b,v,vec(v.x,inf)) && max(a.x,b.x) > v.x + eps;
+		vec a = p[i], b = p[i?i-1:p.size()-1]; if (a.x > b.x) swap(a,b);
+		if (a.x + eps <= v.x && v.x < b.x + eps) { in *= v.ccw(a,b); }
+		else if (v.in_seg(a,b)) { return 0; }
 	}
 	return in;
 }
