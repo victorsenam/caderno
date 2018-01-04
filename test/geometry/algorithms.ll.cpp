@@ -56,6 +56,7 @@ TEST(geometry, polygon_inter) {
 }
 
 TEST(geometry, polygon_pos) {
+	// Geogebra: this folder at algorithms_ll.polygon_pos.ggb
 	vector<vec> p({ vec(14,14), vec(20,8), vec(10,2), vec(2,12), vec(6,16), vec(10,16), vec(10,20), vec(6,22), vec(14,24), vec(14,26), vec(6,26), vec(19,31), vec(10,31), vec(6,33), vec(19,35), vec(10,35), vec(10,39), vec(5,39), vec(17,42), vec(10,45), vec(10,48), vec(13,50), vec(24,44) });
 
 	EXPECT_EQ(polygon_pos(p, vec(10,10)), 1); // B_0
