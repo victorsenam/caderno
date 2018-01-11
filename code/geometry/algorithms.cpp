@@ -45,6 +45,20 @@ int polygon_pos (vector<vec> & p, vec v, bool verb = 0) { // p should be simple 
 	}
 	return in;
 }
+// v is the pointset, w is auxiliary with size at least equal to v's
+cood closest_pair (vec * v, vec * w, int l, int r, bool sorted = 0) { // TODO
+	if (l + 1 >= r) return inf;
+	if (!sorted) sort(v+l,v+r,[](vec a, vec b){ return a.x < b.x; });
+	int m = (l+r)/2; cood x = v[m].x;
+	cood res = min(closest_pair(v,w,l,m,1),closest_pair(v,w,m,r,1));
+	merge(v+l,v+m,v+m,v+r,w+l,[](vec a, vec b){ return a.y < b.y; });
+	for (int i = l, s = l; i < r; i++) if (sq((v[i] = w[i]).x - x) < res) {
+		for (int j = s-1; j >= l && sq(w[i].y - w[j].y) < res; j--)
+			res = min(res, w[i].sq(w[j]));
+		w[s++] = v[i];
+	}
+	return res;
+}
 // if false, p[t..s] + v is the convex hull of p + v
 // if true, v is inside (p[0],p[s],p[t]), s <= t and t - s is minimal
 // border is considered inside, assumes convex hull excludes border points
