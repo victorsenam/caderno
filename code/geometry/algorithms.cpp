@@ -1,6 +1,5 @@
-cir min_spanning_circle (vector<vec> v) {
-	srand(time(NULL)); random_shuffle(v.begin(), v.end());
-    int n = v.size(); cir c(vec(), 0);
+cir min_spanning_circle (vec * v, int n) {
+	srand(time(NULL)); random_shuffle(v, v+n); cir c(vec(), 0);
 	for (int i = 0; i < n; i++) if (!c.contains(v[i])) {
 		c = cir(v[i], 0);
 		for (int j = 0; j < i; j++) if (!c.contains(v[j])) {
@@ -11,9 +10,9 @@ cir min_spanning_circle (vector<vec> v) {
 	}
     return c;
 }
-int convex_hull (vector<vec> & v, int border_in) {
-	int n = v.size(); swap(v[0], *max_element(v.begin(),v.end()));
-	sort(v.begin()+1, v.end(), [&v] (vec a, vec b) {
+int convex_hull (vec * v, int n, int border_in) {
+	swap(v[0], *max_element(v,v+n));
+	sort(v+1, v+n, [&v] (vec a, vec b) {
 		int o = b.ccw(v[0], a);
 		if (o) return (o == 1);
 		return v[0].sq(a) < v[0].sq(b);
@@ -29,17 +28,16 @@ int convex_hull (vector<vec> & v, int border_in) {
 		while (s >= 2 && v[s-1].ccw(v[s-2],v[i]) >= border_in) s--;
 		v[s++] = v[i];
 	} 
-	v.resize(s);
 	return s;
 }
-double polygon_inter (vector<vec> & p, cir c) { // signed area
-	return inner_product(p.begin(), p.end()-1, p.begin()+1, c.triang_inter(*p.rbegin(),*p.begin()), std::plus<double>(), [&c] (vec a, vec b) { return c.triang_inter(a,b); });
+double polygon_inter (vec * p, int n, cir c) { // signed area
+	return inner_product(p, p+n-1, p+1, c.triang_inter(p[n-1],p[0]), std::plus<double>(), [&c] (vec a, vec b) { return c.triang_inter(a,b); });
 }
-int polygon_pos (vector<vec> & p, vec v, bool verb = 0) { // p should be simple (-1 out, 0 border, 1 in)
+int polygon_pos (vec * p, int n, vec v, bool verb = 0) { // p should be simple (-1 out, 0 border, 1 in)
 	if (verb) cout << v << endl;
 	int in = -1; // it's a good idea to randomly rotate the points in the double case, numerically safer
-	for (int i = 0; i < (int) p.size(); i++) {
-		vec a = p[i], b = p[i?i-1:p.size()-1]; if (a.x > b.x) swap(a,b);
+	for (int i = 0; i < n; i++) {
+		vec a = p[i], b = p[i?i-1:n-1]; if (a.x > b.x) swap(a,b);
 		if (a.x + eps <= v.x && v.x < b.x + eps) { in *= v.ccw(a,b); }
 		else if (v.in_seg(a,b)) { return 0; }
 	}
