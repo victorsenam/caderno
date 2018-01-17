@@ -12,8 +12,6 @@ const cood eps = 0;
 #include "gtest/gtest.h"
 #include "../../code/geometry/basic.cpp"
 
-bool operator == (vec a, vec b)
-{ return a.x == b.x && a.y == b.y; }
 bool operator != (vec a, vec b)
 { return !(a==b); }
 
@@ -143,6 +141,14 @@ TEST(geometry_basic_vec, compare) {
 	EXPECT_TRUE(vec(0,0).compare(vec(1,0),vec(2,0))) << "Breaks ties using distance.";
 	EXPECT_TRUE(vec(2,1).compare(vec(1,1),vec(1,0))) << "Works ok from some other point.";
 	EXPECT_FALSE(vec(0,0).compare(vec(3,3),vec(3,3))) << "Strict.";
+
+	for (vec anc : { vec(0,0), vec(1,0), vec(0,-1) }) {
+		for (vec v : { vec(2,0), vec(0,2), vec(-2,0), vec(0,-2) }) {
+			EXPECT_TRUE(anc.compare(anc, v)) << "this is first.";
+			EXPECT_FALSE(anc.compare(v, anc)) << "this is first.";
+		}
+		EXPECT_FALSE(anc.compare(anc, anc)) << "strict on this.";
+	}
 
 	vector<vec> ans({
 		vec(0,5),

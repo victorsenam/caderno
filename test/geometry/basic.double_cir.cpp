@@ -17,13 +17,12 @@ bool isClose (cood a, cood b) {
 	if (abs(a - b) <= eps) return true;
 	return min(a*(1-eps),a*(1+eps)) <= b + 1e-15 && b <= max(a*(1-eps),a*(1+eps)) + 1e-15;
 }
+bool isClose (vec a, vec b) { return isClose(a.x,b.x) && isClose(a.y,b.y); }
 
-bool operator == (vec a, vec b)
-{ return isClose(a.x,b.x) && isClose(a.y,b.y); }
 bool operator != (vec a, vec b)
 { return !(a==b); }
 bool operator == (cir a, cir b)
-{ return a.c == b.c && isClose(a.r,b.r); }
+{ return a.c == b.c && abs(a.r-b.r) <= eps; }
 
 vec A[] = {vec(1,4), vec(3,2), vec(7,6), vec(4,6)},
 	B = vec(4,14),
@@ -134,10 +133,10 @@ TEST(geometry_basic_cir, arc_len) {
 	pair<vec,vec> res = a.border_inter(b);
 	::testing::AssertionResult ret = ::testing::AssertionSuccess();
 	if (once) {
-		if (res.first != res.second) 
+		if (!isClose(res.first,res.second)) 
 			return ret = ::testing::AssertionFailure() << "two different intersections: " << res.first << " and " << res.second;
 	} else {
-		if (res.first == res.second)
+		if (isClose(res.first,res.second))
 			return ret = ::testing::AssertionFailure() << "only one intersection: " << res.first;
 	}
 	

@@ -12,8 +12,6 @@ const double eps = 1e-8;
 #include "gtest/gtest.h"
 #include "../../code/geometry/basic.cpp"
 
-bool operator== (vec a, vec b)
-{ return (abs(a.x - b.x) < eps && abs(a.y - b.y) <= eps); }
 bool operator== (cir a, cir b)
 { return (a.c == b.c && abs(a.r - b.r) <= eps); }
 

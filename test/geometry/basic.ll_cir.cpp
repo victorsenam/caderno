@@ -13,8 +13,6 @@ const cood eps = 0;
 #include "gtest/gtest.h"
 #include "../../code/geometry/basic.cpp"
 
-bool operator == (vec a, vec b)
-{ return a.x == b.x && a.y == b.y; }
 bool operator != (vec a, vec b)
 { return !(a==b); }
 

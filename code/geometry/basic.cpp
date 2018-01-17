@@ -27,13 +27,15 @@ struct vec { // vector
 	inline vec rotate (double a) { return vec(cos(a) * x - sin(a) * y, sin(a) * x + cos(a) * y); } // ccw by a radians
 	inline vec rot90 () { return vec(-y,x); } // rotate(pi/2)
 
+	inline bool operator == (const vec & o) const { return abs(x-o.x) <= eps && abs(y-o.y) <= eps; }
+	inline bool operator <= (const vec & o) const { throw 1; return (x != o.x)?(x < o.x):(y >= o.y); } // lex compare (inc x, dec y)
 	inline bool operator < (const vec & o) const { return (x != o.x)?(x < o.x):(y > o.y); } // lex compare (inc x, dec y)
-	// full ccw angle from compare beginning upwards (this+(0,1)) around (*this)
-	// incresing distance on ties
+	// full ccw angle strict compare beginning upwards (this+(0,1)) around (*this)
+	// incresing distance on ties, this is the first
 	bool compare (vec a, vec b) { 
-		if ((a < (*this)) != (b < (*this))) return a < (*this);
+		if (((*this) < a) != ((*this) < b)) return (*this) < b;
 		int o = ccw(a,b); if (o) return o > 0;
-		return a.dir((*this),b) < 0;
+		return (a == (*this) && !(a == b)) || a.dir((*this),b) < 0;
 	}
 
 	bool in_seg (vec a, vec b) { return ccw(a,b) == 0 && dir(a,b) <= 0; } // tips included

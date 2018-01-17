@@ -14,8 +14,6 @@ const double inf = 1./0.;
 #include "../../code/geometry/basic.cpp"
 #include "../../code/geometry/algorithms.cpp"
 
-bool operator== (vec a, vec b)
-{ return (abs(a.x - b.x) < eps && abs(a.y - b.y) <= eps); }
 bool operator== (cir a, cir b)
 { return (a.c == b.c && abs(a.r - b.r) <= eps); }
 bool operator!= (cir a, cir b)
