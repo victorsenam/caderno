@@ -23,7 +23,7 @@ struct vec { // vector
 	inline int dir (vec a, vec b) { cood o = inner(a,b); return (eps < o) - (o < -eps); } // a(this) is to the (1 same, 0 none, -1 opposite) direction of ab
 	inline cood sq (vec o = vec()) { return inner(o,o); }
 	inline double nr (vec o = vec()) { return sqrt(sq(o)); }
-	inline vec proj (vec a, vec b) { return a + (b-a)*(a.inner((*this),b) / a.sq(b)); }
+	inline vec proj (vec a, vec b) { return a + (b-a)*(a.inner((*this),b) / a.sq(b)); } // projects this onto line ab
 	inline vec rotate (double a) { return vec(cos(a) * x - sin(a) * y, sin(a) * x + cos(a) * y); } // ccw by a radians
 	inline vec rot90 () { return vec(-y,x); } // rotate(pi/2)
 
