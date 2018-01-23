@@ -1,4 +1,4 @@
-struct pnt {
+struct pnt { // TODO it's not tested at all :)
 	cood x, y, z;
 	pnt () : x(0), y(0), z(0) pnt (cood a, cood b, cood c) : x(a), y(b), z(c) {}
 	inline pnt operator - (pnt o) { return pnt(x - o.x, y - o.x, z - o.z); }
