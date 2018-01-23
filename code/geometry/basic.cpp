@@ -9,15 +9,15 @@ inline double sq (double x) { return x*x; }
 struct vec { // vector
 	cood x, y;
 	vec () : x(0), y(0) {} vec (cood a, cood b) : x(a), y(b) {}
-	inline vec operator - (vec o) { return vec(x - o.x, y - o.y); }
-	inline vec operator + (vec o) { return vec(x + o.x, y + o.y); }
-	inline vec operator * (cood o) { return vec(x * o, y * o); }
-	inline vec operator / (cood o) { return vec(x / o, y / o); }
+	inline vec operator - (vec o) { return {x - o.x, y - o.y}; }
+	inline vec operator + (vec o) { return {x + o.x, y + o.y}; }
+	inline vec operator * (cood o) { return {x * o, y * o}; }
+	inline vec operator / (cood o) { return {x / o, y / o}; }
 	inline cood operator ^ (vec o) { return x * o.y - y * o.x; }
 	inline cood operator * (vec o) { return x * o.x + y * o.y; }
 
-	inline cood cross (vec a, vec b) { return ((*this)-a) ^ ((*this)-b); } // |(this)a|sen(angle)
-	inline cood inner (vec a, vec b) { return ((*this)-a) * ((*this)-b); } // |(this)a|cos(angle)
+	inline cood cross (vec a, vec b) { return ((*this)-a) ^ ((*this)-b); } // |(this)a||(this)b|sen(angle)
+	inline cood inner (vec a, vec b) { return ((*this)-a) * ((*this)-b); } // |(this)a||(this)b|cos(angle)
 	inline double angle (vec a, vec b) { return atan2(cross(a,b),inner(a,b)); } // ccw angle from (this)a to (this)b in range [-pi,pi]
 	inline int ccw (vec a, vec b) { cood o = cross(a,b); return (eps < o) - (o < -eps); } // this is to the (1 left, 0 over, -1 right) of ab
 	inline int dir (vec a, vec b) { cood o = inner(a,b); return (eps < o) - (o < -eps); } // a(this) is to the (1 same, 0 none, -1 opposite) direction of ab
@@ -28,7 +28,6 @@ struct vec { // vector
 	inline vec rot90 () { return vec(-y,x); } // rotate(pi/2)
 
 	inline bool operator == (const vec & o) const { return abs(x-o.x) <= eps && abs(y-o.y) <= eps; }
-	inline bool operator <= (const vec & o) const { throw 1; return (x != o.x)?(x < o.x):(y >= o.y); } // lex compare (inc x, dec y)
 	inline bool operator < (const vec & o) const { return (x != o.x)?(x < o.x):(y > o.y); } // lex compare (inc x, dec y)
 	// full ccw angle strict compare beginning upwards (this+(0,1)) around (*this)
 	// incresing distance on ties, this is the first
