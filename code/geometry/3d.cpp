@@ -29,3 +29,7 @@ struct pnt { // TODO it's not tested at all :)
 };
 inline cood area (pnt a, pnt b, pnt c) { abs(a.cross(b,c).nr())/2; }
 inline cood vol (pnt a, pnt b, pnt c, pnt d) { abs((b-a).mixed(c-a,d-a)) / 6; } // thetahedra
+
+// area de calota na altura h : 2.pi.R.h
+// volume de calota na altura h : pi.h/6 * (3r^2 + h^2)
+

@@ -1,6 +1,3 @@
-// area de calota na altura h : 2.pi.R.h
-// volume de calota na altura h : pi.h/6 * (3r^2 + h^2)
-
 // XXX marks risky behaviour and TODO marks untested functions
 // typedef double cood; cood eps = 1e-8; cood inf = 1./0.;
 const double pi = acos(-1.);
