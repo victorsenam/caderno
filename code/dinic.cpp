@@ -1,88 +1,64 @@
-#include <bits/stdc++.h>
-using namespace std;
-#define debug if (1)
+//typedef int num;
+//const int N = ;
+//const int M =  * 2;
 
-typedef long long ll;
-
-// typedef ll num;
-// const num eps = 0;
-// const num inf = LLONG_MAX;
-
-// const int N = ;
-// const int M = ;
-
-// TESTS TODO
 struct dinic {
-	// O(MN^2)
-	// BipMatch: O(MN^(1/2))
-	// UnitCap: O(min{MV^(2/3),M^(3/2)}
-	int hd[N], nx[M], to[M], ht[N], es;
+	int hd[N], seen[N], qu[N], lv[N], ei[N], to[M], nx[M];
 	num fl[M], cp[M];
-	int n, src, snk;
-	int ds[N], sn[N], tr;
-	int qi, qf, qu[N];
+	int en = 2, vn = N;
+	int tempo = 0;
 
-	void init ()
-	{ es = 2; memset(hd, 0, sizeof hd); }
+	// Reset the whole graph
+	void reset(int n=N) { vn = n; en = 2; memset(hd, 0, sizeof(int) * vn); }
+	// Reset only the flow
+	void reset_flow() { memset(fl, 0, sizeof(num) * en); }
 
-	void connect (int i, int j, num cap) {
-		to[es] = j; nx[es] = hd[i]; cp[es] = cap; fl[es] = 0; hd[i] = es++;
-		to[es] = i; nx[es] = hd[j]; cp[es] = fl[es] = 0; hd[j] = es++;
+	// edge from a to b with cap c and edge from b to a with cap rc
+	void add_edge(int a, int b, int c, int rc=0) {
+		to[en] = b; nx[en] = hd[a]; fl[en] = 0; cp[en] =  c; hd[a] = en++;
+		to[en] = a; nx[en] = hd[b]; fl[en] = 0; cp[en] = rc; hd[b] = en++;
 	}
 
-	bool bfs () {
-		tr++;
-		qi = qf = 0;
-
-		qu[qf++] = snk;
-		ds[snk] = 0;
-
-		while (qi < qf) {
-			int u = qu[qi++];
-
-			for (int ed = hd[u]; ed; ed = nx[ed]) {
-				int v = to[ed];
-				if (cp[ed^1] - fl[ed^1] <= eps || sn[v] == tr)
-					continue;
-				sn[v] = tr;
-				ds[v] = ds[u] + 1;
-				qu[qf++] = v;
-			}
+	bool bfs(int s, int t) {
+		memset(lv, -1, sizeof(int) * vn);
+		lv[s] = 0;
+		int ql = 0, qr = 0;
+		qu[qr++] = s;
+		while(ql != qr) {
+			s = qu[ql++];
+			if(s == t) return true;
+			for(int e = hd[s]; e; e = nx[e])
+				if(lv[to[e]] == -1 && cp[e] - fl[e] > 0) {
+					lv[to[e]] = lv[s] + 1;
+					qu[qr++] = to[e];
+				}
 		}
-
-		return (sn[src] == tr);
+		return false;
 	}
 
-	num dfs (int u, num flw) {
-		if (u == snk || flw <= eps)
-			return flw;
-
-		for (int & ed = ht[u]; ed; ed = nx[ed]) {
-			int v = to[ed];
-			if (cp[ed] - fl[ed] <= eps || sn[v] != tr || ds[v] + 1 != ds[u])
-				continue;
-			num ret = dfs(v, min(flw, cp[ed] - fl[ed]));
-			if (ret > eps) {
-				fl[ed] += ret;
-				fl[ed^1] -= ret;
-				return ret;
-			}
-		}
-
+	num dfs(int s, int t, num f) {
+		if(s == t) return f;
+		seen[s] = tempo;
+		for(int &e = ei[s]; e; e = nx[e])
+			if(seen[to[e]] != tempo && cp[e] - fl[e] > 0 && lv[to[e]] == lv[s] + 1)
+				if(num rf = dfs(to[e], t, min(f, cp[e] - fl[e]))) {
+					fl[e] += rf;
+					fl[e ^ 1] -= rf;
+					return rf;
+				}
 		return 0;
 	}
 
-	num maxflow () {
-		num res = 0;
-		while (bfs()) {
-			for (int i = 0; i < n; i++)
-				ht[i] = hd[i];
-			num val = 0;
-			do {
-				res += val;
-				val = dfs(src, inf);
-			} while (val > eps);
+	num max_flow(int s, int t) {
+		num fl = 0;
+		while(bfs(s, t)) {
+			tempo++;
+			for(int i = 0; i < vn; i++) ei[i] = hd[i];
+			while(num f = dfs(s, t, numeric_limits<num>::max())) {
+				fl += f;
+				tempo++;
+			}
 		}
-		return res;
+		return fl;
 	}
 };
