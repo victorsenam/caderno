@@ -15,7 +15,7 @@ struct dinic {
 	void reset_flow() { memset(fl, 0, sizeof(num) * en); }
 
 	// edge from a to b with cap c and edge from b to a with cap rc
-	void add_edge(int a, int b, int c, int rc=0) {
+	void add_edge(int a, int b, num c, num rc=0) {
 		to[en] = b; nx[en] = hd[a]; fl[en] = 0; cp[en] = c; hd[a] = en++;
 		to[en] = a; nx[en] = hd[b]; fl[en] = 0; cp[en] = rc; hd[b] = en++;
 	}
