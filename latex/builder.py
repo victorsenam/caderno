@@ -13,7 +13,7 @@ for c in codes:
 	a, b = m.group(1).strip("<>"), m.group(2).strip("<>")
 	if b.find('/') != -1:
 		os.makedirs("src/" + b[:b.find('/')], exist_ok = True)
-	subprocess.run(["python3", "hashify.py"], stdin=open("../code/" + b), stdout=open("src/" + b, 'w'))
+	subprocess.call(["python3", "hashify.py"], stdin=open("../code/" + b), stdout=open("src/" + b, 'w'))
 	text += "\\section{" + a + "}\n"
 	text += "\\lstinputlisting{src/" + b + "}\n\n"
 
