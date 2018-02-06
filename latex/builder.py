@@ -2,13 +2,12 @@ head = "head"
 code_list = "../code/config"
 tail = "tail"
 
-from pathlib import Path
 import re, os, subprocess
-text = Path(head).read_text()
+text = open(head).read()
 
 os.makedirs('src', exist_ok = True)
 
-codes = Path(code_list).read_text().strip().split('\n')
+codes = open(code_list).read().strip().split('\n')
 for c in codes:
 	m = re.search("(<.+>) (<.+>)", c)
 	a, b = m.group(1).strip("<>"), m.group(2).strip("<>")
@@ -18,6 +17,6 @@ for c in codes:
 	text += "\\section{" + a + "}\n"
 	text += "\\lstinputlisting{src/" + b + "}\n\n"
 
-text += Path(tail).read_text()
+text += open(tail).read()
 
 print(text)
