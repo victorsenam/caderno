@@ -54,3 +54,6 @@ alias g="g++ -std=c++11 -g -fdiagnostics-color"
 function submit { boca-submit-run user pass `basename $1 .cpp` C++11 $1 }
 \end{lstlisting}
 
+\lstinputlisting{hashify.py}
+
+\lstset{numbers=none}
