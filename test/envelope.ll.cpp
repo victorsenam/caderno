@@ -1,5 +1,12 @@
-typedef long long num;
-const num eps = 0;
+#include <bits/stdc++.h>
+#define cout if (1) cout
+
+using namespace std;
+typedef long long ll;
+typedef pair<ll,ll> pii;
+#define pb push_back
+
+typedef ll num; const num eps = 0;
 
 #include "gtest/gtest.h"
 #include "../code/envelope.cpp"
@@ -148,4 +155,11 @@ TEST(Envelope, Simple) {
 	EXPECT_EQ(env[1].hi, 1) << "pop_back should move bound.";
 
 	EXPECT_EQ(env[0], env[1]) << "mixing pop_front and pop_back should be ok.";
+
+	env[0].push_front({7,-6});
+	EXPECT_EQ(env[0].qu.size(), 1) << "push_front should accept globally best.";
+	env[1].push_back({7,-6});
+	EXPECT_EQ(env[1].qu.size(), 1) << "push_back should accept globally best.";
+
+	EXPECT_EQ(env[0],env[1]) << "push_front and push_back with globally best and same slope should result in equality.";
 }
