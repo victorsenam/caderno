@@ -34,9 +34,7 @@ ostream & operator<< (ostream & os, envelope e) {
 }
 
 TEST(EnvelopeInter, Simple) {
-	envelope env;
-	env.lo = -1e9;
-	env.hi = 1e9;
+	envelope env(-1e9,1e9);
 
 	EXPECT_EQ(env.inter({7,3},{2,14}), 3) << "Should return ceil of line intersection on simple cases.";
 	EXPECT_EQ(env.inter({7,14},{2,3}), -2) << "Should return ceil of line intersection on simple cases.";
@@ -44,29 +42,21 @@ TEST(EnvelopeInter, Simple) {
 }
 
 TEST(EnvelopeInter, Parallels) {
-	envelope env;
-	env.lo = -1e9;
-	env.hi = 1e9;
+	envelope env(-1e9,1e9);
 
 	EXPECT_EQ(env.inter({1,3},{1,2}), env.lo) << "Should return lo with parallels where b beats a.";
 	EXPECT_EQ(env.inter({1,2},{1,3}), env.hi+1) << "Should return hi+1 with parallels where a beats b.";
 }
 
 TEST(EnvelopeInter, LowRange) {
-	envelope env;
-	env.lo = -10;
-	env.hi = 10;
+	envelope env(-10,10);
 
 	EXPECT_EQ(env.inter({2,10000},{-2,0}), env.lo) << "Should return lo when b beats a everywhere in range.";
 	EXPECT_EQ(env.inter({2,0},{-2,1000}), env.hi+1) << "Should return hi+1 when a beats b everywhere in range.";
 }
 
 TEST(Envelope, Simple) {
-	envelope env[2];
-	for (int k = 0; k < 2; k++) {
-		env[k].lo = -100;
-		env[k].hi = 100;
-	}
+	envelope env[2] = { envelope(-100,100), envelope(-100,100) };
 
 	// basic
 	env[0].push_back({10,5});
@@ -162,4 +152,29 @@ TEST(Envelope, Simple) {
 	EXPECT_EQ(env[1].qu.size(), 1) << "push_back should accept globally best.";
 
 	EXPECT_EQ(env[0],env[1]) << "push_front and push_back with globally best and same slope should result in equality.";
+}
+
+TEST(FullEnvelope, Random) {
+	srand(time(NULL)); rand(); rand();
+	int ts = 50, lim = 1e5;
+	while (ts--) {
+		full_envelope ev(envelope(-lim,lim));
+		int n = 900 + (rand()%200);
+		vector<line> v;
+
+		for (int i = 0; i < n; i++) {
+			if (!i || rand()%10) {
+				line cur({1000 - (rand()%2000), 1000 - (rand()%2000)});
+				ev.add(cur);
+				v.pb(cur);
+			} else {
+				int x = (rand()%(lim+lim+1)) - lim;
+				ll res = ev.get(x)(x);
+				ll cur = LLONG_MAX;
+				for (line l : v)
+					cur = min(cur, l(x));
+				ASSERT_EQ(cur,res);
+			}
+		}
+	}
 }
