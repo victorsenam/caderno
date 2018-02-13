@@ -1,4 +1,4 @@
-// typedef ll cood; const num eps = 0;
+// typedef ll num; const num eps = 0;
 // XXX double warnings means there's some specific integer operation (+1, lo<hi, etc...), not precision-related
 struct line {
 	num a, b;
