@@ -9,7 +9,7 @@ struct envelope { // min envelope, the first element is the best at the begginin
 	deque<line> qu; num lo, hi; envelope (num a, num b) : lo(a), hi(b) {}
 	num inter (line a, line b) { assert(!(b<a)); // first point where b beats (properly) a XXX double
 		if (b.a == a.a) return (a.b < b.b)?hi+1:lo;
-		return max(min((b.b - a.b + (b.b-a.b>0)*(a.a-b.a+1))/(a.a - b.a),hi+1),lo);
+		return max(min((b.b - a.b - (b.b - a.b<0)*(a.a - b.a - 1))/(a.a - b.a) + 1,hi+1),lo);
 		num lo = this->lo; num hi = this->hi + 1;
 		while (lo < hi) {
 			num md = lo + (hi - lo)/2;
