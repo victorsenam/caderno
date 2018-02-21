@@ -156,9 +156,11 @@ TEST(Envelope, Simple) {
 
 TEST(FullEnvelope, Random) {
 	srand(time(NULL)); rand(); rand();
-	int ts = 50, lim = 1e5;
+	int ts = 50, p_lim = 1e5;
 	while (ts--) {
-		full_envelope ev(envelope(-lim,lim));
+		int lo = -p_lim + (rand()%200);
+		int hi = p_lim - (rand()%200);
+		full_envelope ev(envelope(lo,hi));
 		int n = 900 + (rand()%200);
 		vector<line> v;
 
@@ -168,7 +170,7 @@ TEST(FullEnvelope, Random) {
 				ev.add(cur);
 				v.pb(cur);
 			} else {
-				int x = (rand()%(lim+lim+1)) - lim;
+				int x = (rand()%(hi-lo+1)) + lo;
 				ll res = ev.get(x)(x);
 				ll cur = LLONG_MAX;
 				for (line l : v)

@@ -20,12 +20,18 @@ struct envelope { // min envelope, the first element is the best at the begginin
 	}
 	void push_back (line l) { assert(qu.empty() || !(l < qu.back())); // insert a line that is best at hi or never
 		if (!qu.empty() && qu.back()(hi) <= l(hi)) return;
-		for (num x; qu.size() && l(x = (qu.size()==1?lo:inter(qu[qu.size()-2],qu.back()))) < qu.back()(x); qu.pop_back()); // XXX double
+		for (num x; qu.size(); qu.pop_back()) {
+			x = (qu.size()<=1?lo:inter(qu[qu.size()-2],qu.back()));
+			if (l(x) >= qu.back()(x)) break;
+		}
 		qu.push_back(l);
 	}
 	void push_front (line l) { assert(qu.empty() || !(qu.front() < l)); // insert a line that is best at lo or never
 		if (!qu.empty() && qu.front()(lo) < l(lo)) return;
-		for (num x; qu.size() && l(x = (qu.size()==1?hi:inter(qu[0],qu[1]))) <= qu.front()(x); qu.pop_front()); // XXX double
+		for (num x; qu.size(); qu.pop_front()) {
+			x = qu.size()<=1?hi:inter(qu[0],qu[1]);
+			if (l(x) > qu.front()(x)) break;
+		}
 		qu.push_front(l);
 	}
 	line pop_front (num lo) { assert(!qu.empty() && this->lo <= lo + eps); // gets best line at this new lo
