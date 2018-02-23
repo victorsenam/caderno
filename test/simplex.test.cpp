@@ -48,30 +48,54 @@ dbl rnd(dbl l, dbl r) {
 
 dbl A[M][N], c[N], b[M];
 
-TEST(Simplex, ExistenceOk) {
-	for(int t = 0; t < 200; t++) {
-		int n = 5, m = 20;
-		for(int i = 0; i < m; i++)
-			for(int j = 0; j < n; j++)
-				A[i][j] = s.A[i][j] = rnd(-10, 10);
-		for(int i = 0; i < n; i++) c[i] = s.c[i] = rnd(-10, 10);
-		for(int i = 0; i < m; i++) b[i] = s.b[i] = rnd(-10, 100);
-		try {
-			dbl ans = s.solve(n, m);
-			//printf("ans %.5f\n", double(ans));
-			for(int i = 0; i < m; i++) {
-				dbl v = 0;
-				for(int j = 0; j < n; j++)
-					v += A[i][j] * s.sol[j];
-				EXPECT_LE(v, b[i] + eps);
-			}
+void go(int n, int m) {
+	for(int i = 0; i < m; i++)
+		for(int j = 0; j < n; j++)
+			A[i][j] = s.A[i][j] = rnd(-10, 10);
+	for(int i = 0; i < n; i++) c[i] = s.c[i] = rnd(-10, 10);
+	for(int i = 0; i < m; i++) b[i] = s.b[i] = rnd(-10, 100);
+	try {
+		dbl ans = s.solve(n, m);
+		//printf("ans %.5f\n", double(ans));
+		for(int i = 0; i < n; i++)
+			EXPECT_GE(s.sol[i], -eps);
+		for(int i = 0; i < m; i++) {
 			dbl v = 0;
-			for(int i = 0; i < n; i++)
-				v += c[i] * s.sol[i];
-			EXPECT_DOUBLE_EQ(v, ans);
-		} catch(int x) {
-			//if(x == 1) puts("no solution");
-			//else puts("unbounded");
+			for(int j = 0; j < n; j++)
+				v += A[i][j] * s.sol[j];
+			EXPECT_LE(v, b[i] + eps);
 		}
+		dbl v = 0;
+		for(int i = 0; i < n; i++)
+			v += c[i] * s.sol[i];
+		EXPECT_DOUBLE_EQ(v, ans);
+		for(int i = 0; i < n; i++)
+			s.sol[i] += .01 * c[i];
+		v = 0;
+		for(int i = 0; i < n; i++)
+			v += c[i] * s.sol[i];
+		EXPECT_GT(v, ans);
+		bool any = false;
+		for(int i = 0; !any && i < n; i++)
+			any = any || (s.sol[i] < -eps);
+		for(int i = 0; !any && i < m; i++) {
+			dbl v = 0;
+			for(int j = 0; j < n; j++)
+				v += A[i][j] * s.sol[j];
+			if(v > b[i] + eps)
+				any = true;
+		}
+		EXPECT_TRUE(any);
+	} catch(int x) {
+		//if(x == 1) puts("no solution");
+		//else puts("unbounded");
+	}
+}
+
+TEST(Simplex, ExistenceOk) {
+	for(int t = 0; t < 5; t++) {
+		go(5, 20);
+		go(10, 100);
+		go(30, 50);
 	}
 }

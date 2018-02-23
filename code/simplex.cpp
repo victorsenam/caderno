@@ -32,9 +32,11 @@ struct simplex {
 	}
 
 	/* maximiza sum(x[i] * c[i])
-	 * sujeito a sum(a[i][j] * x[j]) <= b[i] para 0 <= i < m
+	 * sujeito a
+	 *    sum(a[i][j] * x[j]) <= b[i] para 0 <= i < m (Ax <= b)
+	 *    x[i] >= 0 para 0 <= i < n (x >= 0)
 	 * (n variáveis, m restrições)
-	 * guarda a resposta em ans e retorna o valor dela
+	 * guarda a resposta em ans e retorna o valor ótimo
 	 */
 	dbl solve(int n, int m) {
 		this->n = n; this->m = m;
