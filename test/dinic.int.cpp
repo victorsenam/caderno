@@ -1,6 +1,7 @@
 const int N = 112345;
 const int M = 112345 * 2;
 typedef int num;
+const num eps = 0;
 
 #include <bits/stdc++.h>
 using namespace std;
