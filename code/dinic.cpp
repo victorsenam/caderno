@@ -30,7 +30,7 @@ struct dinic {
 			ei[t] = hd[t];
 			if(s == t) return true;
 			for(int e = hd[t]; e; e = nx[e])
-				if(seen[to[e]] != tempo && cp[e ^ 1] - fl[e ^ 1] > 0) {
+				if(seen[to[e]] != tempo && cp[e ^ 1] - fl[e ^ 1] > eps) {
 					seen[to[e]] = tempo;
 					lv[to[e]] = lv[t] + 1;
 					qu[qr++] = to[e];
@@ -42,7 +42,7 @@ struct dinic {
 	num dfs(int s, int t, num f) {
 		if(s == t) return f;
 		for(int &e = ei[s]; e; e = nx[e])
-			if(ei[to[e]] && cp[e] - fl[e] > 0 && lv[to[e]] == lv[s] - 1)
+			if(ei[to[e]] && seen[to[e]] == tempo && cp[e] - fl[e] > eps && lv[to[e]] == lv[s] - 1)
 				if(num rf = dfs(to[e], t, min(f, cp[e] - fl[e]))) {
 					fl[e] += rf;
 					fl[e ^ 1] -= rf;
