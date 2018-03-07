@@ -28,10 +28,10 @@ struct line { // env operations in amort. O(1)
 	num inter (line o) { assert(!(o<(*this))); return (o.a==a)?((b<o.b)?INF:-INF):(o.b-b-(o.b-b<0)*(a-o.a-1))/(a-o.a) + 1; }
 };
 struct generic_line { // change only parameters and () for any viable functions, env operations in amort. O(lg(hi-lo))
-	envelope<generic_line> & env; num a,b; num operator () (num x) const { return a*x+b; }
-	bool operator < (const generic_line & ot) const { return (*this)(env.lo) < ot(env.lo) && (*this)(env.hi) > ot(env.hi); } // first element is best at lo
+	num a,b; envelope<generic_line> * env; num operator () (num x) const { return a*x+b; }
+	bool operator < (const generic_line & ot) const { return (*this)(env->lo) < ot(env->lo) && (*this)(env->hi) > ot(env->hi); } // first element is best at lo
 	num inter (generic_line o) { assert(!(o<(*this)));
-		num lo = env.lo; num hi = env.hi+1;
+		num lo = env->lo, hi = env->hi + 1;
 		while (lo < hi) {
 			num md = lo+(hi-lo)/2;
 			if ((*this)(md)<=o(md)) lo = md+1;
@@ -41,19 +41,18 @@ struct generic_line { // change only parameters and () for any viable functions,
 	}
 };
 template<typename line> struct full_envelope {
-	vector<envelope<line> > v; full_envelope(envelope<line> c) : v({c}) {}
+	deque<envelope<line> > v; full_envelope(envelope<line> c) : v({c}) {}
 	void add (line l) { // amort. O(lg(n)*inter)
-		envelope<line> nw(v[0].lo,v[0].hi); nw.push_back(l);
-		while (v.size() && v.back().q.size() <= nw.q.size()) {
-			envelope<line> aux(nw.lo,nw.hi); auto jt = nw.q.begin();
-			for (line r : v.back().q) {
-				while (jt != nw.q.end() && *jt < r) aux.push_back(*(jt++));
-				aux.push_back(r);
+		v.push_back(envelope<line>(v[0].lo,v[0].hi)); v.back().push_back(l);
+		while (v.size() > 1 && prev(prev(v.end()))->q.size() <= prev(v.end())->q.size()) {
+			deque<line> aux; swap(aux,prev(prev(v.end()))->q); auto it = aux.begin(); auto r = prev(prev(v.end()));
+			for (line l : v.back().q) {
+				while (it != aux.end() && *it < l) r->push_back(*(it++));
+				r->push_back(l);
 			}
-			while (jt != nw.q.end()) aux.push_back(*(jt++));
-			nw = aux; v.pop_back();
+			while (it != aux.end()) r->push_back(*(it++));
+			v.pop_back();
 		}
-		v.push_back(nw);
 	}
 	line get (num x) { // O(lg(n)^2) use pop_back/pop_front for better time
 		line b = v.front().get(x);
