@@ -20,7 +20,14 @@ template<typename line> struct envelope { // if line is used, the template tag c
 	}
 	void pop_front (num _lo) { assert(lo<=_lo+eps); for(lo=_lo;q.size()>1&&q.front()(lo)>(*next(q.begin()))(lo);q.pop_front()); } // always amort. O(1)
 	void pop_back (num _hi) { assert(hi>=_hi-eps); for(hi=_hi;q.size()>1&&(*next(q.rbegin()))(hi)<=q.back()(hi);q.pop_back()); } // always amort. O(1)
-	line get (num x) { return (*lower_bound(q.begin(),q.end()-1,q.front(),[x](line & a, const line & o){ return a(x)>(*((&a)+1))(x); })); } // always O(lg(n))
+	line get (num x) {
+		int lo = 0, hi = q.size()-1;
+		while (lo < hi) { int md = (lo+hi)/2;
+			if (q[md](x) > q[md+1](x)) lo = md+1;
+			else hi = md;
+		}
+		return q[lo];
+	}
 };
 struct line { // env operations in amort. O(1)
 	num a,b; num operator () (num x) const { return a*x+b; }
