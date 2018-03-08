@@ -1,5 +1,6 @@
 //const int N = ;
 //typedef ll num;
+//const num eps = ;
 
 // Solves minimum perfect matching in an n by n bipartite graph with edge costs in c
 // y and z will be such that
@@ -15,8 +16,8 @@ struct hungarian {
 
 	void reset_all() {
 		for(int i = 0; i < n; i++) {
-			y[i] = 0;
-			z[i] = *min_element(c[i], c[i] + n);
+			y[i] = *min_element(c[i], c[i] + n);
+			z[i] = 0;
 		}
 		int i;
 		for(i = 0; i < n; i++)
@@ -40,11 +41,11 @@ struct hungarian {
 		S[a] = true;
 		for(int b = 0; b < n; b++) {
 			if(T[b]) continue;
-			if(c[a][b] - y[a] - z[b] < d[b]) {
+			if(c[a][b] - y[a] - z[b] < d[b] - eps) {
 				d[b] = c[a][b] - y[a] - z[b];
 				mn[b] = a;
 			}
-			if(c[a][b] == y[a] + z[b]) {
+			if(c[a][b] - eps <= y[a] + z[b]) {
 				T[b] = true;
 				PB[b] = a;
 				st[sn++] = b;
