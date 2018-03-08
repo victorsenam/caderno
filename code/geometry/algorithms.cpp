@@ -11,7 +11,7 @@ cir min_spanning_circle (vec * v, int n) {
     return c;
 }
 int convex_hull (vec * v, int n, int border_in) {
-	swap(v[0], *max_element(v,v+n));
+	swap(v[0], *min_element(v,v+n));
 	sort(v+1, v+n, [&v] (vec a, vec b) {
 		int o = b.ccw(v[0], a);
 		if (o) return (o == 1);
@@ -33,8 +33,7 @@ int convex_hull (vec * v, int n, int border_in) {
 double polygon_inter (vec * p, int n, cir c) { // signed area
 	return inner_product(p, p+n-1, p+1, c.triang_inter(p[n-1],p[0]), std::plus<double>(), [&c] (vec a, vec b) { return c.triang_inter(a,b); });
 }
-int polygon_pos (vec * p, int n, vec v, bool verb = 0) { // p should be simple (-1 out, 0 border, 1 in)
-	if (verb) cout << v << endl;
+int polygon_pos (vec * p, int n, vec v) { // p should be simple (-1 out, 0 border, 1 in)
 	int in = -1; // it's a good idea to randomly rotate the points in the double case, numerically safer
 	for (int i = 0; i < n; i++) {
 		vec a = p[i], b = p[i?i-1:n-1]; if (a.x > b.x) swap(a,b);
@@ -43,8 +42,16 @@ int polygon_pos (vec * p, int n, vec v, bool verb = 0) { // p should be simple (
 	}
 	return in;
 }
+int polygon_pos_convex (vec * p, int n, vec v, bool verb = 0) { // (-1 out, 0 border, 1 in) TODO 
+	if (v.sq(p[0]) <= eps) return 0;
+	if (verb) cout << v.ccw(p[0],p[1]) << " " << v.ccw(p[0],p[n-1]) << endl;
+	if (v.ccw(p[0],p[1]) < 0 || v.ccw(p[0],p[n-1]) > 0) return -1;
+	int di = lower_bound(p+1,p+n-1,v, [&p](vec a,vec v) { return v.ccw(p[0],a) > 0; }) - p;
+	if (di == 1) return v.ccw(p[1],p[2]) >= 0?0:-1;
+	return v.ccw(p[di-1],p[di]);
+}
 // v is the pointset, w is auxiliary with size at least equal to v's
-cood closest_pair (vec * v, vec * w, int l, int r, bool sorted = 0) { // TODO
+cood closest_pair (vec * v, vec * w, int l, int r, bool sorted = 0) { // TODO (problem accepted, not manually tested)
 	if (l + 1 >= r) return inf;
 	if (!sorted) sort(v+l,v+r,[](vec a, vec b){ return a.x < b.x; });
 	int m = (l+r)/2; cood x = v[m].x;
@@ -57,40 +64,3 @@ cood closest_pair (vec * v, vec * w, int l, int r, bool sorted = 0) { // TODO
 	}
 	return res;
 }
-// if false, p[t..s] + v is the convex hull of p + v
-// if true, v is inside (p[0],p[s],p[t]), s <= t and t - s is minimal
-// border is considered inside, assumes convex hull excludes border points
-/*
-bool in_convex_polygon (vector<vec> & p, vec v, int & s, int & t) {
-	int n = p.size(); assert(n > 2);
-	if (v.nr(p[0]) <= eps) { s = t = 0; return 1; }
-	if (v.ccw(p[0],p[1]) > 0 || v.ccw(p[0],p[n-1]) < 0) { // p[0] stays
-		int di = t = s = lower_bound(p.begin() + 1, p.end(), v, [&p] (vec a, vec v) {
-			return v.ccw(p[0],a) >= 0;
-		}) - p.begin() - 1; // last diagonal before or over this
-		if (di == n-1) {
-			if (v.ccw(p[0],p[n-1]) == 0 && v.ccw(p[n-2],p[n-1]) >= 0) return 1;
-		} else if (di != 0) {
-			t += (v.ccw(p[0],p[s]) > 0);
-			if (v.ccw(p[s],p[t]) >= 0) return 1;
-		}
-		s = lower_bound(p.begin() + 1, p.begin() + di + 1, v, [&p] (vec & a, vec v) {
-			return v.ccw(*((&a)-1),a) > 0;
-		}) - p.begin() - 1; // last that stays <= di
-		t = (lower_bound(p.begin() + di + 1, p.end(), -1, [&p,n] (vec & a, vec v) {
-			return v.ccw(p[((&a)-(&p[0])+1)%n],a) >= 0;
-		}) - p.begin())%n; // first that stays > di
-	} else { // p[0] removed
-		int di = lower_bound(p.begin() + 1, p.end() - 1, v, [&p] (vec a, vec v) {
-			return v.ccw(p[0],a) < 0;
-		}) - p.begin(); // first diagonal before of over this
-		s = lower_bound(p.begin(), p.begin() + di, v, [&p] (vec & a, vec v) {
-			return v.ccw(*((&a)+1),a) >= 0;
-		}) - p.begin(); // first that stays < di
-		t = lower_bound(p.begin() + di + 1, p.end(), -1, [&p] (vec & a, vec v) {
-			return v.ccw(*((&a)-1),a) > 0;
-		}) - p.begin() - 1; // last that stays >= di
-	}
-	return 0;
-}
-*/

@@ -22,7 +22,7 @@ const int sample_size = 16;
 
 TEST(geometry, convex_hull) { 
 	vector<vec> v(sample_pointset, sample_pointset+16);
-	vector<vec> expect({ vec(15,11), vec(15,14), vec(14,14), vec(7,7), vec(11,7), vec(14,9) });
+	vector<vec> expect({ vec(7,7), vec(11,7), vec(14,9), vec(15,11), vec(15,14), vec(14,14) });
 	EXPECT_EQ(convex_hull(&v[0], v.size(), 0), 6) << "Convex hull should have size 6";
 	v.resize(6);
 	EXPECT_EQ(v,expect) << "simple";
@@ -33,10 +33,21 @@ TEST(geometry, convex_hull) {
 	EXPECT_EQ(v[0], vec(0,0)) << "repeated";
 
 	v = vector<vec>(sample_pointset, sample_pointset+16);
-	expect = vector<vec>({ vec(15,11), vec(15,12), vec(15,14), vec(14,14), vec(12,12), vec(11,11), vec(8,8), vec(7,7), vec(8,7), vec(10,7), vec(11,7), vec(14,9) });
+	expect = vector<vec>({ vec(7,7), vec(8,7), vec(10,7), vec(11,7), vec(14,9), vec(15,11), vec(15,12), vec(15,14), vec(14,14), vec(12,12), vec(11,11), vec(8,8) });
 	EXPECT_EQ(convex_hull(&v[0], v.size(), 1), 12) << "Convex hull should have size 12";
 	v.resize(12);
 	EXPECT_EQ(v,expect) << "border in";
+
+	// Border
+	v = vector<vec>({ vec(0,2), vec(0,1), vec(0,0), vec(1,0), vec(2,0), vec(2,1), vec(2,2), vec(1,2) });
+	vector<vec> expect_in({ vec(0,2), vec(0,0), vec(2,0), vec(2,2) });
+	vector<vec> cur = v;
+	cur.resize(convex_hull(&cur[0], 8, 0));
+	EXPECT_EQ(cur, expect_in) << "Border outside of convex";
+	cur = v;
+	cur.resize(convex_hull(&cur[0], 8, 1));
+	EXPECT_EQ(cur, v) << "Border inside of convex";
+
 }
 
 TEST(geometry, polygon_inter) {
@@ -82,3 +93,46 @@ TEST(geometry, polygon_pos) {
 	EXPECT_EQ(polygon_pos(&p[0], p.size(), vec(16,9)), 1); // B_{23}
 	EXPECT_EQ(polygon_pos(&p[0], p.size(), vec(17,5)), -1); // B_{24}
 }
+
+/*
+TEST(geometry, polygon_pos_convex) {
+	vector<vec> p({ {5,10},{6,8},{9,6},{11,8},{11,10},{10,12},{9,13},{6,12} });
+	ASSERT_EQ(polygon_pos_convex(&p[0], p.size(), {7,6}), -1);
+
+	// inside
+	EXPECT_EQ(polygon_pos_convex(&p[0], p.size(), {6,10}), 1);
+	EXPECT_EQ(polygon_pos_convex(&p[0], p.size(), {8,12}), 1);
+	EXPECT_EQ(polygon_pos_convex(&p[0], p.size(), {7,8}), 1);
+	EXPECT_EQ(polygon_pos_convex(&p[0], p.size(), {10,8}), 1);
+	EXPECT_EQ(polygon_pos_convex(&p[0], p.size(), {8,9}), 1);
+	EXPECT_EQ(polygon_pos_convex(&p[0], p.size(), {6,9}), 1);
+	EXPECT_EQ(polygon_pos_convex(&p[0], p.size(), {8,7}), 1);
+
+	// border
+	for (vec a : p)
+		EXPECT_EQ(polygon_pos_convex(&p[0], p.size(), a), 0) << "where a = " << a << endl;
+	EXPECT_EQ(polygon_pos_convex(&p[0], p.size(), {11,9}), 0);
+	EXPECT_EQ(polygon_pos_convex(&p[0], p.size(), {10,7}), 0);
+
+	// outside
+	EXPECT_EQ(polygon_pos_convex(&p[0], p.size(), {12,8}), -1);
+	EXPECT_EQ(polygon_pos_convex(&p[0], p.size(), {5,8}), -1);
+	EXPECT_EQ(polygon_pos_convex(&p[0], p.size(), {5,7}), -1);
+	EXPECT_EQ(polygon_pos_convex(&p[0], p.size(), {7,14}), -1);
+	EXPECT_EQ(polygon_pos_convex(&p[0], p.size(), {15,14}), -1);
+	EXPECT_EQ(polygon_pos_convex(&p[0], p.size(), {12,10}), -1);
+	EXPECT_EQ(polygon_pos_convex(&p[0], p.size(), {12,11}), -1);
+
+	int n = p.size();
+	p.pb(p[0]);
+	p.pb(p[1]);
+	p.pb(p[2]);
+	p.pb(p[3]);
+	for (int k = 2; k <= 3; k++) { 
+		EXPECT_EQ(polygon_pos_convex(&p[k], n, {8,5}), -1) << p[k] << " (k = " << k << ")";
+		EXPECT_EQ(polygon_pos_convex(&p[k], n, {10,7}), 0) << p[k] << " (k = " << k << ")";
+		EXPECT_EQ(polygon_pos_convex(&p[k], n, {11,8}), 0, 1) << p[k] << " (k = " << k << ")";
+		EXPECT_EQ(polygon_pos_convex(&p[k], n, {12,9}), -1) << p[k] << " (k = " << k << ")";
+	}
+}
+*/
