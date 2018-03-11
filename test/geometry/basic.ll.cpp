@@ -229,7 +229,7 @@ TEST(geometry_basic_vec, in_seg_Generated) {
 
 // lin
 TEST(geometry_basic_lin, at) {
-	lin s(4,8,52), t(-5,3,0);
+	lin s(vec(4,8),52), t(vec(-5,3),0);
 
 	EXPECT_EQ(s.at_x(1), vec(1,6));
 	EXPECT_EQ(s.at_y(4), vec(5,4));
@@ -245,13 +245,13 @@ TEST(geometry_basic_lin, at) {
 }
 
 TEST(geometry_basic_lin, inter) {
-	lin s(4,8,52), t(-5,3,0), r(4,8,50);
+	lin s(vec(4,8),52), t(vec(-5,3),0), r(vec(4,8),50);
 	EXPECT_EQ(s.inter(t), vec(3,5));
 	EXPECT_ANY_THROW(s.inter(r));
 }
 
 TEST(geometry_basic_lin, contains) {
-	lin s(4,8,52);
+	lin s(vec(4,8),52);
 	EXPECT_TRUE(s.contains(vec(3,5)));
 	EXPECT_TRUE(s.contains(vec(1,6)));
 	EXPECT_FALSE(s.contains(vec(2,5)));
@@ -260,7 +260,7 @@ TEST(geometry_basic_lin, contains) {
 }
 
 TEST(geometry_basic_lin, parll) {
-	lin s(4,8,52);
+	lin s(vec(4,8),52);
 	lin t = s.parll(vec(10,4));
 
 	vec s0 = s.at_x(3), s1 = s.at_x(1);
@@ -275,7 +275,7 @@ TEST(geometry_basic_lin, parll) {
 }
 
 TEST(geometry_basic_lin, perp) {
-	lin s(4,8,52);
+	lin s(vec(4,8),52);
 	lin t = s.perp();
 
 	vec s0 = s.at_x(3), s1 = s.at_x(1);
