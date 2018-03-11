@@ -76,7 +76,7 @@ gtest_main.a : gtest-all.o gtest_main.o
 
 TESTS = $(basename $(wildcard **/*.cpp *.cpp))
 
-.PHONY: .gitignore clean
+.PHONY: .gitignore clean geometry
 clean:
 	rm -f $(TESTS) gtest.a gtest_main.a **/*.o *.o
 
@@ -93,3 +93,6 @@ test_all: $(addsuffix .test, $(TESTS))
 
 $(addsuffix .test, $(TESTS)) : % : $$(basename %)
 	./$< --gtest_color=yes
+
+GEOMETRY_TESTS = $(basename $(wildcard geometry/*.cpp))
+geometry: $(addsuffix .test, $(GEOMETRY_TESTS))
