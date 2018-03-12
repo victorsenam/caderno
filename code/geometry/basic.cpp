@@ -42,7 +42,7 @@ struct lin { // line
 	bool contains (vec v) { return abs(p*v - c) <= eps; }
 	vec at_x (cood x) { return vec(x,(c-p.x*x)/p.y); }
 	vec at_y (cood y) { return vec((c-y*p.y)/p.x,y); }
-	double sign_dist (vec v) { return double(p*v - c)/p.nr(); } // TODO
+	double sign_dist (vec v) { return double(p*v - c)/p.nr(); }
 };
 struct cir { // circle
 	vec c; cood r;

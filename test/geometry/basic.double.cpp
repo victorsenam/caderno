@@ -186,6 +186,38 @@ TEST(geometry_basic_vec_rand, compare__Sorting) {
 }
 
 // lin
+void lin_sign_dist_test (vec p, vec s, vec t, string comm = "") {
+	lin l(s,t);
+	EXPECT_DOUBLE_EQ(sqrt(p.dist2_lin(s,t)), abs(lin(s,t).sign_dist(p))) << comm;
+}
+TEST(geometry_basic_lin, sign_dist) {
+	lin_sign_dist_test(vec(0,1), vec(1,0), vec(3,0));
+	lin_sign_dist_test(vec(1,1), vec(1,0), vec(3,0));
+	lin_sign_dist_test(vec(2,1), vec(1,0), vec(3,0));
+	lin_sign_dist_test(vec(3,1), vec(1,0), vec(3,0));
+	lin_sign_dist_test(vec(4,1), vec(1,0), vec(3,0));
+
+	lin_sign_dist_test(vec(0,11), vec(2,1), vec(1,4));
+	lin_sign_dist_test(vec(0,2), vec(2,1), vec(1,4));
+	lin_sign_dist_test(vec(1,1), vec(4,0), vec(-3,-1));
+	lin_sign_dist_test(vec(0,0), vec(-8,8), vec(-7,5));
+
+	EXPECT_DOUBLE_EQ(lin(vec(3,0),9).sign_dist(vec(13,8)), 10) << "vertical";
+	EXPECT_DOUBLE_EQ(lin(vec(3,0),9).sign_dist(vec(-5,3)), -8) << "negative sign";
+	EXPECT_DOUBLE_EQ(lin(vec(0,4),2).sign_dist(vec(0,1)), .5) << "horizontal";
+	EXPECT_DOUBLE_EQ(lin(vec(0,4),3).sign_dist(vec(1,3)), 2.25) << "non-integer";
+	EXPECT_DOUBLE_EQ(lin(vec(1,3),5).sign_dist(vec(1,2)), sqrt(10)/5) << "tilted";
+	EXPECT_DOUBLE_EQ(lin(vec(1,3),5).sign_dist(vec(5,0)), 0) << "over"; 
+
+ 	// Geogebra: https://ggbm.at/nMx6fY5u
+	vec a(5,2);
+	lin_sign_dist_test(a, vec(15,0), vec(0,3), "from A to BC");
+	lin_sign_dist_test(a, vec(5,1), vec(5,-3), "from A to DE");
+	lin_sign_dist_test(a, vec(6,4), vec(3,6), "from A to FG");
+	lin_sign_dist_test(a, vec(3,6), vec(6,4), "from A to GF");
+	lin_sign_dist_test(a, vec(5,3), vec(9,4), "from A to HI");
+	lin_sign_dist_test(a, vec(7,-1), vec(5,2), "from A to JA");
+}
 
 // none
 TEST(geomtery_basic, dist2_seg) {

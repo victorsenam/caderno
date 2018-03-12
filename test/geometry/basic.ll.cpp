@@ -288,3 +288,12 @@ TEST(geometry_basic_lin, perp) {
 
 	EXPECT_EQ((s1-s0)*(t1-t0), 0);
 }
+
+TEST(geometry_basic_lin, sign_dist) {
+	EXPECT_DOUBLE_EQ(lin(vec(3,0),9).sign_dist(vec(13,8)), 10) << "vertical";
+	EXPECT_DOUBLE_EQ(lin(vec(3,0),9).sign_dist(vec(-5,3)), -8) << "negative sign";
+	EXPECT_DOUBLE_EQ(lin(vec(0,4),2).sign_dist(vec(0,1)), .5) << "horizontal";
+	EXPECT_DOUBLE_EQ(lin(vec(0,4),3).sign_dist(vec(1,3)), 2.25) << "non-integer";
+	EXPECT_DOUBLE_EQ(lin(vec(1,3),5).sign_dist(vec(1,2)), sqrt(10)/5) << "tilted";
+	EXPECT_DOUBLE_EQ(lin(vec(1,3),5).sign_dist(vec(5,0)), 0) << "over"; 
+}
