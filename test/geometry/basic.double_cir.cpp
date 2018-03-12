@@ -8,7 +8,7 @@ typedef pair<ll,ll> pii;
 #define pb push_back
 
 typedef double cood;
-const cood eps = 1e-8;
+cood eps = 1e-8;
 
 #include "gtest/gtest.h"
 #include "../../code/geometry/basic.cpp"
@@ -290,4 +290,28 @@ TEST(geometry_basic_cir, triang_inter) {
 		EXPECT_NEAR(g.triang_inter(G[0],G[i]), 0, 1e-12) << "Degenerate with center i = " << i;
 		EXPECT_NEAR(g.triang_inter(G[i],G[0]), 0, 1e-12) << "Degenerate with center i = " << i;
 	}
+}
+
+::testing::AssertionResult test_cir_tan (cir c, vec v) { 
+	pair<vec,vec> res = c.tan(v);
+	for (vec p : {res.first, res.second}) {
+		::testing::AssertionResult r = is_on_circle(p,c);
+		if (!r) return r << " Tangent point is not on border of circle";
+		r  = check_cir_inter_lin(c, v, p, true);
+		if (!r) return r << " Tangent line doesn't intersect exactly once";
+	}
+	return ::testing::AssertionSuccess();
+}
+
+TEST(geometry_basic_cir, tan) {
+	cood oldeps = eps; eps = 1e-6; // less precision for this test
+
+	cir g(G[0],13);
+
+	EXPECT_TRUE(test_cir_tan(g,G[8])) << "standart " << G[8] << " and " << g;
+	EXPECT_TRUE(test_cir_tan(g,G[14])) << "standart " << G[14] << " and " << g;
+	EXPECT_TRUE(test_cir_tan(g,G[7])) << "border " << G[7] << " and " << g;
+	EXPECT_ANY_THROW(g.tan(G[1])) << "inside " << G[1] << " and " << g;
+
+	eps = oldeps;
 }

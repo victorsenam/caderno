@@ -17,6 +17,7 @@ struct vec {
 	inline int dir (vec a, vec b) { cood o = inner(a,b); return (eps < o) - (o < -eps); } // a(this) is to the (1 same, 0 none, -1 opposite) direction of ab
 	inline cood sq (vec o = vec()) { return inner(o,o); }
 	inline double nr (vec o = vec()) { return sqrt(sq(o)); }
+	inline vec operator ~ () { return (*this)/nr(); }
 	inline vec proj (vec a, vec b) { return a + (b-a)*(a.inner((*this),b) / a.sq(b)); } // projects this onto line ab
 	inline vec rotate (double a) { return vec(cos(a) * x - sin(a) * y, sin(a) * x + cos(a) * y); } // ccw by a radians
 	inline vec rot90 () { return vec(-y,x); } // rotate(pi/2)
@@ -44,6 +45,7 @@ struct lin { // line
 	vec at_y (cood y) { return vec((c-y*p.y)/p.x,y); }
 	double sign_dist (vec v) { return double(p*v - c)/p.nr(); }
 };
+ostream& operator<<(ostream& os, vec o) { return os << '(' << o.x << ", " << o.y << ')'; }
 struct cir { // circle
 	vec c; cood r;
 	cir () {} cir (vec v, cood d) : c(v), r(d) {}
@@ -60,6 +62,12 @@ struct cir { // circle
 	inline bool has_inter_seg (vec a, vec b) { return has_inter_lin(a,b) && (contains(a) || contains(b) || a.dir(c,b)*b.dir(c,a) != -1); } // borders and tips included XXX overflow
 	inline double arc_area (vec a, vec b) { return c.angle(a,b)*r*r/2; } // smallest arc, ccw positive
 	inline double arc_len (vec a, vec b) { return c.angle(a,b)*r; } // smallest arc, ccw positive
+	pair<vec,vec> tan (vec v) { // XXX low precision
+		if (contains(v) && !border(v)) throw 0;
+		cood d2 = c.sq(v); double s = sqrt(d2 - r*r); s = (s==s)?s:0;
+		double al = atan2(r,s); vec t = (~(c-v));
+		return pair<vec,vec>(v + t.rotate(al)*s, v + t.rotate(-al)*s);
+	}
 	pair<vec,vec> border_inter (cir o) {
 		if (!has_border_inter(o)) throw 0;
 		double a = (sq(r) + o.c.sq(c) - sq(o.r))/(2*o.c.nr(c));
@@ -90,6 +98,5 @@ bool inter_seg (vec a, vec b, vec c, vec d) {
 	return (c.ccw(a, b) * d.ccw(a, b) == -1 && a.ccw(c, d) * b.ccw(c, d) == -1);
 }
 double dist2_seg (vec a, vec b, vec c, vec d){return inter_seg(a,b,c,d)?0.:min({ a.dist2_seg(c,d), b.dist2_seg(c,d), c.dist2_seg(a,b), d.dist2_seg(a,b) });}
-ostream& operator<<(ostream& os, vec o) { return os << '(' << o.x << ", " << o.y << ')'; }
 ostream& operator<<(ostream& os, lin o) { return os << '[' << o.p << "*(x,y) = " << o.c << ']'; }
 ostream& operator<<(ostream& os, cir o) { return os << '[' << o.c << o.r << ']'; }

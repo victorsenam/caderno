@@ -52,6 +52,12 @@ TEST(geometry_basic_vec, nr) {
 	EXPECT_DOUBLE_EQ(vec(1,0).nr(vec(0,1)), sqrt(2));
 	EXPECT_DOUBLE_EQ(vec(3,3).nr(vec(7,0)), 5);
 	EXPECT_DOUBLE_EQ(vec(1,0).nr(vec(1,0)), 0);
+
+	EXPECT_EQ((~vec(1,0)), vec(1,0));
+	EXPECT_EQ((~vec(1,1)), vec(1./sqrt(2),1./sqrt(2)));
+	EXPECT_EQ((~vec(0,10)), vec(0,1));
+	EXPECT_DOUBLE_EQ((~vec(-13,2)).sq(), 1);
+	EXPECT_EQ((~vec(-13,2)).ccw(vec(0,0), vec(-13,2)), 0);
 }
 
 TEST(geometry_basic_vec, dist2_lin) {
