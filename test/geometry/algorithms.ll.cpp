@@ -20,34 +20,24 @@ bool operator != (vec a, vec b)
 const vec sample_pointset[] = { vec(7,7), vec(8,7), vec(8,8), vec(10,7), vec(10,8), vec(11,7), vec(11,11), vec(11,9), vec(12,12), vec(13,9), vec(14,10), vec(14,9), vec(14,14), vec(15,14), vec(15,12), vec(15,11) };
 const int sample_size = 16;
 
+::testing::AssertionResult testConvex (vector<vec> points, vector<vec> expect, int in_border) {
+	vector<vec> a = points; a.resize(convex_hull(&a[0],a.size(),in_border));
+	if (expect.size() && a != expect) return ::testing::AssertionFailure() << "\ngiven " << ::testing::PrintToString(points) << "\nconvex_hull returns " << ::testing::PrintToString(a) << "\nexpect is " << ::testing::PrintToString(expect) << "\n";
+	vector<vec> b = points; b.resize(monotone_chain(&b[0],b.size(),in_border));
+	if (expect.size() && b != expect) return ::testing::AssertionFailure() << "\ngiven " << ::testing::PrintToString(points) << "\nmonotone_chain returns " << ::testing::PrintToString(b) << "\nexpect is " << ::testing::PrintToString(expect) << "\n";
+	if (a != b) return ::testing::AssertionFailure() << "\ngiven " << ::testing::PrintToString(points) << "\nconvex_hull returns " << ::testing::PrintToString(a) << "\nmonotone_chain returns " << ::testing::PrintToString(b) << "\n";
+	return ::testing::AssertionSuccess();
+}
+
 TEST(geometry, convex_hull) { 
-	vector<vec> v(sample_pointset, sample_pointset+16);
-	vector<vec> expect({ vec(7,7), vec(11,7), vec(14,9), vec(15,11), vec(15,14), vec(14,14) });
-	EXPECT_EQ(convex_hull(&v[0], v.size(), 0), 6) << "Convex hull should have size 6";
-	v.resize(6);
-	EXPECT_EQ(v,expect) << "simple";
+	EXPECT_TRUE(testConvex(vector<vec>(sample_pointset,sample_pointset+16), { vec(7,7), vec(11,7), vec(14,9), vec(15,11), vec(15,14), vec(14,14) }, 0)) << "simple";
+	EXPECT_TRUE(testConvex(vector<vec>(sample_pointset,sample_pointset+16), { vec(7,7), vec(8,7), vec(10,7), vec(11,7), vec(14,9), vec(15,11), vec(15,12), vec(15,14), vec(14,14), vec(12,12), vec(11,11), vec(8,8) }, 1)) << "border_in";
 
-	v = vector<vec>({ vec(0,0), vec(0,0) });
-	expect = vector<vec>({ vec(0,0) });
-	EXPECT_EQ(convex_hull(&v[0], 2, 0), 1) << "Repeated points should be irrelevant";
-	EXPECT_EQ(v[0], vec(0,0)) << "repeated";
+	EXPECT_TRUE(testConvex({ vec(0,0), vec(0,0) }, { vec(0,0) }, 0)) << "repeated";
+	EXPECT_TRUE(testConvex({ vec(0,0), vec(0,0) }, { vec(0,0) }, 1)) << "repeated border_in";
 
-	v = vector<vec>(sample_pointset, sample_pointset+16);
-	expect = vector<vec>({ vec(7,7), vec(8,7), vec(10,7), vec(11,7), vec(14,9), vec(15,11), vec(15,12), vec(15,14), vec(14,14), vec(12,12), vec(11,11), vec(8,8) });
-	EXPECT_EQ(convex_hull(&v[0], v.size(), 1), 12) << "Convex hull should have size 12";
-	v.resize(12);
-	EXPECT_EQ(v,expect) << "border in";
-
-	// Border
-	v = vector<vec>({ vec(0,2), vec(0,1), vec(0,0), vec(1,0), vec(2,0), vec(2,1), vec(2,2), vec(1,2) });
-	vector<vec> expect_in({ vec(0,2), vec(0,0), vec(2,0), vec(2,2) });
-	vector<vec> cur = v;
-	cur.resize(convex_hull(&cur[0], 8, 0));
-	EXPECT_EQ(cur, expect_in) << "Border outside of convex";
-	cur = v;
-	cur.resize(convex_hull(&cur[0], 8, 1));
-	EXPECT_EQ(cur, v) << "Border inside of convex";
-
+	EXPECT_TRUE(testConvex({ vec(0,2), vec(0,1), vec(0,0), vec(1,0), vec(2,0), vec(2,1), vec(2,2), vec(1,2) }, { vec(0,2), vec(0,0), vec(2,0), vec(2,2) }, 0)) << "many border points";
+	EXPECT_TRUE(testConvex({ vec(0,2), vec(0,1), vec(0,0), vec(1,0), vec(2,0), vec(2,1), vec(2,2), vec(1,2) }, { vec(0,2), vec(0,1), vec(0,0), vec(1,0), vec(2,0), vec(2,1), vec(2,2), vec(1,2) }, 1)) << "many border points border_in";
 }
 
 TEST(geometry, polygon_inter) {

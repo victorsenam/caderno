@@ -10,7 +10,7 @@ cir min_spanning_circle (vec * v, int n) {
 	}
     return c;
 }
-int convex_hull (vec * v, int n, int border_in) {
+int convex_hull (vec * v, int n, int border_in) { // border_in (should border points stay?)
 	swap(v[0], *min_element(v,v+n));
 	sort(v+1, v+n, [&v] (vec a, vec b) {
 		int o = b.ccw(v[0], a);
@@ -29,6 +29,13 @@ int convex_hull (vec * v, int n, int border_in) {
 		v[s++] = v[i];
 	} 
 	return s;
+}
+int monotone_chain (vec * v, int n, int border_in) { // border_in (should border points stay?)
+	vector<vec> r; sort(v, v+n); n = unique(v, v+n) - v;
+	for (int i = 0; i < n; r.pb(v[i++])) while (r.size() >= 2 && r[r.size()-2].ccw(r.back(),v[i]) <= -border_in) r.pop_back();
+	r.pop_back(); unsigned int s = r.size();
+	for (int i = n-1; i >= 0; r.pb(v[i--])) while (r.size() >= s+2 && r[r.size()-2].ccw(r.back(),v[i]) <= -border_in) r.pop_back();
+	return copy(r.begin(), r.end() - (r.size() > 1), v) - v;
 }
 double polygon_inter (vec * p, int n, cir c) { // signed area
 	return inner_product(p, p+n-1, p+1, c.triang_inter(p[n-1],p[0]), std::plus<double>(), [&c] (vec a, vec b) { return c.triang_inter(a,b); });
