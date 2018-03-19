@@ -20,7 +20,7 @@ int convex_hull (vec * v, int n, int border_in) { // border_in (should border po
 	if (border_in) {
 		int s = n-1;
 		while (s > 1 && v[s].ccw(v[s-1],v[0]) == 0) s--;
-		for (int i = s; i < n - 1 - (i - s); i++) swap(v[i], v[n-1-(i-s)]);
+		reverse(v+s, v+n);
 	}
 	int s = 0;
 	for (int i = 0; i < n; i++) {

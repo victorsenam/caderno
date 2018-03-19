@@ -40,6 +40,24 @@ TEST(geometry, convex_hull) {
 	EXPECT_TRUE(testConvex({ vec(0,2), vec(0,1), vec(0,0), vec(1,0), vec(2,0), vec(2,1), vec(2,2), vec(1,2) }, { vec(0,2), vec(0,1), vec(0,0), vec(1,0), vec(2,0), vec(2,1), vec(2,2), vec(1,2) }, 1)) << "many border points border_in";
 }
 
+TEST(geometry, convex_hull_Random) {
+	unsigned seed = time(NULL);
+	cout << "Seed " << seed << endl;
+	srand(seed); rand(); rand();
+	int ts = 50;
+	while (ts--) {
+		vector<vec> p(10000);
+		for (unsigned i = 0; i < p.size(); i++) {
+			p[i].x = rand()%2000001;
+			p[i].y = rand()%2000001;
+			p[i].x -= 1000000;
+			p[i].y -= 1000000;
+		}
+		EXPECT_TRUE(testConvex(p, {}, 0)) << " simple";
+		EXPECT_TRUE(testConvex(p, {}, 0)) << " in_border";
+	}
+}
+
 TEST(geometry, polygon_inter) {
 	vector<vec> v({vec(3,4), vec(5, 2), vec(7, 3)});
 	cir c(vec(3,4), 5);
