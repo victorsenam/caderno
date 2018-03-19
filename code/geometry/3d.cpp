@@ -1,6 +1,6 @@
 struct pnt { // TODO it's not tested at all :)
 	cood x, y, z;
-	pnt () : x(0), y(0), z(0) pnt (cood a, cood b, cood c) : x(a), y(b), z(c) {}
+	pnt () : x(0), y(0), z(0) {} pnt (cood a, cood b, cood c) : x(a), y(b), z(c) {}
 	inline pnt operator - (pnt o) { return pnt(x - o.x, y - o.x, z - o.z); }
 	inline pnt operator + (pnt o) { return pnt(x + o.x, y + o.x, z + o.z); }
 	inline pnt operator * (cood o) { return pnt(x*o, y*o, z*o); }
@@ -27,9 +27,12 @@ struct pnt { // TODO it's not tested at all :)
 	inline double dist2_pln (pnt a, pnt b, pnt c) { return sq(proj(a,b,c)); }
 	inline double dist2_tri (pnt a, pnt b, pnt c) { pnt p = proj(a,b,c); return p.in_tri(a,b,c) ? sq(p) : min({ dist2_seg(a,b), dist2_seg(b,c), dist2_seg(c,a) }); }
 };
-inline cood area (pnt a, pnt b, pnt c) { abs(a.cross(b,c).nr())/2; }
+inline cood area (pnt a, pnt b, pnt c) { abs(a.cross(b,c).nr()) / 2; }
 inline cood vol (pnt a, pnt b, pnt c, pnt d) { abs((b-a).mixed(c-a,d-a)) / 6; } // thetahedra
-
-// area de calota na altura h : 2.pi.R.h
-// volume de calota na altura h : pi.h/6 * (3r^2 + h^2)
-
+struct sph { // TODO it's also not tested at all
+	pnt c; cood r;
+	sph () : c(), r(0) {} sph (pnt a, cood b) : c(a), r(b) {}
+	inline pnt operator () (cood lat, cood lon) { return c + pnt(cos(lat)*cos(lon), sen(lon), sen(lat))*r; } // (1,0,0) is (0,0). z is height.
+	inline double area_hull (double h) { return 2.*pi*r*h; }
+	inline double vol_hull (double h) { return pi*h/6 * (3.*r*r + h*h); }
+};
