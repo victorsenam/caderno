@@ -23,7 +23,7 @@ int cn_getsz (int u, int p) {
 	return cn_sz[u];
 }
 
-void cn_setdist (int u, int p, int depth, int dist) {
+void cn_setdist (int u, int p, int depth, int dist) { // not essential
 	cn_dist[depth][u] = dist;
 	for (int v : adj[u]) {
 		if (p == v || cn_sz[v] == -1) continue;
@@ -43,15 +43,15 @@ int cn_build (int u, int depth) {
 		}
 	} while (u != w);
 
-	cn_setdist(u,u,depth,0);
+	cn_setdist(u,u,depth,0); // not essential
 	cn_sz[u] = -1;
 	cn_dep[u] = depth;
 
 	for (int v : adj[u]) {
 		if (cn_sz[v] == -1) continue;
 		int w = cn_build(v, depth+1);
-		cn_adj[u].pb(w);
-		cn_adj[w].pb(u);
+		cn_adj[u].pb(w); // not essential
+		cn_adj[w].pb(u); // not essential
 	}
 	return u;
 }
