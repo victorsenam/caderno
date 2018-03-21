@@ -1,13 +1,12 @@
 namespace f {
 
 const int N = , M =  * 2;
-typedef int val;
-typedef int num;
+typedef int val; // type of flow
+typedef int num; // type of cost
 int es[N], to[M], nx[M], en, pai[N];
 val fl[M], cp[M];
 num cs[M], d[N];
-const num inf = 1e8, eps = 0;
-const val infv = INT_MAX;
+const num eps = 0;
 int seen[N], tempo;
 int qu[N];
 
@@ -15,7 +14,7 @@ num tot;
 val spfa(int s, int t) {
 	tempo++;
 	int a = 0, b = 0;
-	for(int i = 0; i < N; i++) d[i] = inf;
+	for(int i = 0; i < N; i++) d[i] = numeric_limits<num>::max();
 	d[s] = 0;
 	qu[b++] = s;
 	seen[s] = tempo;
@@ -28,8 +27,8 @@ val spfa(int s, int t) {
 				if(seen[to[e]] < tempo) { seen[to[e]] = tempo; qu[b++] = to[e]; if(b == N) b = 0; }
 			}
 	}
-	if(d[t] == inf) return false;
-	val mx = infv;
+	if(d[t] == numeric_limits<num>::max()) return false;
+	val mx = numeric_limits<val>::max();
 	for(int u = t; u != s; u = to[pai[u]])
 		mx = min(mx, cp[pai[u] ^ 1] - fl[pai[u] ^ 1]);
 	tot += d[t] * val(mx);
@@ -38,6 +37,7 @@ val spfa(int s, int t) {
 	return mx;
 }
 
+// should be called before calling mncost
 void init(int n) {
 	en = 0;
 	memset(es, -1, sizeof(int) * n);
