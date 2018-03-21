@@ -58,7 +58,7 @@ int polygon_pos_convex (vec * p, int n, vec v, bool verb = 0) { // (-1 out, 0 bo
 	return v.ccw(p[di-1],p[di]);
 }
 // v is the pointset, w is auxiliary with size at least equal to v's
-cood closest_pair (vec * v, vec * w, int l, int r, bool sorted = 0) { // TODO (problem accepted, not manually tested)
+cood closest_pair (vec * v, vec * w, int l, int r, bool sorted = 0) { // TODO (AC, no test)
 	if (l + 1 >= r) return inf;
 	if (!sorted) sort(v+l,v+r,[](vec a, vec b){ return a.x < b.x; });
 	int m = (l+r)/2; cood x = v[m].x;
@@ -68,6 +68,35 @@ cood closest_pair (vec * v, vec * w, int l, int r, bool sorted = 0) { // TODO (p
 		for (int j = s-1; j >= l && sq(w[i].y - w[j].y) < res; j--)
 			res = min(res, w[i].sq(w[j]));
 		w[s++] = v[i];
+	}
+	return res;
+}
+double union_area (cir * v, int n) { // XXX joins equal circles TODO (AC, no tests)
+	struct I { vec v; int i; } c[2*(n+4)];
+	srand(time(NULL)); cood res = 0; vector<bool> usd(n);
+	cood lim = 1./0.; for (int i = 0; i < n; i++) lim = min(lim, v[i].c.y - v[i].r - 1);
+	for (int i = 0, ss = 0; i < n; i++, ss = 0) {
+		vec fp = v[i].c + vec(0,v[i].r).rotate(rand()); // rotation avoids corner on cnt initialization
+		int cnt = 0, eq = 0; 
+		for (int j = 0; j < n; j++) {
+			cnt += (usd[j] = v[j].contains(fp));
+			if (!v[i].has_border_inter(v[j])) continue;
+			if (v[i].c == v[j].c) eq++;
+			else {
+				pair<vec,vec> r = v[i].border_inter(v[j]);
+				c[ss++] = {r.first, j}; c[ss++] = {r.second, j};
+			}
+		}
+		vec d = vec(v[i].r,0); for (int k = 0; k < 4; k++, d = d.rot90()) c[ss++] = {v[i].c + d, i};
+		int md = partition(c,c+ss,[v,i,fp](I a){return a.v.ccw(v[i].c,fp) > 0;}) - c;
+		sort(c,c+md,[v,i](I a,I b){return a.v.ccw(v[i].c,b.v) < 0;});
+		sort(c+md,c+ss,[v,i](I a,I b){return a.v.ccw(v[i].c,b.v) < 0;});
+		for (int j = 0; j < ss; j++) {
+			if (c[j].i != i) { cnt -= usd[c[j].i]; usd[c[j].i] = !usd[c[j].i]; cnt += usd[c[j].i]; }
+			vec a = c[j].v, b = c[(j+1)%ss].v;
+			cood cir = abs(v[i].arc_area(a,b) - v[i].c.cross(a,b)/2), tra = abs((b.x-a.x)*(a.y+b.y-2*lim)/2);
+			cood loc = (a.x<b.x)?cir-tra:tra+cir; res += (cnt==eq)?loc/eq:0;
+		}
 	}
 	return res;
 }
