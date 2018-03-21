@@ -69,7 +69,7 @@ struct cir { // circle
 		return pair<vec,vec>(v + t.rotate(al)*s, v + t.rotate(-al)*s);
 	}
 	pair<vec,vec> border_inter (cir o) {
-		if (!has_border_inter(o)) throw 0;
+		if (!has_border_inter(o) || o.c == (*this).c) throw 0;
 		double a = (sq(r) + o.c.sq(c) - sq(o.r))/(2*o.c.nr(c));
 		vec v = (o.c - c)/o.c.nr(c); vec m = c + v * a;
 		double h = sqrt(sq(r) - sq(a)); h = h!=h?0:h;
