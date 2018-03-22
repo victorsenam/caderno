@@ -1,33 +1,21 @@
 cir min_spanning_circle (vec * v, int n) { // n
-	srand(time(NULL)); random_shuffle(v, v+n); cir c(vec(), 0);
-	for (int i = 0; i < n; i++) if (!c.contains(v[i])) {
-		c = cir(v[i], 0);
-		for (int j = 0; j < i; j++) if (!c.contains(v[j])) {
-			c = cir((v[i] + v[j])/2, v[i].nr(v[j])/2);
-			for (int k = 0; k < j; k++) if (!c.contains(v[k]))
-				c = cir(v[i],v[j],v[k]);
-		}
-	}
-    return c;
+	srand(time(NULL)); random_shuffle(v, v+n); cir c(vec(), 0); int i,j,k;
+	for (i = 0; i < n; i++) if (!c.contains(v[i]))
+		for (c = cir(v[i],0), j = 0; j < i; j++) if (!c.contains(v[j]))
+			for (c = cir((v[i] + v[j])/2,v[i].nr(v[j])/2), k = 0; k < j; k++) if (!c.contains(v[k]))
+					c = cir(v[i],v[j],v[k]);
+	return c;
 }
 int convex_hull (vec * v, int n, int border_in) { // nlg | border_in (should border points stay?)
-	swap(v[0], *min_element(v,v+n));
-	sort(v+1, v+n, [&v] (vec a, vec b) {
-		int o = b.ccw(v[0], a);
-		if (o) return (o == 1);
-		return v[0].sq(a) < v[0].sq(b);
-	});
+	swap(v[0], *min_element(v,v+n)); int s, i;
+	sort(v+1, v+n, [&v] (vec a, vec b) { int o = b.ccw(v[0], a); return (o?o==1:v[0].sq(a)<v[0].sq(b)); });
 	if (border_in) {
-		int s = n-1;
-		while (s > 1 && v[s].ccw(v[s-1],v[0]) == 0) s--;
+		for (s = n-1; s > 1 && v[s].ccw(v[s-1],v[0]) == 0; s--);
 		reverse(v+s, v+n);
 	}
-	int s = 0;
-	for (int i = 0; i < n; i++) {
-		if (s && v[s-1].x == v[i].x && v[s-1].y == v[i].y) continue;
-		while (s >= 2 && v[s-1].ccw(v[s-2],v[i]) >= border_in) s--;
-		v[s++] = v[i];
-	} 
+	for (i = s = 0; i < n; i++) if (!s || !(v[s-1] == v[i]))
+		for (; s >= 2 && v[s-1].ccw(v[s-2],v[i]) >= border_in; s--)
+			swap(v[s++],v[i]);
 	return s;
 }
 int monotone_chain (vec * v, int n, int border_in) { // nlg | border_in (should border points stay?)
