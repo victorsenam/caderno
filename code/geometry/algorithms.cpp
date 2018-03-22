@@ -58,7 +58,7 @@ int polygon_pos_convex (vec * p, int n, vec v, bool verb = 0) { // n | (-1 out, 
 	return v.ccw(p[di-1],p[di]);
 }
 // v is the pointset, w is auxiliary with size at least equal to v's
-cood closest_pair (vec * v, vec * w, int l, int r, bool sorted = 0) { // nlg | TODO (AC, no test)
+cood closest_pair (vec * v, vec * w, int l, int r, bool sorted = 0) { // nlg | r is exclusive TODO (AC on cf, no test)
 	if (l + 1 >= r) return inf;
 	if (!sorted) sort(v+l,v+r,[](vec a, vec b){ return a.x < b.x; });
 	int m = (l+r)/2; cood x = v[m].x;
@@ -71,7 +71,7 @@ cood closest_pair (vec * v, vec * w, int l, int r, bool sorted = 0) { // nlg | T
 	}
 	return res;
 }
-double union_area (cir * v, int n) { // n^2lg | XXX joins equal circles TODO (AC, no tests)
+double union_area (cir * v, int n) { // n^2lg | XXX joins equal circles TODO (AC on szkopul, no tests)
 	struct I { vec v; int i; } c[2*(n+4)];
 	srand(time(NULL)); cood res = 0; vector<bool> usd(n);
 	cood lim = 1./0.; for (int i = 0; i < n; i++) lim = min(lim, v[i].c.y - v[i].r - 1);
