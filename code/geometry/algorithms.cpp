@@ -13,9 +13,10 @@ int convex_hull (vec * v, int n, int border_in) { // nlg | border_in (should bor
 		for (s = n-1; s > 1 && v[s].ccw(v[s-1],v[0]) == 0; s--);
 		reverse(v+s, v+n);
 	}
-	for (i = s = 0; i < n; i++) if (!s || !(v[s-1] == v[i]))
-		for (; s >= 2 && v[s-1].ccw(v[s-2],v[i]) >= border_in; s--)
-			swap(v[s++],v[i]);
+	for (i = s = 0; i < n; i++) if (!s || !(v[s-1] == v[i])) {
+		for (; s >= 2 && v[s-1].ccw(v[s-2],v[i]) >= border_in; s--);
+		swap(v[s++],v[i]);
+	}
 	return s;
 }
 int monotone_chain (vec * v, int n, int border_in) { // nlg | border_in (should border points stay?)
