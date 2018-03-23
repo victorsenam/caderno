@@ -1,5 +1,6 @@
-\documentclass{article}
-\usepackage[Glenn]{fncychap}
+\documentclass[a4paper,oneside]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
 \usepackage{listings}
 \usepackage{color}
 \usepackage{verbatim}
@@ -7,7 +8,13 @@
 \usepackage[inline]{enumitem}
 \usepackage{pxfonts}
 
-\usepackage[a4paper,top=1cm,bottom=2.5cm,left=1.5cm,right=1.5cm]{geometry}
+\usepackage[a4paper,top=2cm,bottom=1cm,left=1cm,right=1cm]{geometry}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\renewcommand{\sectionmark}[1]{\markright{#1}}
+\fancyhf{}
+\rhead{\fancyplain{}{\nouppercase{\rightmark}}, page \bfseries\thepage}
+\lhead{University of São Paulo}
 
 \usepackage{titlesec}
 \titlespacing*{\section}
@@ -23,7 +30,7 @@
   showstringspaces=false,
   columns=flexible,
   basicstyle={\small\ttfamily},
-  numbers=left,
+  numbers=none,
   keywordstyle=\bfseries,
   commentstyle=\color{gray},
   morekeywords={num, cood},
@@ -34,7 +41,14 @@
   tab={\color{dkgray}{\tiny $\vartriangleright$}\hfill}
 }
 
+\title{ACM ICPC Reference}
+\author{University of São Paulo}
+
 \begin{document}
+\maketitle
+\thispagestyle{fancy}
+\tableofcontents
+\newpage
 
 \begin{enumerate*}
  \item workspaces/teclado 
@@ -49,11 +63,4 @@ set ai si noet ts=4 sw=4 sta sm nu rnu so=7 t_Co=8
 imap {<CR> {<CR>}<Esc>O
 \end{lstlisting}
 
-\begin{lstlisting}
-alias g="g++ -std=c++11 -g -fdiagnostics-color"
-function submit { boca-submit-run user pass `basename $1 .cpp` C++11 $1 }
-\end{lstlisting}
-
 \lstinputlisting{hashify.py}
-
-\lstset{numbers=none}

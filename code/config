@@ -1,17 +1,22 @@
-<Geometry Base> <geometry/basic.cpp>
-<Geometry> <geometry/algorithms.cpp>
+!Geometry
+<Base> <geometry/basic.cpp>
+<Advanced> <geometry/algorithms.cpp>
+!Flow
 <Dinic> <dinic.cpp>
-<Ordered Set> <orderedset.cpp>
 <MinCost MaxFlow> <mincost.cpp>
+!Structures
+<Ordered Set> <orderedset.cpp>
 <Treap> <treap.cpp>
 <Envelope> <envelope.cpp>
-<FFT> <math/fft.cpp>
-<Z-function> <zfunction.cpp>
-<Manacher> <manacher.cpp>
 <Centroid> <centroid.cpp>
 <Link Cut Tree> <linkcut.cpp>
+<Splay Tree> <splay.cpp>
+!Strings
 <Suffix Tree> <sufftree.cpp>
-<Miller-Rabin> <millerrabin.cpp>
+<Z-function> <zfunction.cpp>
+<Manacher> <manacher.cpp>
+!Math
+<FFT> <math/fft.cpp>
 <Discrete FFT> <math/fft_finite.cpp>
 <Linear System Solver> <linsys.cpp>
-<Splay Tree> <splay.cpp>
+<Miller-Rabin> <millerrabin.cpp>

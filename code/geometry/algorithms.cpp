@@ -5,7 +5,7 @@ cir min_spanning_circle (vec * v, int n) { // n
 			for (c = cir((v[i] + v[j])/2,v[i].nr(v[j])/2), k = 0; k < j; k++) if (!c.contains(v[k]))
 					c = cir(v[i],v[j],v[k]);
 	return c;
-}
+}//$
 int convex_hull (vec * v, int n, int border_in) { // nlg | border_in (should border points stay?)
 	swap(v[0], *min_element(v,v+n)); int s, i;
 	sort(v+1, v+n, [&v] (vec a, vec b) { int o = b.ccw(v[0], a); return (o?o==1:v[0].sq(a)<v[0].sq(b)); });
@@ -18,17 +18,17 @@ int convex_hull (vec * v, int n, int border_in) { // nlg | border_in (should bor
 		swap(v[s++],v[i]);
 	}
 	return s;
-}
+}//$
 int monotone_chain (vec * v, int n, int border_in) { // nlg | border_in (should border points stay?)
 	vector<vec> r; sort(v, v+n); n = unique(v, v+n) - v;
 	for (int i = 0; i < n; r.pb(v[i++])) while (r.size() >= 2 && r[r.size()-2].ccw(r.back(),v[i]) <= -border_in) r.pop_back();
 	r.pop_back(); unsigned int s = r.size();
 	for (int i = n-1; i >= 0; r.pb(v[i--])) while (r.size() >= s+2 && r[r.size()-2].ccw(r.back(),v[i]) <= -border_in) r.pop_back();
 	return copy(r.begin(), r.end() - (r.size() > 1), v) - v;
-}
+}//$
 double polygon_inter (vec * p, int n, cir c) { // signed area
 	return inner_product(p, p+n-1, p+1, c.triang_inter(p[n-1],p[0]), std::plus<double>(), [&c] (vec a, vec b) { return c.triang_inter(a,b); });
-}
+}//$
 int polygon_pos (vec * p, int n, vec v) { // lg | p should be simple (-1 out, 0 border, 1 in)
 	int in = -1; // it's a good idea to randomly rotate the points in the double case, numerically safer
 	for (int i = 0; i < n; i++) {
@@ -37,7 +37,7 @@ int polygon_pos (vec * p, int n, vec v) { // lg | p should be simple (-1 out, 0 
 		else if (v.in_seg(a,b)) { return 0; }
 	}
 	return in;
-}
+}//$
 int polygon_pos_convex (vec * p, int n, vec v, bool verb = 0) { // n | (-1 out, 0 border, 1 in) TODO 
 	if (v.sq(p[0]) <= eps) return 0;
 	if (verb) cout << v.ccw(p[0],p[1]) << " " << v.ccw(p[0],p[n-1]) << endl;
@@ -45,7 +45,7 @@ int polygon_pos_convex (vec * p, int n, vec v, bool verb = 0) { // n | (-1 out, 
 	int di = lower_bound(p+1,p+n-1,v, [&p](vec a,vec v) { return v.ccw(p[0],a) > 0; }) - p;
 	if (di == 1) return v.ccw(p[1],p[2]) >= 0?0:-1;
 	return v.ccw(p[di-1],p[di]);
-}
+}//$
 // v is the pointset, w is auxiliary with size at least equal to v's
 cood closest_pair (vec * v, vec * w, int l, int r, bool sorted = 0) { // nlg | r is exclusive TODO (AC on cf, no test)
 	if (l + 1 >= r) return inf;
@@ -59,7 +59,7 @@ cood closest_pair (vec * v, vec * w, int l, int r, bool sorted = 0) { // nlg | r
 		w[s++] = v[i];
 	}
 	return res;
-}
+}//$
 double union_area (cir * v, int n) { // n^2lg | XXX joins equal circles TODO (AC on szkopul, no tests)
 	struct I { vec v; int i; } c[2*(n+4)];
 	srand(time(NULL)); cood res = 0; vector<bool> usd(n);
@@ -88,4 +88,4 @@ double union_area (cir * v, int n) { // n^2lg | XXX joins equal circles TODO (AC
 		}
 	}
 	return res;
-}
+}//$
