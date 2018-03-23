@@ -1,6 +1,7 @@
 !Geometry
 <Base> <geometry/basic.cpp>
 <Advanced> <geometry/algorithms.cpp>
+<3D> <geometry/3d.cpp>
 !Graphs
 <Dinic> <dinic.cpp>
 <MinCost MaxFlow> <mincost.cpp>
