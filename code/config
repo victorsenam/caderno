@@ -1,9 +1,10 @@
 !Geometry
 <Base> <geometry/basic.cpp>
 <Advanced> <geometry/algorithms.cpp>
-!Flow
+!Graphs
 <Dinic> <dinic.cpp>
 <MinCost MaxFlow> <mincost.cpp>
+<Hungarian> <hungarian.cpp>
 !Structures
 <Ordered Set> <orderedset.cpp>
 <Treap> <treap.cpp>
@@ -19,4 +20,7 @@
 <FFT> <math/fft.cpp>
 <Discrete FFT> <math/fft_finite.cpp>
 <Linear System Solver> <linsys.cpp>
+<Simplex> <simplex.cpp>
+<Zeta> <zeta.cpp>
+<Zeta Disjoint Or> <zeta_dor.cpp>
 <Miller-Rabin> <millerrabin.cpp>

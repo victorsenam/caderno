@@ -35,8 +35,8 @@ struct simplex {
 	 * sujeito a
 	 *    sum(a[i][j] * x[j]) <= b[i] para 0 <= i < m (Ax <= b)
 	 *    x[i] >= 0 para 0 <= i < n (x >= 0)
-	 * (n variáveis, m restrições)
-	 * guarda a resposta em ans e retorna o valor ótimo
+	 * (n variaveis, m restricoes)
+	 * guarda a resposta em ans e retorna o valor otimo
 	 */
 	dbl solve(int n, int m) {
 		this->n = n; this->m = m;
