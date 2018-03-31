@@ -12,6 +12,10 @@ const cood eps = 0;
 #include "gtest/gtest.h"
 #include "../../code/geometry/basic.cpp"
 
+ostream& operator<<(ostream& os, vec o) { return os << '(' << o.x << ", " << o.y << ')'; }
+ostream& operator<<(ostream& os, lin o) { return os << '[' << o.p << "*(x,y) = " << o.c << ']'; }
+ostream& operator<<(ostream& os, cir o) { return os << '[' << o.c << o.r << ']'; }
+
 bool operator != (vec a, vec b)
 { return !(a==b); }
 

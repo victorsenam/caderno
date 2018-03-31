@@ -14,6 +14,10 @@ const double inf = 1./0.;
 #include "../../code/geometry/basic.cpp"
 #include "../../code/geometry/algorithms.cpp"
 
+ostream& operator<<(ostream& os, vec o) { return os << '(' << o.x << ", " << o.y << ')'; }
+ostream& operator<<(ostream& os, lin o) { return os << '[' << o.p << "*(x,y) = " << o.c << ']'; }
+ostream& operator<<(ostream& os, cir o) { return os << '[' << o.c << o.r << ']'; }
+
 bool operator== (cir a, cir b)
 { return (a.c == b.c && abs(a.r - b.r) <= eps); }
 bool operator!= (cir a, cir b)
