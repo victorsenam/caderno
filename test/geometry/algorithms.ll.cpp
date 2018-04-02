@@ -148,3 +148,18 @@ TEST(geometry, polygon_pos_convex) {
 	}
 }
 */
+
+pii pair_rev (pii p) { return pii(p.second,p.first); }
+
+TEST(geometry, antipodal) {
+	// geogebra: https://ggbm.at/uaEAPcZa
+
+	vector<vec> A({vec(1,1), vec(2,-2), vec(8,-1), vec(6,4), vec(2,4)}); // in geogebra, points in poly A
+	vector<vec> to_a({vec(-1,-2),vec(3,0), vec(1,3)}); // in geogebra, A[0] - a_i for each i
+	EXPECT_EQ(antipodal(&A[0], A.size(), to_a[0]), pii(1,3)) << "a_0 simple";
+	EXPECT_EQ(antipodal(&A[0], A.size(), to_a[1]), pii(2,0)) << "a_1 all in one side";
+	EXPECT_EQ(antipodal(&A[0], A.size(), to_a[2]), pii(3,1)) << "a_2 ties";
+	for (unsigned int i = 0; i < to_a.size(); i++) {
+		EXPECT_EQ(antipodal(&A[0], A.size(), to_a[i]), pair_rev(antipodal(&A[0], A.size(), vec(0,0) - to_a[i]))) << "opposite dir";
+	}
+}
