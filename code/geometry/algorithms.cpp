@@ -92,7 +92,7 @@ double union_area (cir * v, int n) { // n^2lg | XXX joins equal circles TODO (AC
 pii antipodal (vec * p, int n, vec v) { // lg(n) | extreme segments relative to direction v TODO
 	bool sw = ((p[1]-p[0])*v < 0);
 	if (sw) v = vec(0,0) - v; // lower_bound returns the first such that lambda is true
-	int md = lower_bound(p, p+n, v, [p] (vec a, vec v) { return (a-p[0])*v < 0); }) - p; // chain separation
+	int md = lower_bound(p, p+n, v, [p] (vec a, vec v) { return (a-p[0])*v < 0; }) - p; // chain separation
 	int po = lower_bound(p, p+md-1, v, [p,n] (vec & a, vec v) { return (p[&a+1-p]-a)*v < 0; }) - p; // positive
 	int ne = lower_bound(p+md, p+n, v, [p,n] (vec & a, vec v) { return (p[(&a+1-p)%n]-a)*v > 0; }) - p; // negative
 	if (sw) swap(po,ne);
