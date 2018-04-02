@@ -2,6 +2,7 @@
 using namespace std;
 #include "gtest/gtest.h"
 const int N = 512345;
+char s[N], t[2*N]; int M[2*N];
 #include "../code/manacher.cpp"
 
 inline void cp(string x) {
@@ -11,7 +12,7 @@ inline void cp(string x) {
 
 void test_brut(string x) {
 	cp(x);
-	manacher(x.size());
+	manacher(s,x.size(),t,M);
 	for(int i = 0; i < int(x.size()); i++) {
 		int M = 0;
 		while(i + M + 1 < int(x.size()) && i - M - 1 >= 0 && x[i + M + 1] == x[i - M - 1]) M++;
@@ -68,7 +69,7 @@ TEST(Simple, Random) {
 TEST(Simple, Big) {
 	string s;
 	for(int i = 0; i < N; i++) s.push_back('z');
-	cp(s); manacher(N);
+	cp(s); manacher(::s,N,t,M);
 	for(int i = 0; i < N; i++) EXPECT_EQ(M[2 * i] / 2, min(i, N - 1 - i));
 	for(int g = 0; g < N; g++) {
 		s[rand() % N] = 'a' + (g % 20);
