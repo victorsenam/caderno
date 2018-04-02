@@ -1,57 +1,28 @@
-#include <bits/stdc++.h>
-#define debug if (1)
-
-using namespace std;
-typedef long long int ll;
-typedef pair<ll,ll> pii;
-#define pb push_back
-
-int n;
-vector<int> adj[N];
-
-int cn_sz[N];
-int cn_dep[N]; // depth on cent tree
-int cn_dist[20][N]; // distance to centroid antecessor with given depth
-vector<int> cn_adj[N];
-
+vector<int> adj[N]; int cn_sz[N], n;
+vector<int> cn_chld[N]; int cn_dep[N], cn_dist[20][N]; // removable
+void cn_setdist (int u, int p, int depth, int dist) { // removable
+	cn_dist[depth][u] = dist;
+	for (int v : adj[u]) if (p != v && cn_sz[v] != -1) // sz = -1 marks processed centroid (not dominated)
+		cn_setdist(v, u, depth, dist+1);
+}
 int cn_getsz (int u, int p) {
 	cn_sz[u] = 1;
-	for (int v : adj[u]) {
-		if (p == v || cn_sz[v] == -1) continue;
+	for (int v : adj[u]) if (p != v && cn_sz[v] != -1)
 		cn_sz[u] += cn_getsz(v,u);
-	}
 	return cn_sz[u];
 }
-
-void cn_setdist (int u, int p, int depth, int dist) { // not essential
-	cn_dist[depth][u] = dist;
-	for (int v : adj[u]) {
-		if (p == v || cn_sz[v] == -1) continue;
-		cn_setdist(v, u, depth, dist+1);
-	}
-}
-
 int cn_build (int u, int depth) {
-	int siz = cn_getsz(u,u);
-	int w = u;
+	int siz = cn_getsz(u,u); int w = u;
 	do {
 		u = w;
-		for (int v : adj[u]) {
-			if (cn_sz[v] == -1 || cn_sz[v] >= cn_sz[u] || cn_sz[v] + cn_sz[v] < siz)
-				continue;
+		for (int v : adj[u]) if (cn_sz[v] != -1 && cn_sz[v] < cn_sz[u] && cn_sz[v] + cn_sz[v] >= siz)
 			w = v;
-		}
-	} while (u != w);
-
-	cn_setdist(u,u,depth,0); // not essential
-	cn_sz[u] = -1;
-	cn_dep[u] = depth;
-
-	for (int v : adj[u]) {
-		if (cn_sz[v] == -1) continue;
+	} while (u != w); // u becomes current centroid root
+	cn_setdist(u,u,depth,0); // removable, here you can iterate over all dominated tree
+	cn_sz[u] = -1; cn_dep[u] = depth; 
+	for (int v : adj[u]) if (cn_sz[v] != -1) {
 		int w = cn_build(v, depth+1);
-		cn_adj[u].pb(w); // not essential
-		cn_adj[w].pb(u); // not essential
+		cn_chld[u].pb(w); // removable
 	}
 	return u;
 }
