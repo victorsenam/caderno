@@ -38,7 +38,8 @@
   breakatwhitespace=true,
   tabsize=4,
   showtabs=true,
-  tab={\color{dkgray}{\tiny $\vartriangleright$}\hfill}
+  tab={\color{dkgray}{\tiny $\vartriangleright$}\hfill},
+  moredelim=**[is][\color{red}]{@}{@}
 }
 
 \title{ACM ICPC Reference}

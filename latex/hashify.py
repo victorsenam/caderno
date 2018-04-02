@@ -8,6 +8,7 @@ for line in sys.stdin.readlines():
 		line = line[:line.find("//")]
 	m.update(line.encode('utf-8'))
 	hash = m.hexdigest()[:4]
-	print("%s %s"%(hash,safe), end='')
 	if trim.endswith("$"):
+		hash = "@" + hash + "@" # ignore this
 		m = hashlib.md5()
+	print("%s %s"%(hash,safe), end='')
