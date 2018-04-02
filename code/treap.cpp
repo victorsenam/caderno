@@ -1,6 +1,6 @@
 //const int N = ; typedef int num;
 num X[N]; int en = 1, Y[N], sz[N], L[N], R[N];
-void calc (int u) { // parent information given children information
+void calc (int u) { // update node given children info
 	sz[u] = sz[L[u]] + 1 + sz[R[u]];
 	// code here, no recursion
 }
