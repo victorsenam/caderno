@@ -1,23 +1,28 @@
 #include "gtest/gtest.h"
+#include <bits/stdc++.h>
+#define cout if (1) cout
+
+using namespace std;
+typedef long long int ll;
+typedef pair<ll,ll> pii;
+#define pb push_back
+
 const int N = 112345;
+
 #include "../../code/math/fft.cpp"
 
-#include <bits/stdc++.h>
-using namespace std;
-typedef long long ll;
-typedef complex<double> cpx;
-
 cpx a[112345], b[112345], c[112345];
+int p[N];
 
 TEST(FFT, Simple0) {
 	a[0] = 666;
 	b[0] = 999;
-	FFT(a, c, 1, 1);
+	FFT(a, c, 1, 1, p);
 	EXPECT_EQ(c[0].real(), 666);
-	FFT(b, a, 1, 1);
+	FFT(b, a, 1, 1, p);
 	EXPECT_EQ(a[0].real(), 999);
 	a[0] *= c[0];
-	FFT(a, b, 1, -1);
+	FFT(a, b, 1, -1, p);
 	EXPECT_EQ(b[0].real(), 666 * 999);
 }
 
@@ -30,10 +35,10 @@ TEST(FFT, Simple1) {
 	i = 0;
 	for(int x : {3, 5, 1, 6}) b[i++] = x;
 
-	FFT(a, c, 8, 1);
-	FFT(b, a, 8, 1);
+	FFT(a, c, 8, 1, p);
+	FFT(b, a, 8, 1, p);
 	for(i = 0; i < 8; i++) a[i] *= c[i];
-	FFT(a, b, 8, -1);
+	FFT(a, b, 8, -1, p);
 
 	i = 0;
 	for(int x : {15, 34, 26, 64, 55, 19, 42, 0})
@@ -43,14 +48,14 @@ TEST(FFT, Simple1) {
 TEST(FFT, Simple2) {
 	a[0] = 111; a[1] = 222; a[2] = a[3] = 0;
 	b[0] = 333; b[1] = 444; b[2] = b[3] = 0;
-	FFT(a, c, 4, 1);
+	FFT(a, c, 4, 1, p);
 	EXPECT_EQ(c[0].real(), 333); // applied to 1
 	EXPECT_EQ(c[2].real(),-111); // applied to -1
-	FFT(b, a, 4, 1);
+	FFT(b, a, 4, 1, p);
 	EXPECT_EQ(a[0].real(), 777); // applied to 1
 	EXPECT_EQ(a[2].real(),-111); // applied to -1
 	for(int i = 0; i < 4; i++) a[i] = (a[i] * c[i] + 7. * a[i]);
-	FFT(a, b, 4, -1);
+	FFT(a, b, 4, -1, p);
 	int i = 0;
 	for(int x : {333 * 118, 222 * 333 + 444 * 118, 222 * 444, 0})
 		EXPECT_EQ(b[i++].real(), x);
@@ -64,7 +69,7 @@ TEST(FFT, RootsOfUnity) {
 		int sz = rnd(500, 1000);
 		for(int i = 0; i < sz; i++) a[i] = rnd() * 20. - 10.;
 		while(sz & (sz - 1)) a[sz++] = 0;
-		FFT(a, b, sz, 1);
+		FFT(a, b, sz, 1, p);
 		cpx r(cos(2. * pi / sz), sin(2. * pi / sz));
 		cpx x = 1;
 		for(int i = 0; i < sz; i++) {
@@ -110,11 +115,11 @@ TEST(FFT, ComplexCoeficients) {
 		while(n & (n - 1)) n++;
 		a.resize(n, 0);
 		b.resize(n, 0);
-		FFT(a.data(), ::a, n, 1);
-		FFT(b.data(), ::b, n, 1);
+		FFT(a.data(), ::a, n, 1, p);
+		FFT(b.data(), ::b, n, 1, p);
 		for(int i = 0; i < n; i++)
 			::a[i] *= ::b[i];
-		FFT(::a, ::b, n, -1);
+		FFT(::a, ::b, n, -1, p);
 		c.resize(n, 0);
 
 		for (int i = 0; i < n; i++) {
