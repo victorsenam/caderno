@@ -47,7 +47,6 @@ int find_sz(int u, int s) { // returns s-th node (0-index)
 	}
 	splay(u); return u;
 }
-void init() { en = 1 } // XXX initialize
 int new_node() {
 	int i = en++; assert(i < N);
 	pp[i] = C[i][0] = C[i][1] = p[i] = 0;
@@ -83,9 +82,7 @@ void link(int u, int v) { // adds edge from u to v, v must be root
 	assert(C[v][0] == 0 && pp[v] == 0 && sz[v] == 1); // v must be root
 	C[u][1] = v; p[v] = u; calc(u);
 }
-void cut(int u) { // removes link from u to parent
-	access(u); assert(C[u][0]); // must have a parent
-	p[C[u][0]] = 0; C[u][0] = 0; calc(u);
-}
-// sets u as root os it's tree XXX rootify and cut togheter require use of get_parent
-void rootify(int u) { access(u); lzswp[u] = 1; access(u); }
+// XXX cut + rootify require get_parent, cut unlinks u from parent, roofify makes u root
+void cut(int u) { access(u); assert(C[u][0]); p[C[u][0]] = 0; C[u][0] = 0; calc(u); }
+void rootify(int u) { access(u); lzswp[u] = 1; access(u); } 
+void init() { en = 1; } // XXX initialize
