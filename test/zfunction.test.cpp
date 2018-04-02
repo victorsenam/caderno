@@ -2,6 +2,7 @@
 using namespace std;
 #include "gtest/gtest.h"
 const int N = 512345;
+char s[N]; int z[N];
 #include "../code/zfunction.cpp"
 
 inline void cp(string x) {
@@ -10,11 +11,10 @@ inline void cp(string x) {
 }
 
 void test_brut(string x) {
-	cp(x);
-	Z(x.size());
+	Z(&x[0],x.size(),z);
 	for(int i = 1; i < int(x.size()); i++) {
 		int Z = 0;
-		while(i + Z < int(x.size()) && s[i + Z] == s[Z]) Z++;
+		while(i + Z < int(x.size()) && x[i + Z] == x[Z]) Z++;
 		EXPECT_EQ(Z, z[i]);
 	}
 }
@@ -49,11 +49,11 @@ TEST(Simple, Random) {
 
 TEST(Simple, Big) {
 	for(int i = 0; i < N; i++) s[i] = 'z';
-	Z(N);
+	Z(s,N,z);
 	for(int i = 1; i < N; i++) EXPECT_EQ(z[i], N - i);
 	for(int g = 0; g < 20; g++) {
 		s[rand() % N] = 'a' + g;
-		Z(N);
+		Z(s,N,z);
 		int mx = 0;
 		for(; mx < N && s[mx] == 'z'; mx++);
 		int cur = 0;
