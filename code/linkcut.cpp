@@ -82,7 +82,7 @@ void link(int u, int v) { // adds edge from u to v, v must be root
 	assert(C[v][0] == 0 && pp[v] == 0 && sz[v] == 1); // v must be root
 	C[u][1] = v; p[v] = u; calc(u);
 }
-// XXX cut + rootify require get_parent, cut unlinks u from parent, roofify makes u root
+// XXX cut + rootify require get_parent, cut unlinks u from parent, rootify makes u root
 void cut(int u) { access(u); assert(C[u][0]); p[C[u][0]] = 0; C[u][0] = 0; calc(u); }
 void rootify(int u) { access(u); lzswp[u] = 1; access(u); } 
 void init() { en = 1; } // XXX initialize

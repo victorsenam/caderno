@@ -26,7 +26,7 @@ int merge(int l, int r) { // els on l <= els on r
 	else { L[r] = merge(l, L[r]); u = r; }
 	calc(u); return u;
 }
-void init(int n=N-1) { // call on initialization
+void init(int n=N-1) { // XXX call before using other funcs
 	for(int i = en = 1; i <= n; i++) { Y[i] = i; sz[i] = 1; L[i] = R[i] = 0; }
 	random_shuffle(Y + 1, Y + n + 1);
 }
