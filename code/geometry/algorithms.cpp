@@ -99,3 +99,16 @@ pii antipodal (vec * p, int n, vec v) { // lg(n) | extreme segments relative to 
 	if (sw) swap(po,ne);
 	return pii(po,ne);
 }//$
+int mink_sum (vec * a, int n, vec * b, int m, vec * r) { // (n+m) | a[0]+b[0] should belong to sum, doesn't create new border points TODO
+	if (!n || !m) return 0; int i, j, s; r[0] = a[0] + b[0];
+	for (i = 0, j = 0, s = 1; i < n || j < m; s++) {
+		if (i >= n) j++;
+		else if (j >= m) i++;
+		else {
+			int o = (a[(i+1)%n]+b[j%m]).ccw(r[s-1],a[i%n]+b[(j+1)%m]);
+			j += (o >= 0); i += (o <= 0);
+		}
+		r[s] = a[i%n] + b[j%m];
+	}
+	return s-1;
+}//$
