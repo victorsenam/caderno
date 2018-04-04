@@ -4,7 +4,8 @@
 <3D> <geometry/3d.cpp>
 !Graphs
 <Dinic> <dinic.cpp>
-<MinCost MaxFlow> <mincost.cpp>
+<MinCost MaxFlow> <min_cost.cpp>
+<Cycle Cancelling> <cycle_cancel.cpp>
 <Hungarian> <hungarian.cpp>
 !Structures
 <Ordered Set> <orderedset.cpp>
