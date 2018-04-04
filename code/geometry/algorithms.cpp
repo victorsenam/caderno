@@ -38,9 +38,9 @@ int polygon_pos (vec * p, int n, vec v) { // lg | p should be simple (-1 out, 0 
 	}
 	return in;
 }//$
-int polygon_pos_convex (vec * p, int n, vec v, bool verb = 0) { // n | (-1 out, 0 border, 1 in) TODO 
+int polygon_pos_convex (vec * p, int n, vec v) { // lg(n) | (-1 out, 0 border, 1 in) TODO 
 	if (v.sq(p[0]) <= eps) return 0;
-	if (verb) cout << v.ccw(p[0],p[1]) << " " << v.ccw(p[0],p[n-1]) << endl;
+	if (n <= 1) return 0; if (n == 2) return v.in_seg(p[0],p[1])?0:-1;
 	if (v.ccw(p[0],p[1]) < 0 || v.ccw(p[0],p[n-1]) > 0) return -1;
 	int di = lower_bound(p+1,p+n-1,v, [&p](vec a,vec v) { return v.ccw(p[0],a) > 0; }) - p;
 	if (di == 1) return v.ccw(p[1],p[2]) >= 0?0:-1;
