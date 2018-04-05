@@ -11,7 +11,7 @@ using namespace std;
 dinic d;
 
 TEST(Dinic, Sum) {
-	d.reset(2);
+	d.init(2);
 	d.add_edge(0, 1, 7);
 	d.add_edge(0, 1, 12);
 	EXPECT_EQ(d.max_flow(0, 1), 19) << "Parallel edges should work";
@@ -20,7 +20,7 @@ TEST(Dinic, Sum) {
 }
 
 TEST(Dinic, Min) {
-	d.reset(3);
+	d.init(3);
 	d.add_edge(0, 1, 12);
 	d.add_edge(1, 2, 7);
 	EXPECT_EQ(d.max_flow(0, 2), 7) << "Min not working";
