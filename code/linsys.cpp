@@ -16,7 +16,7 @@ double solve(int n) {
 			swap_ranges(a[i], a[i] + n + 1, a[mx]);
 			det = -det;
 		}
-		if(abs(a[i][i]) < 1e-6) /* matriz singular */;
+		if(abs(a[i][i]) < 1e-6); // singular matrix
 		det *= a[i][i];
 		for(int j = i + 1; j < n; j++) {
 			for(int k = i + 1; k <= n; k++)

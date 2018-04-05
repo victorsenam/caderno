@@ -4,10 +4,6 @@
 struct hungarian {
 	int n, MA[N], MB[N], PB[N], mn[N], st[N], sn; bool S[N], T[N];
 	num c[N][N], d[N], y[N], z[N];
-	void reset_all() {
-		for(int i = 0; i < n; i++) { y[i] = *min_element(c[i], c[i] + n); z[i] = 0; }
-		for(int i = 0; i < n; i++) MA[i] = MB[i] = -1;
-	}
 	bool increase(int b) {
 		for (int a = PB[b];;) {
 			int n_b = MA[a];
@@ -52,6 +48,11 @@ struct hungarian {
 			else if(update_dual()) break;
 		}
 	}
+	void reset_all() {
+		for(int i = 0; i < n; i++) { y[i] = *min_element(c[i], c[i] + n); z[i] = 0; }
+		for(int i = 0; i < n; i++) MA[i] = MB[i] = -1;
+	}
+	// public $
 	num min_match() { // set n and c then call this function
 		reset_all(); num all = 0;
 		for(int i = 0; i < n; i++) find_path();
