@@ -1,72 +1,68 @@
 // typedef ll num; const num eps = 0; num INF = 1e17;
-// XXX double: indicates operations specific to integers (+1,lo<hi,...), non precision-related
-template<typename line> struct envelope { // if line is used, the template tag can be simply removed
+// XXX double: indicates operations specific to integers, not precision related
+template<typename line> struct envelope {
 	deque<line> q; num lo,hi; envelope (num _lo, num _hi) : lo(_lo), hi(_hi) {}
-	void push_front (line l) { assert(q.empty() || !(q.front()<l)); // l is best at lo or never
-		if (!q.empty() && q.front()(lo) < l(lo)) return;
+	void push_front (line l) { // amort. O(inter) | l is best at lo or never
+		if (q.size() && q[0](lo) < l(lo)) return;
 		for (num x; q.size(); q.pop_front()) {
-			x = (q.size()<=1?hi:min(max(lo,q.front().inter(*next(q.begin()))-1),hi+1));
-			if (l(x) > q.front()(x)) break;
+			x = (q.size()<=1?hi:q[0].inter(q[1],lo,hi)-1); // XXX double (-1)
+			if (l(x) > q[0](x)) break;
 		}
 		q.push_front(l);
 	}
-	void push_back (line l) { assert(q.empty() || !(l<q.back())); // l is best at hi or never
-		if (!q.empty() && q.back()(hi) <= l(hi)) return;
+	void push_back (line l) { // amort. O(inter) | l is best at hi or never
+		if (q.size() && q[q.size()-1](hi) <= l(hi)) return;
 		for (num x; q.size(); q.pop_back()) {
-			x = (q.size()<=1?lo:min(max(lo,next(q.rbegin())->inter(q.back())),hi+1));
-			if (l(x) >= q.back()(x)) break;
+			x = (q.size()<=1?lo:q[q.size()-2].inter(q[q.size()-1],lo,hi));
+			if (l(x) >= q[q.size()-1](x)) break;
 		}
 		q.push_back(l);
 	}
-	void pop_front (num _lo) { assert(lo<=_lo+eps); for(lo=_lo;q.size()>1&&q.front()(lo)>(*next(q.begin()))(lo);q.pop_front()); } // always amort. O(1)
-	void pop_back (num _hi) { assert(hi>=_hi-eps); for(hi=_hi;q.size()>1&&(*next(q.rbegin()))(hi)<=q.back()(hi);q.pop_back()); } // always amort. O(1)
-	line get (num x) {
-		int lo = 0, hi = q.size()-1;
-		while (lo < hi) { int md = (lo+hi)/2;
-			if (q[md](x) > q[md+1](x)) lo = md+1;
-			else hi = md;
-		}
+	void pop_front (num _lo) { for (lo=_lo; q.size()>1 && q[0](lo) > q[1](lo); q.pop_front()); } // amort. O(n)
+	void pop_back (num _hi) { for (hi=_hi; q.size()>1 && q[q.size()-2](hi) <= q[q.size()-1](hi); q.pop_back()); } // amort. O(n)
+	line get (num x) { // O(lg(R))
+		int lo, hi, md; for (lo = 0, hi = q.size()-1, md = (lo+hi)/2; lo < hi; md = (lo+hi)/2)
+			if (q[md](x) > q[md+1](x)) { lo = md+1; }
+			else { hi = md; }
 		return q[lo];
 	}
 };
-struct line { // env operations in amort. O(1)
+struct line { // inter = O(1)
 	num a,b; num operator () (num x) const { return a*x+b; }
-	bool operator < (const line & ot) const { return a>ot.a; } // decreasing slope, if function ties, envelope gets minimum here
-	num inter (line o) { assert(!(o<(*this))); return (o.a==a)?((b<o.b)?INF:-INF):(o.b-b-(o.b-b<0)*(a-o.a-1))/(a-o.a) + 1; }
+	num inter (line o, num lo, num hi) { return abs(o.a-a)<=eps?((b<o.b)?hi+1:lo):min(hi+1,max(lo,(o.b-b-(o.b-b<0)*(a-o.a-1))/(a-o.a) + 1)); }
 };
-struct generic_line { // change only parameters and () for any viable functions, env operations in amort. O(lg(hi-lo))
-	num a,b; envelope<generic_line> * env; num operator () (num x) const { return a*x+b; }
-	bool operator < (const generic_line & ot) const { return (*this)(env->lo) < ot(env->lo) && (*this)(env->hi) > ot(env->hi); } // first element is best at lo
-	num inter (generic_line o) { assert(!(o<(*this)));
-		num lo = env->lo, hi = env->hi + 1;
-		while (lo < hi) {
-			num md = lo+(hi-lo)/2;
-			if ((*this)(md)<=o(md)) lo = md+1;
-			else hi = md;
+struct generic_line { // inter = O(lg(R))
+	num a,b; num operator () (num x) const { return a*x+b; }
+	num inter (generic_line o, num lo, num hi) { // first point where o strictly beats this
+		for (num md = lo+((++hi)-lo)/2; lo < hi; md = lo+(hi-lo)/2) { // XXX double
+			if ((*this)(md)<=o(md)) { lo = md+1; } // XXX double
+			else { hi = md; }
 		}
 		return lo;
 	}
 };
-template<typename line> struct full_envelope {
-	deque<envelope<line> > v; full_envelope(envelope<line> c) : v({c}) {}
+template<typename line> struct full_envelope { // XXX ties are broken arbitrarily
+	vector<envelope<line> > v; full_envelope(envelope<line> c) : v({c}) {} // v.reserve(30);
 	void add (line l) { // amort. O(lg(n)*inter)
-		v.push_back(envelope<line>(v[0].lo,v[0].hi)); v.back().push_back(l);
-		while (v.size() > 1 && prev(prev(v.end()))->q.size() <= prev(v.end())->q.size()) {
-			deque<line> aux; swap(aux,prev(prev(v.end()))->q); auto it = aux.begin(); auto r = prev(prev(v.end()));
-			for (line l : v.back().q) {
-				while (it != aux.end() && *it < l) r->push_back(*(it++));
-				r->push_back(l);
+		envelope<line> cur(v.back().lo,v.back().hi); cur.push_back(l);
+		while (!v.empty() && v.back().q.size() <= cur.q.size()) {
+			deque<line> aux; swap(aux,cur.q); int i = 0, j = 0;
+			for (; i < aux.size(); i++) {
+				for (; j < v.back().q.size() && v.back().q[j](cur.hi) > aux[i](cur.hi); j++)
+					cur.push_back(v.back().q[j]);
+				cur.push_back(aux[i]);
 			}
-			while (it != aux.end()) r->push_back(*(it++));
+			for (; j < v.back().q.size(); j++) cur.push_back(v.back().q[j]);
 			v.pop_back();
 		}
+		v.push_back(cur);
 	}
-	line get (num x) { // O(lg(n)^2) use pop_back/pop_front for better time
-		line b = v.front().get(x);
+	line get (num x) { // O(lg(n)lg(R)) | pop_back/pop_front can optimize
+		line a = v[0].get(x);
 		for (int i = 1; i < (int) v.size(); i++) {
-			line c = v[i].get(x);
-			if (c(x)!=b(x)?c(x)<b(x):c<b) b = c;
+			line b = v[i].get(x);
+			if (b(x)<a(x)) a = b;
 		}
-		return b;
+		return a;
 	}
 };

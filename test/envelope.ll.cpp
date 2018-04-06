@@ -33,33 +33,38 @@ template<typename line> ostream & operator<< (ostream & os, envelope<line> e) {
 }
 
 TEST(line, inter) {
-	EXPECT_EQ(line({7,3}).inter({2,14}), 3) << "Should return floor of line intersection + 1 on simple cases.";
-	EXPECT_EQ(line({7,14}).inter({2,3}), -2) << "Should return floor of line intersection + 1 on simple cases.";
-	EXPECT_EQ(line({8,2}).inter({4,0}), 0) << "Should return floor of line intersection + 1 on simple cases.";
-	EXPECT_EQ(line({8,0}).inter({4,0}), 1) << "Should return floor of line intersection + 1 on simple cases.";
-	EXPECT_EQ(line({8,16}).inter({4,-16}), -7) << "Should return floor of line intersection + 1 on simple cases.";
-	EXPECT_EQ(line({8,-16}).inter({4,16}), 9) << "Should return floor of line intersection + 1 on simple cases.";
-	EXPECT_EQ(line({4213,321}).inter({324,2442}), 1) << "Should return floor of line intersection + 1 on simple cases.";
+	num lo = -10, hi = 10;
 
-	EXPECT_EQ(line({1,3}).inter({1,2}), -INF) << "Should return -INF with parallels where b beats a.";
-	EXPECT_EQ(line({1,2}).inter({1,3}), INF) << "Should return INF with parallels where a beats b.";
+	EXPECT_EQ(line({7,3}).inter({2,14}, lo, hi), 3) << "Should return floor of line intersection + 1 on simple cases.";
+	EXPECT_EQ(line({7,14}).inter({2,3}, lo, hi), -2) << "Should return floor of line intersection + 1 on simple cases.";
+	EXPECT_EQ(line({8,2}).inter({4,0}, lo, hi), 0) << "Should return floor of line intersection + 1 on simple cases.";
+	EXPECT_EQ(line({8,0}).inter({4,0}, lo, hi), 1) << "Should return floor of line intersection + 1 on simple cases.";
+	EXPECT_EQ(line({8,16}).inter({4,-16}, lo, hi), -7) << "Should return floor of line intersection + 1 on simple cases.";
+	EXPECT_EQ(line({8,-16}).inter({4,16}, lo, hi), 9) << "Should return floor of line intersection + 1 on simple cases.";
+	EXPECT_EQ(line({4213,321}).inter({324,2442}, lo, hi), 1) << "Should return floor of line intersection + 1 on simple cases.";
+
+	EXPECT_EQ(line({1,3}).inter({1,2}, lo, hi), lo) << "Should return lo with parallels where b beats a.";
+	EXPECT_EQ(line({1,2}).inter({1,3}, lo, hi), hi+1) << "Should return hi+1 with parallels where a beats b.";
+
+	EXPECT_EQ(line({1,3}).inter({1,2}, lo, hi), lo) << "Should return -INF with parallels where b beats a.";
+	EXPECT_EQ(line({1,2}).inter({1,3}, lo, hi), hi+1) << "Should return INF with parallels where a beats b.";
 }
 
 TEST(generic_line, inter) {
-	envelope<generic_line> env(-10,10);
+	num lo = -10, hi = 10;
 
-	EXPECT_EQ(generic_line({7,3,&env}).inter({2,14,&env}), 3) << "Should return floor of line intersection + 1 on simple cases.";
-	EXPECT_EQ(generic_line({7,14,&env}).inter({2,3,&env}), -2) << "Should return floor of line intersection + 1 on simple cases.";
-	EXPECT_EQ(generic_line({8,2,&env}).inter({4,0,&env}), 0) << "Should return floor of line intersection + 1 on simple cases.";
-	EXPECT_EQ(generic_line({8,0,&env}).inter({4,0,&env}), 1) << "Should return floor of line intersection + 1 on simple cases.";
-	EXPECT_EQ(generic_line({8,16,&env}).inter({4,-16,&env}), -7) << "Should return floor of line intersection + 1 on simple cases.";
-	EXPECT_EQ(generic_line({8,-16,&env}).inter({4,16,&env}), 9) << "Should return floor of line intersection + 1 on simple cases.";
+	EXPECT_EQ(generic_line({7,3}).inter({2,14}, lo, hi), 3) << "Should return floor of line intersection + 1 on simple cases.";
+	EXPECT_EQ(generic_line({7,14}).inter({2,3}, lo, hi), -2) << "Should return floor of line intersection + 1 on simple cases.";
+	EXPECT_EQ(generic_line({8,2}).inter({4,0}, lo, hi), 0) << "Should return floor of line intersection + 1 on simple cases.";
+	EXPECT_EQ(generic_line({8,0}).inter({4,0}, lo, hi), 1) << "Should return floor of line intersection + 1 on simple cases.";
+	EXPECT_EQ(generic_line({8,16}).inter({4,-16}, lo, hi), -7) << "Should return floor of line intersection + 1 on simple cases.";
+	EXPECT_EQ(generic_line({8,-16}).inter({4,16}, lo, hi), 9) << "Should return floor of line intersection + 1 on simple cases.";
 
-	EXPECT_EQ(generic_line({1,3,&env}).inter({1,2,&env}), env.lo) << "Should return env.lo with parallels where b beats a.";
-	EXPECT_EQ(generic_line({1,2,&env}).inter({1,3,&env}), env.hi+1) << "Should return env.hi+1 with parallels where a beats b.";
+	EXPECT_EQ(generic_line({1,3}).inter({1,2}, lo, hi), lo) << "Should return lo with parallels where b beats a.";
+	EXPECT_EQ(generic_line({1,2}).inter({1,3}, lo, hi), hi+1) << "Should return hi+1 with parallels where a beats b.";
 
-	EXPECT_EQ(generic_line({2,10000,&env}).inter({-2,0,&env}), env.lo) << "Should return lo when b beats a everywhere in range.";
-	EXPECT_EQ(generic_line({2,0,&env}).inter({-2,1000,&env}), env.hi+1) << "Should return hi+1 when a beats b everywhere in range.";
+	EXPECT_EQ(generic_line({2,10000}).inter({-2,0}, lo, hi), lo) << "Should return lo when b beats a everywhere in range.";
+	EXPECT_EQ(generic_line({2,0}).inter({-2,1000}, lo, hi), hi+1) << "Should return hi+1 when a beats b everywhere in range.";
 }
 
 TEST(envelope, Behaviour) {
@@ -173,13 +178,13 @@ TEST(line, InterRandom) {
 	srand(x); rand(); rand();
 	int ts = 1e6, p_lim = 1e8;
 	while (ts--) {
-		envelope<generic_line> env(-p_lim + (rand()%200),p_lim - (rand()%200));
+		num lo = -p_lim + (rand()%200), hi = p_lim - (rand()%200);
 		line a({(rand()%(p_lim+p_lim+1)) - p_lim, (rand()%(p_lim+p_lim+1)) - p_lim});
 		line b({(rand()%(p_lim+p_lim+1)) - p_lim, (rand()%(p_lim+p_lim+1)) - p_lim});
-		if (b < a) swap(a,b);
-		generic_line ga({a.a,a.b,&env});
-		generic_line gb({b.a,b.b,&env});
-		EXPECT_EQ(min(max(env.lo,a.inter(b)),env.hi+1), ga.inter(gb));
+		if (b.a > a.a) swap(a,b);
+		generic_line ga({a.a,a.b});
+		generic_line gb({b.a,b.b});
+		EXPECT_EQ(a.inter(b,lo,hi), ga.inter(gb,lo,hi));
 	};
 }
 
