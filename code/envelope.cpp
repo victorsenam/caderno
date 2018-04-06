@@ -1,4 +1,4 @@
-// typedef ll num; const num eps = 0; num INF = 1e17;
+// typedef ll num; const num eps = 0;
 // XXX double: indicates operations specific to integers, not precision related
 template<typename line> struct envelope {
 	deque<line> q; num lo,hi; envelope (num _lo, num _hi) : lo(_lo), hi(_hi) {}
