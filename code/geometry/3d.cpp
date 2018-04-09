@@ -22,17 +22,17 @@ struct pnt { // TODO it's not tested at all :)
 	inline bool in_seg (pnt a, pnt b) { return cross(a,b).sq() <= eps && inner(a,b) <= eps; } // tips included
 	inline bool in_tri (pnt a, pnt b, pnt c) { return abs(mixed(a,b,c)) <= eps && cross(a,b)*cross(b,c) >= -eps && cross(a,b)*cross(c,a) >= -eps; } // border included
 
-	inline pnt proj (pnt a, pnt b) { return a + (b-a)*a.inner(b,(*this)/a.sq(b)); }
+	inline pnt proj (pnt a, pnt b) { return a + (b-a)*a.inner(b,(*this))/a.sq(b); }
 	inline pnt proj (pnt a, pnt b, pnt c) { pnt n = a.cross(b,c); return (*this) - n*(n*((*this)-a))/n.sq(); }
 
-	inline double dist2_lin (pnt a, pnt b) { return ((a-(*this))^(b-(*this))).sq() / ((b-a).sq()*4); }
-	inline double dist2_seg (pnt a, pnt b) { pnt p = proj(a,b); return p.in_seg(a,b) ? dist2_lin(a,b) : min(p.sq(a),p.sq(b)); }
-	inline double dist2_pln (pnt a, pnt b, pnt c) { return sq(proj(a,b,c)); }
+	inline double dist2_lin (pnt a, pnt b) { return cross(a,b).sq()/a.sq(b); }
+	inline double dist2_seg (pnt a, pnt b) { return a.inner(b,(*this))*b.inner(a,(*this)) <= eps ? min(sq(a),sq(b)) : dist2_lin(a,b); }
+	inline double dist_pln (pnt a, pnt b, pnt c) { return abs((~a.cross(b,c))*((*this)-a)); }
 	inline double dist2_tri (pnt a, pnt b, pnt c) { pnt p = proj(a,b,c); return p.in_tri(a,b,c) ? sq(p) : min({ dist2_seg(a,b), dist2_seg(b,c), dist2_seg(c,a) }); }
 };
 inline cood area (pnt a, pnt b, pnt c) { return abs(a.cross(b,c).nr()) / 2; }
 inline cood vol (pnt a, pnt b, pnt c, pnt d) { return abs(a.mixed(b,c,d)) / 6; } // thetahedra
-pnt inter_lin_pln (pnt s, pnt t, pnt a, pnt b, pnt c) { return s + (t-s)*s.inner(s.proj(a,b,c),t)/s.sq(t); } // intersect line (s,t) and plane (a,b,c) XXX parallel case
+pnt inter_lin_pln (pnt s, pnt t, pnt a, pnt b, pnt c) { pnt n = a.cross(b,c); return s + (t-s)*(n*(a-s))/(n*(t-s)); }
 struct sph { // TODO it's also not tested at all
 	pnt c; cood r;
 	sph () : c(), r(0) {} sph (pnt a, cood b) : c(a), r(b) {}

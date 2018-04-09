@@ -34,7 +34,7 @@ TEST(geometry_basic, basic_ops) {
 	EXPECT_DOUBLE_EQ(a.mixed(b,c,d), -20);
 
 	EXPECT_EQ(a.sq(b), 68);
-	EXPECT_EQ(a.nr(c), 7.35);
+	EXPECT_NEAR(a.nr(c), 7.35, test_eps);
 	EXPECT_EQ((~a).nr(), 1);
 	EXPECT_EQ((~c), pnt(-0.91, 0.18, 0.36));
 
@@ -57,19 +57,19 @@ TEST(geometry_basic, basic_ops) {
 	EXPECT_NEAR(b.dist2_lin(a,d), 1.24, test_eps);
 	EXPECT_DOUBLE_EQ(b.dist2_seg(a,d), b.sq(d));
 	EXPECT_NEAR(d.dist2_lin(a,b), 0.53, test_eps);
-	EXPECT_DOUBLE_EQ(d.dist2_lin(a,b), d.dist2_seg(a,d));
+	EXPECT_DOUBLE_EQ(d.dist2_lin(a,b), d.dist2_seg(a,b));
 
+	EXPECT_NEAR(b.dist_pln(a,d,c), sqrt(1.17), test_eps);
+	EXPECT_NEAR(b.dist2_tri(a,d,c), 7.77, test_eps);
+	EXPECT_DOUBLE_EQ(d.dist_pln(a,b,c), sqrt(d.dist2_tri(a,b,c)));
 	EXPECT_NEAR(d.dist2_tri(a,b,c), 0.53, test_eps);
-	EXPECT_DOUBLE_EQ(d.dist2_pln(a,b,c), d.dist2_tri(a,b,c));
-	EXPECT_DOUBLE_EQ(b.dist2_tri(a,b,d), b.dist2_seg(d,c));
-	EXPECT_NEAR(b.dist2_pln(a,b,c), 1.17, test_eps);
-	EXPECT_NEAR(b.dist2_tri(a,b,c), 7.77, test_eps);
+	EXPECT_DOUBLE_EQ(b.dist2_tri(a,c,d), b.dist2_seg(d,c));
 
 	EXPECT_NEAR(area(a,c,d), 9.23, test_eps);
 	EXPECT_NEAR(area(a,b,c), 13.75, test_eps);
 	EXPECT_DOUBLE_EQ(vol(a,b,c,d), 10/3.);
 
-	EXPECT_EQ(inter_lin_pln(d,pnt(-4,5,-1),a,b,c), pnt(2,-5,12));
+	EXPECT_EQ(inter_lin_pln(d,pnt(-4,5,-1),a,b,c), pnt(.5,-4,10.25));
 	EXPECT_EQ(inter_lin_pln(d,pnt(2,-6,-10),a,b,c), pnt(-1.8,0.64,3.29));
 
 	// resetting test_eps
