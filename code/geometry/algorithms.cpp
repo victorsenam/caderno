@@ -112,3 +112,39 @@ int mink_sum (vec * a, int n, vec * b, int m, vec * r) { // (n+m) | a[0]+b[0] sh
 	}
 	return s-1;
 }//$
+int inter_convex (vec * p, int n, vec * q, int m, vec * r) { // (n+m) | 
+	int a = 0, b = 0, aa = 0, ba = 0, inflag = 0, s = 0;
+	while ((aa < n || ba < m) && aa < n+n && ba < m+m) {
+		vec p1 = p[a], p2 = p[(a+1)%n], q1 = q[b], q2 = q[(b+1)%m];
+		vec A = p2 - p1, B = q2 - q1;
+		int cross = vec(0,0).ccw(A,B), ha = p1.ccw(p2,q2), hb = q1.ccw(q2,p2);
+		if (cross == 0 && p2.ccw(p1,q1) == 0 && A*B < -eps) {
+			if (q1.in_seg(p1,p2)) r[s++] = q1;
+			if (q2.in_seg(p1,p2)) r[s++] = q2;
+			if (p1.in_seg(q1,q2)) r[s++] = p1;
+			if (p2.in_seg(q1,q2)) r[s++] = p2;
+			if (s < 2) return s;
+			inflag = 1; break;
+		} else if (cross != 0 && inter_seg(p1,p2,q1,q2)) {
+			if (inflag == 0) aa = ba = 0;
+			r[s++] = lin(p1,p2).inter(lin(q1,q2));
+			inflag = (hb > 0) ? 1 : -1;
+		}
+		if (cross == 0 && hb < 0 && ha < 0) return s;
+		bool t = cross == 0 && hb == 0 && ha == 0;
+		if (t ? (inflag == 1) : (cross >= 0) ? (ha <= 0) : (hb > 0)) {
+			if (inflag == -1) r[s++] = q2;
+			ba++; b++; b %= m;
+		} else {
+			if (inflag == 1) r[s++] = p2;
+			aa++; a++; a %= n;
+		}
+	}
+	if (inflag == 0) {
+		if (polygon_pos_convex(q,m,p[0]) >= 0) { copy(p, p+n, r); return n; }
+		if (polygon_pos_convex(p,n,q[0]) >= 0) { copy(q, q+m, r); return m; }
+	}
+	s = unique(r, r+s) - r;
+	if (s > 1 && r[0] == r[s-1]) s--;
+	return s;
+}
