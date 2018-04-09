@@ -1,4 +1,4 @@
-// typedef double cood; cood eps = 1e-8; cood inf = 1./0.; // risky: XXX, untested: TODO
+// typedef double cood; cood eps = 1e-8; // risky: XXX, untested: TODO
 const double pi = acos(-1.);
 template<typename T> inline T sq(T x) { return x*x; }
 struct vec {
