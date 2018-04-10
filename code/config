@@ -27,3 +27,9 @@
 <Zeta Disjoint Or> <zeta_dor.cpp>
 <Miller-Rabin> <millerrabin.cpp>
 <Pollard-Rho> <pollard_rho.cpp>
+!Old Solutions
+<Ceiling Function> <easy/ceiling.cpp>
+<Secret Chamber at Mount Rushmore> <easy/secret.cpp>
+<Need for Speed> <easy/speed.cpp>
+<Amalgamated Artichokes> <easy/amalgated.cpp>
+<Low Power> <easy/low_power.cpp>
