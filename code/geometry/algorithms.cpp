@@ -40,7 +40,7 @@ int polygon_pos (vec * p, int n, vec v) { // lg | p should be simple (-1 out, 0 
 }//$
 int polygon_pos_convex (vec * p, int n, vec v) { // lg(n) | (-1 out, 0 border, 1 in) TODO 
 	if (v.sq(p[0]) <= eps) return 0;
-	if (n <= 1) return 0; if (n == 2) return v.in_seg(p[0],p[1])?0:-1;
+	if (n <= 1) { return 0; } if (n == 2) { return v.in_seg(p[0],p[1])?0:-1; }
 	if (v.ccw(p[0],p[1]) < 0 || v.ccw(p[0],p[n-1]) > 0) return -1;
 	int di = lower_bound(p+1,p+n-1,v, [&p](vec a,vec v) { return v.ccw(p[0],a) > 0; }) - p;
 	if (di == 1) return v.ccw(p[1],p[2]) >= 0?0:-1;
@@ -100,7 +100,7 @@ pii antipodal (vec * p, int n, vec v) { // lg(n) | extreme segments relative to 
 	return pii(po,ne);
 }//$
 int mink_sum (vec * a, int n, vec * b, int m, vec * r) { // (n+m) | a[0]+b[0] should belong to sum, doesn't create new border points TODO
-	if (!n || !m) return 0; int i, j, s; r[0] = a[0] + b[0];
+	if (!n || !m) { return 0; } int i, j, s; r[0] = a[0] + b[0];
 	for (i = 0, j = 0, s = 1; i < n || j < m; s++) {
 		if (i >= n) j++;
 		else if (j >= m) i++;
@@ -112,7 +112,7 @@ int mink_sum (vec * a, int n, vec * b, int m, vec * r) { // (n+m) | a[0]+b[0] sh
 	}
 	return s-1;
 }//$
-int inter_convex (vec * p, int n, vec * q, int m, vec * r) { // (n+m) | 
+int inter_convex (vec * p, int n, vec * q, int m, vec * r) { // (n+m) | XXX
 	int a = 0, b = 0, aa = 0, ba = 0, inflag = 0, s = 0;
 	while ((aa < n || ba < m) && aa < n+n && ba < m+m) {
 		vec p1 = p[a], p2 = p[(a+1)%n], q1 = q[b], q2 = q[(b+1)%m];
@@ -146,5 +146,30 @@ int inter_convex (vec * p, int n, vec * q, int m, vec * r) { // (n+m) |
 	}
 	s = unique(r, r+s) - r;
 	if (s > 1 && r[0] == r[s-1]) s--;
+	return s;
+}//$
+bool isear (vec * p, int n, int i, int prev[], int next[]) { // aux to triangulate
+	vec a = p[prev[i]], b = p[next[i]];
+	if (b.ccw(a,p[i]) <= 0) return false;
+	for (int j = 0; j < n; j++) {
+		if (j == prev[i] || j == next[i]) continue;
+		if (p[j].ccw(a,p[i]) >= 0 && p[j].ccw(p[i],b) >= 0 && p[j].ccw(b,a) >= 0) return false;
+		int k = (j+1)%n;
+		if (k == prev[i] || k == next[i]) continue;
+		if (inter_seg(p[j],p[k],a,b)) return false;
+	}
+	return true;
+}
+int triangulate (vec * p, int n, bool ear[], int prev[], int next[], int tri[][3]) { // O(n^2) | n >= 3
+	int s = 0, i = 0;
+	for (int i = 0, prv = n-1; i < n; i++) { prev[i] = prv; prv = i; next[i] = (i+1)%n; ear[i] = isear(p,n,i,prev,next); }
+	for (int lef = n; lef > 3; lef--, i = next[i]) {
+		while (!ear[i]) i = next[i];
+		tri[s][0] = prev[i]; tri[s][1] = i; tri[s][2] = next[i]; s++; // tri[i][0],i,tri[i][1] inserted
+		int c_prev = prev[i], c_next = next[i];
+		next[c_prev] = c_next; prev[c_next] = c_prev;
+		ear[c_prev] = isear(p,n,c_prev,prev,next); ear[c_next] = isear(p,n,c_next,prev,next);
+	}
+	tri[s][0] = next[next[i]]; tri[s][1] = i; tri[s][2] = next[i]; s++; // tri[i][0],i,tri[i][1] inserted
 	return s;
 }
