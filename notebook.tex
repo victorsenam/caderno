@@ -1,0 +1,206 @@
+\documentclass[a4paper,oneside]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{verbatim}
+\usepackage{amssymb}
+\usepackage[inline]{enumitem}
+\usepackage{pxfonts}
+
+\usepackage[a4paper,top=2cm,bottom=1cm,left=1cm,right=1cm]{geometry}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\renewcommand{\sectionmark}[1]{\markright{#1}}
+\fancyhf{}
+\rhead{\fancyplain{}{\nouppercase{\rightmark}}, page \bfseries\thepage}
+\lhead{University of São Paulo}
+
+\usepackage{titlesec}
+\titlespacing*{\section}
+{0pt}{2ex}{1ex}
+
+\definecolor{dkgray}{rgb}{0.4,0.4,0.4}
+\definecolor{gray}{rgb}{0.6,0.6,0.6}
+
+\lstset{frame=tb,
+  language=c++,
+  aboveskip=.1em,
+  belowskip=.1em,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  keywordstyle=\bfseries,
+  commentstyle=\color{gray},
+  morekeywords={num, cood},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=4,
+  showtabs=true,
+  tab={\color{dkgray}{\tiny $\vartriangleright$}\hfill},
+  moredelim=**[is][\color{red}]{@}{@}
+}
+
+\title{ACM ICPC Reference}
+\author{University of São Paulo}
+
+\begin{document}
+\maketitle
+\thispagestyle{fancy}
+\tableofcontents
+\newpage
+
+\begin{enumerate*}
+ \item workspaces/teclado 
+ \item .vimrc and .bashrc
+ \item temp.cpp
+\end{enumerate*}
+
+\begin{lstlisting}
+syntax on
+colo evening
+set ai si noet ts=4 sw=4 sta sm nu rnu so=7 t_Co=8
+imap {<CR> {<CR>}<Esc>O
+\end{lstlisting}
+
+\lstinputlisting{hashify.py}
+\section{Geometry}
+\subsection{Base}
+\lstinputlisting{src/geometry/basic.cpp}
+
+\subsection{Advanced}
+\lstinputlisting{src/geometry/algorithms.cpp}
+
+\subsection{3D}
+\lstinputlisting{src/geometry/3d.cpp}
+
+\section{Graphs}
+\subsection{Dinic}
+\lstinputlisting{src/dinic.cpp}
+
+\subsection{MinCost MaxFlow}
+\lstinputlisting{src/min_cost.cpp}
+
+\subsection{Cycle Cancelling}
+\lstinputlisting{src/cycle_cancel.cpp}
+
+\subsection{Hungarian}
+\lstinputlisting{src/hungarian.cpp}
+
+\section{Structures}
+\subsection{Ordered Set}
+\lstinputlisting{src/orderedset.cpp}
+
+\subsection{Treap}
+\lstinputlisting{src/treap.cpp}
+
+\subsection{Envelope}
+\lstinputlisting{src/envelope.cpp}
+
+\subsection{Centroid}
+\lstinputlisting{src/centroid.cpp}
+
+\subsection{Link Cut Tree}
+\lstinputlisting{src/linkcut.cpp}
+
+\subsection{Splay Tree}
+\lstinputlisting{src/splay.cpp}
+
+\section{Strings}
+\subsection{Suffix Tree}
+\lstinputlisting{src/sufftree.cpp}
+
+\subsection{Z-function}
+\lstinputlisting{src/zfunction.cpp}
+
+\subsection{Manacher}
+\lstinputlisting{src/manacher.cpp}
+
+\section{Math}
+\subsection{FFT}
+\lstinputlisting{src/math/fft.cpp}
+
+\subsection{Discrete FFT}
+\lstinputlisting{src/math/fft_finite.cpp}
+
+\subsection{Linear System Solver}
+\lstinputlisting{src/linsys.cpp}
+
+\subsection{Simplex}
+\lstinputlisting{src/simplex.cpp}
+
+\subsection{Zeta}
+\lstinputlisting{src/zeta.cpp}
+
+\subsection{Zeta Disjoint Or}
+\lstinputlisting{src/zeta_dor.cpp}
+
+\subsection{Miller-Rabin}
+\lstinputlisting{src/millerrabin.cpp}
+
+\subsection{Pollard-Rho}
+\lstinputlisting{src/pollard_rho.cpp}
+
+\section{Old Solutions}
+\subsection{Ceiling Function}
+\lstinputlisting{src/easy/ceiling.cpp}
+
+\subsection{Secret Chamber at Mount Rushmore}
+\lstinputlisting{src/easy/secret.cpp}
+
+\subsection{Need for Speed}
+\lstinputlisting{src/easy/speed.cpp}
+
+\subsection{Amalgamated Artichokes}
+\lstinputlisting{src/easy/amalgated.cpp}
+
+\subsection{Low Power}
+\lstinputlisting{src/easy/low_power.cpp}
+
+\section{Anotações}
+\subsection{Intersecção de Matróides}
+Sejam~$M_1 = (E, I_1)$ e~$M_2 = (E, I_2)$ matróides. Então
+$ \max\limits_{S \in I_1 \cap I_2}{|S|} = \min\limits_{U \subseteq E}{r_1(U) + r_2(E \setminus U)}. $
+
+\subsection{Möebius}
+Se~$F(n) = \sum\limits_{d | n}{f(d)}$, então
+$f(n) = \sum\limits_{d | n}{\mu(d) F(n / d)}.$
+
+\subsection{Burnside}
+Seja~$A \colon GX \rightarrow X$ uma ação. Defina:
+\begin{itemize}
+\item $w \coloneqq $ número de órbitas em~$X$.
+\item $S_x \coloneqq \{g \in G \mid g \cdot x = x \}$
+\item $F_g \coloneqq \{x \in X \mid g \cdot x = x \} $
+\end{itemize}
+
+Então $ w = \frac{1}{|G|} \sum\limits_{x \in X}{|S_x|} = \frac{1}{|G|} \sum\limits_{g \in G}{|F_g|}. $
+
+\subsection{Landau}
+Existe um torneio com graus de saída~$d_1 \leq d_2 \leq \ldots \leq d_n$ sse:
+\begin{itemize}
+\item $d_1 + d_2 + \ldots + d_n = {n \choose 2}$
+\item $d_1 + d_2 + \ldots + d_k \geq {k \choose 2} \quad \forall 1 \leq k \leq n.$
+\end{itemize}
+Para construir, fazemos~1 apontar para~$2, 3, \ldots, d_1 + 1$ e seguimos recursivamente.
+
+\subsection{Erdös-Gallai}
+Existe um grafo simples com graus~$d_1 \geq d_2 \geq \ldots \geq d_n$ sse:
+\begin{itemize}
+\item $d_1 + d_2 + \ldots + d_n$ é par
+\item $\sum\limits_{i = 1}^k{d_i} \leq k(k-1) + \sum\limits_{i=k+1}^n{\min(d_i, k)} \quad \forall 1 \leq k \leq n$.
+\end{itemize}
+Para construir, ligamos~1 com~$2, 3, \ldots, d_1 + 1$ e seguimos recursivamente.
+
+\subsection{Gambler's Ruin}
+Em um jogo no qual ganhamos cada aposta com probabilidade~$p$ e perdemos com probabilidade~$q \coloneqq 1 - p$, paramos quando ganhamos~$B$ ou perdemos~$A$. Então~$\mathit{Prob}(\textnormal{ganhar B}) = \frac{1 - (p/q)^B}{1 - (p/q)^{A+B}}$.
+
+\subsection{Extra}
+\newcommand{\Fib}{\mathit{Fib}}
+\begin{itemize}
+\item $\Fib(x + y) = \Fib(x + 1) \Fib(y) + \Fib(x) \Fib(y - 1)$
+\end{itemize}
+
+\end{document}
+

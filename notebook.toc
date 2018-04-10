@@ -1,0 +1,44 @@
+\select@language {english}
+\contentsline {section}{\numberline {1}Geometry}{2}
+\contentsline {subsection}{\numberline {1.1}Base}{2}
+\contentsline {subsection}{\numberline {1.2}Advanced}{4}
+\contentsline {subsection}{\numberline {1.3}3D}{6}
+\contentsline {section}{\numberline {2}Graphs}{7}
+\contentsline {subsection}{\numberline {2.1}Dinic}{7}
+\contentsline {subsection}{\numberline {2.2}MinCost MaxFlow}{8}
+\contentsline {subsection}{\numberline {2.3}Cycle Cancelling}{8}
+\contentsline {subsection}{\numberline {2.4}Hungarian}{9}
+\contentsline {section}{\numberline {3}Structures}{10}
+\contentsline {subsection}{\numberline {3.1}Ordered Set}{10}
+\contentsline {subsection}{\numberline {3.2}Treap}{11}
+\contentsline {subsection}{\numberline {3.3}Envelope}{11}
+\contentsline {subsection}{\numberline {3.4}Centroid}{12}
+\contentsline {subsection}{\numberline {3.5}Link Cut Tree}{13}
+\contentsline {subsection}{\numberline {3.6}Splay Tree}{14}
+\contentsline {section}{\numberline {4}Strings}{16}
+\contentsline {subsection}{\numberline {4.1}Suffix Tree}{16}
+\contentsline {subsection}{\numberline {4.2}Z-function}{17}
+\contentsline {subsection}{\numberline {4.3}Manacher}{17}
+\contentsline {section}{\numberline {5}Math}{17}
+\contentsline {subsection}{\numberline {5.1}FFT}{17}
+\contentsline {subsection}{\numberline {5.2}Discrete FFT}{17}
+\contentsline {subsection}{\numberline {5.3}Linear System Solver}{18}
+\contentsline {subsection}{\numberline {5.4}Simplex}{19}
+\contentsline {subsection}{\numberline {5.5}Zeta}{20}
+\contentsline {subsection}{\numberline {5.6}Zeta Disjoint Or}{20}
+\contentsline {subsection}{\numberline {5.7}Miller-Rabin}{21}
+\contentsline {subsection}{\numberline {5.8}Pollard-Rho}{21}
+\contentsline {section}{\numberline {6}Old Solutions}{22}
+\contentsline {subsection}{\numberline {6.1}Ceiling Function}{22}
+\contentsline {subsection}{\numberline {6.2}Secret Chamber at Mount Rushmore}{23}
+\contentsline {subsection}{\numberline {6.3}Need for Speed}{23}
+\contentsline {subsection}{\numberline {6.4}Amalgamated Artichokes}{24}
+\contentsline {subsection}{\numberline {6.5}Low Power}{24}
+\contentsline {section}{\numberline {7}Anota\IeC {\c c}\IeC {\~o}es}{25}
+\contentsline {subsection}{\numberline {7.1}Intersec\IeC {\c c}\IeC {\~a}o de Matr\IeC {\'o}ides}{25}
+\contentsline {subsection}{\numberline {7.2}M\IeC {\"o}ebius}{25}
+\contentsline {subsection}{\numberline {7.3}Burnside}{25}
+\contentsline {subsection}{\numberline {7.4}Landau}{25}
+\contentsline {subsection}{\numberline {7.5}Erd\IeC {\"o}s-Gallai}{25}
+\contentsline {subsection}{\numberline {7.6}Gambler's Ruin}{25}
+\contentsline {subsection}{\numberline {7.7}Extra}{25}

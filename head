@@ -1,0 +1,67 @@
+\documentclass[a4paper,oneside]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{verbatim}
+\usepackage{amssymb}
+\usepackage[inline]{enumitem}
+\usepackage{pxfonts}
+
+\usepackage[a4paper,top=2cm,bottom=1cm,left=1cm,right=1cm]{geometry}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\renewcommand{\sectionmark}[1]{\markright{#1}}
+\fancyhf{}
+\rhead{\fancyplain{}{\nouppercase{\rightmark}}, page \bfseries\thepage}
+\lhead{University of São Paulo}
+
+\usepackage{titlesec}
+\titlespacing*{\section}
+{0pt}{2ex}{1ex}
+
+\definecolor{dkgray}{rgb}{0.4,0.4,0.4}
+\definecolor{gray}{rgb}{0.6,0.6,0.6}
+
+\lstset{frame=tb,
+  language=c++,
+  aboveskip=.1em,
+  belowskip=.1em,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  keywordstyle=\bfseries,
+  commentstyle=\color{gray},
+  morekeywords={num, cood},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=4,
+  showtabs=true,
+  tab={\color{dkgray}{\tiny $\vartriangleright$}\hfill},
+  moredelim=**[is][\color{red}]{@}{@}
+}
+
+\title{ACM ICPC Reference}
+\author{University of São Paulo}
+
+\begin{document}
+\maketitle
+\thispagestyle{fancy}
+\tableofcontents
+\newpage
+
+\begin{enumerate*}
+ \item workspaces/teclado 
+ \item .vimrc and .bashrc
+ \item temp.cpp
+\end{enumerate*}
+
+\begin{lstlisting}
+syntax on
+colo evening
+set ai si noet ts=4 sw=4 sta sm nu rnu so=7 t_Co=8
+imap {<CR> {<CR>}<Esc>O
+\end{lstlisting}
+
+\lstinputlisting{hashify.py}

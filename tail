@@ -1,0 +1,45 @@
+\section{Anotações}
+\subsection{Intersecção de Matróides}
+Sejam~$M_1 = (E, I_1)$ e~$M_2 = (E, I_2)$ matróides. Então
+$ \max\limits_{S \in I_1 \cap I_2}{|S|} = \min\limits_{U \subseteq E}{r_1(U) + r_2(E \setminus U)}. $
+
+\subsection{Möebius}
+Se~$F(n) = \sum\limits_{d | n}{f(d)}$, então
+$f(n) = \sum\limits_{d | n}{\mu(d) F(n / d)}.$
+
+\subsection{Burnside}
+Seja~$A \colon GX \rightarrow X$ uma ação. Defina:
+\begin{itemize}
+\item $w \coloneqq $ número de órbitas em~$X$.
+\item $S_x \coloneqq \{g \in G \mid g \cdot x = x \}$
+\item $F_g \coloneqq \{x \in X \mid g \cdot x = x \} $
+\end{itemize}
+
+Então $ w = \frac{1}{|G|} \sum\limits_{x \in X}{|S_x|} = \frac{1}{|G|} \sum\limits_{g \in G}{|F_g|}. $
+
+\subsection{Landau}
+Existe um torneio com graus de saída~$d_1 \leq d_2 \leq \ldots \leq d_n$ sse:
+\begin{itemize}
+\item $d_1 + d_2 + \ldots + d_n = {n \choose 2}$
+\item $d_1 + d_2 + \ldots + d_k \geq {k \choose 2} \quad \forall 1 \leq k \leq n.$
+\end{itemize}
+Para construir, fazemos~1 apontar para~$2, 3, \ldots, d_1 + 1$ e seguimos recursivamente.
+
+\subsection{Erdös-Gallai}
+Existe um grafo simples com graus~$d_1 \geq d_2 \geq \ldots \geq d_n$ sse:
+\begin{itemize}
+\item $d_1 + d_2 + \ldots + d_n$ é par
+\item $\sum\limits_{i = 1}^k{d_i} \leq k(k-1) + \sum\limits_{i=k+1}^n{\min(d_i, k)} \quad \forall 1 \leq k \leq n$.
+\end{itemize}
+Para construir, ligamos~1 com~$2, 3, \ldots, d_1 + 1$ e seguimos recursivamente.
+
+\subsection{Gambler's Ruin}
+Em um jogo no qual ganhamos cada aposta com probabilidade~$p$ e perdemos com probabilidade~$q \coloneqq 1 - p$, paramos quando ganhamos~$B$ ou perdemos~$A$. Então~$\mathit{Prob}(\textnormal{ganhar B}) = \frac{1 - (p/q)^B}{1 - (p/q)^{A+B}}$.
+
+\subsection{Extra}
+\newcommand{\Fib}{\mathit{Fib}}
+\begin{itemize}
+\item $\Fib(x + y) = \Fib(x + 1) \Fib(y) + \Fib(x) \Fib(y - 1)$
+\end{itemize}
+
+\end{document}
