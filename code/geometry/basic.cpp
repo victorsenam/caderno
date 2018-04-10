@@ -52,7 +52,7 @@ struct cir { // circle
 		vec mv = (u+v)/2; lin s(mv, mv+(v-u).rot90());
 		vec mw = (u+w)/2; lin t(mw, mw+(w-u).rot90());
 		c = s.inter(t); r = c.nr(u);
-	}
+	}//$
 	inline bool contains (vec w) { return c.sq(w) <= sq(r) + eps; } // border included
 	inline bool border (vec w) { return abs(c.sq(w) - sq(r)) <= eps; }
 	inline bool has_inter (cir o) { return c.sq(o.c) <= sq(r + o.r) + eps; } // borders included
@@ -60,20 +60,20 @@ struct cir { // circle
 	inline bool has_inter_lin (vec a, vec b) { return a.sq(b) <= eps ? contains(a) : sq(c.cross(a,b)) <= sq(r)*a.sq(b) + eps; } // borders included XXX overflow
 	inline bool has_inter_seg (vec a, vec b) { return has_inter_lin(a,b) && (contains(a) || contains(b) || a.dir(c,b)*b.dir(c,a) != -1); } // borders and tips included XXX overflow
 	inline double arc_area (vec a, vec b) { return c.angle(a,b)*r*r/2; } // smallest arc, ccw positive
-	inline double arc_len (vec a, vec b) { return c.angle(a,b)*r; } // smallest arc, ccw positive
+	inline double arc_len (vec a, vec b) { return c.angle(a,b)*r; } // smallest arc, ccw positive$
 	pair<vec,vec> tan (vec v) { // XXX low precision
 		if (contains(v) && !border(v)) throw 0;
 		cood d2 = c.sq(v); double s = sqrt(d2 - r*r); s = (s==s)?s:0;
 		double al = atan2(r,s); vec t = (~(c-v));
 		return pair<vec,vec>(v + t.rotate(al)*s, v + t.rotate(-al)*s);
-	}
+	}//$
 	pair<vec,vec> border_inter (cir o) {
 		if (!has_border_inter(o) || o.c == (*this).c) throw 0;
 		double a = (sq(r) + o.c.sq(c) - sq(o.r))/(2*o.c.nr(c));
 		vec v = (o.c - c)/o.c.nr(c); vec m = c + v * a;
 		double h = sqrt(sq(r) - sq(a)); h = h!=h?0:h;
 		return pair<vec,vec>(m + v.rot90()*h, m - v.rot90()*h);
-	}
+	}//$
 	pair<vec,vec> border_inter_lin (vec a, vec b) { // first is closest to a than second
 		if (a.sq(b) <= eps) { if (border(a)) return pair<vec,vec>(a,a); throw 0; }
 		if (a.dir(b,c) == -1) swap(a,b);
@@ -82,7 +82,7 @@ struct cir { // circle
 		double h = sqrt(r*r - d2); h = h!=h?0:h; 
 		double y = sqrt(c.sq(a) - d2); y = y!=y?0:y;
 		return pair<vec,vec>(a + p*(y-h), a + p*(y+h));
-	}
+	}//$
 	double triang_inter (vec a, vec b) { // ccw oriented, this with (c,a,b)
 		if (c.sq(a) > c.sq(b)) return -triang_inter(b,a);
 		if (contains(b)) return c.cross(a,b)/2;
