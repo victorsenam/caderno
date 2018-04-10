@@ -26,3 +26,4 @@
 <Zeta> <zeta.cpp>
 <Zeta Disjoint Or> <zeta_dor.cpp>
 <Miller-Rabin> <millerrabin.cpp>
+<Pollard-Rho> <pollard_rho.cpp>
